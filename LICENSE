@@ -1,6 +1,17 @@
 MIT License
 
 Copyright (c) 2020 Gustavo Magaña López
+Copyright (c) 2020 Alexandre Abhay
+
+This work includes code from Marco Heinen's lectures on numerical methods.
+Including the original header found in his README.txt files :
+
+    ```
+        M. Heinen, August 2017
+        Numerical Methods course
+        Universidad de Guanajuato
+        marco@marco-heinen.de
+    ```
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
