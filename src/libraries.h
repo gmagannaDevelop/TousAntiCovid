@@ -22,7 +22,7 @@
     #include "aux_math.h"
     #include "dev_random.h"
     #include "mersenne_twister.h"
-    #include "random_numbers.h"
+    /*#include "random_numbers.h"*/
 
     /* Constants and macros : */
     #include "constants.h"

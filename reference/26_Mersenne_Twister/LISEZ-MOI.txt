@@ -1,0 +1,25 @@
+
+Bonjour Stéphanie, 
+
+Avant de pouvoir executer le code, il est probable qu'il vous faudra 
+installer les libs. nécessaires.
+
+J'ai trouvé une réponse ici : 
+    https://askubuntu.com/questions/490465/install-gnu-scientific-library-gsl-on-ubuntu-14-04-via-terminal
+
+Il suffit de faire :
+    sudo apt install gsl-bin libgsl0-dev
+    sudo apt install gsl-doc-info gsl-doc-pdf gsl-ref-html gsl-ref-psdoc
+
+Pour la documentation, voici le site :
+    https://www.gnu.org/software/gsl/doc/html/rng.html
+
+En vrai, je pense que le générateur qui se trouve derrière est appelé Mersenne Twister, 
+j'avais vu une vidéo très intéressante qui en parlait mais je ne l'ai pas trouvée. 
+Je vous donne donc un petit remplacement :
+    https://youtu.be/T0xKHwQH-4I
+
+En vrai le générateur n'est qu'une petite partie d'un gros projet pour
+une libraire d'outils scientifiques, avec l'idée du logiciel libre derrière.
+    https://www.gnu.org/software/gsl/
+

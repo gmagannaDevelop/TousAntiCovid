@@ -1,3 +1,6 @@
+# Files that are secondary, not longer needed, etc :
+stray
+
 # binaries :
 **/bin/*
 

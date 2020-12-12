@@ -6,13 +6,6 @@ double draw_randnum_01(gsl_rng **randgen)
   return gsl_rng_uniform(*randgen);
 }
 
-double draw_randum_interval(
-  gsl_rng **randgen, double a, double b
-)
-{
-  return a + (b - a) * draw_randnum_01(randgen);
-}
-
 int initialize_randgen(gsl_rng **randgen, int verbosity)
 {
     unsigned long int seed;

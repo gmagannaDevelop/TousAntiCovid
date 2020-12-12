@@ -3,13 +3,21 @@
 
 int main(int argc, char* argv[]) {
 
-    double x, y;
+    double x, y, lower, upper, r;
 
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Surface* lettuce_sur;
     SDL_Texture* lettuce_tex;
 
+    gsl_rng *randgen;
+
+    initialize_randgen(&randgen, RND_VERBOSITY);
+
+    lower = 4.4;
+    upper = 7.6;
+
+    /*
     x = 2.0/3.0;
     y = 2.0 * (0.5/3.0 + 0.5/3.0) + TINY/4.0;
     if (are_close(x, y)){
@@ -24,6 +32,7 @@ int main(int argc, char* argv[]) {
     else {
       printf("%.20f and %.20f aren't close\n", x, y);
     }
+    */
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
     	printf("Error SDL2 Initialization : %s \n",SDL_GetError());
@@ -71,7 +80,11 @@ int main(int argc, char* argv[]) {
     			break;
     		}
     	}
-    
+
+      r = draw_randum_interval(&randgen, lower, upper);
+      /* printf("Randnum [%f, %f] = %.6f\n", lower, upper, r); */
+      printf("%.6f\n", r);
+
     	SDL_RenderClear(renderer);
     	SDL_RenderCopy(renderer, lettuce_tex, NULL, NULL);
     	SDL_RenderPresent(renderer);

@@ -1,10 +1,16 @@
 #ifndef __732u4sk92k_CONSTANTS_H
   #define __732u4sk92k_CONSTANTS_H
 
+  /**/
+
   /* Boolean values */
     #define TRUE 1
     #define FALSE 0
   /* end boolean values*/
+
+  /* Simulation default parameters */
+    #define RND_VERBOSITY 0
+  /* end simulation default parameters */
 
   /* Graphics constants */
     #define MAX_LINELENGTH 1024
