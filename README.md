@@ -1,16 +1,19 @@
-# TousAntiCovid
+# TousAntiCovid![](images/c-vid-logo.png)
+
+
 
 ### Faculté des Sciences de l'Université Paris-Saclay
+
 ### Master en BioInformatique
 
-### Étudiants 
+### Étudiants
+
 * Gustavo Magaña López
 * Alexandre Abhay
 
 **FR** : Projet Final pour l'UE Mise à Niveau en Informatique I
 
 **EN** : Final project for _Mise à Niveau en Informatique I_ course.
-
 
 ### Acknowledgements
 
