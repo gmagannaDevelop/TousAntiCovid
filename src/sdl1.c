@@ -84,13 +84,14 @@ int main(int argc, char* argv[]) {
       r = draw_randum_interval(&randgen, lower, upper);
       /* printf("Randnum [%f, %f] = %.6f\n", lower, upper, r); 
       printf("%.6f\n", r);
-      */
      if (bernoulli_trial(&randgen, 0.2)){
        printf("true\n");
      }
      else {
         printf("false\n");
      }
+      */
+     printf("%.25f\n", MORTALITY);
 
     	SDL_RenderClear(renderer);
     	SDL_RenderCopy(renderer, lettuce_tex, NULL, NULL);

@@ -2,8 +2,6 @@
 
 #include "libraries.h"
 
-
-
 int bernoulli_trial(gsl_rng **randgen, double p)
 {/* 
     Perform a bernoulli trial (binomial experiment)
