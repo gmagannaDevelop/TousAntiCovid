@@ -34,14 +34,14 @@
 
 int main(int argc, char **argv)
 {
-int N, n, step;
+int N, n, step, save_graphics;
 float *persons; /* (x,y) coordiantes of all N persons */
 char filename[MAX_LINELENGTH];
 struct SDL_graphics *SDL_graphics; 
 SDL_Event event;
 FILE *outputscript;
 
-N = parse_commandline(argc, argv);
+parse_commandline(argc, argv, &N, &save_graphics);
 
 
 /* Allocate and initialize N persons at random (x,y) positions: ................... */
@@ -102,7 +102,7 @@ for(step = 0; step < MAX_SIMULATION_STEPS; step++)
   sdl_update(SDL_graphics);
   fade_pixel_array(SDL_graphics, FADER);
 
-  if(0 == step%GIF_STEP)
+  if((0 == step%GIF_STEP) && (save_graphics == TRUE))
     {
     /* ppm picture file output and gif conversion script entry: */
     sprintf(filename, "Snapshot_%08d.ppm", step+1);

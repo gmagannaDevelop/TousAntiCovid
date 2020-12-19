@@ -1,33 +1,33 @@
-# EXPLAINED MAKEFILE
+### START VARIABLE DECLARATION ###
 
-# eval once :=
-# eval each time =
-# $@ : name of target
-# $< name of first prerequisite
-# $^ name of all prerequisites
+ CC := gcc
+ TARGET := ../bin/graphics-tests
 
-### VARIABLES :
-CC := gcc
+# start compilation flags #
+  STDFLAGS := -Wall -Wstrict-prototypes -ansi -pedantic -lm 
+  OPTIM := -O2 
+  GSLFLAGS := $(shell gsl-config --cflags)
+  SDLFLAGS := $(shell sdl-config --cflags)
+  CFLAGS := $(STDFLAGS) $(OPTIM) $(GSLFLAGS) 
+# end compilation flags #
 
-STDFLAGS := -Wall -Wstrict-prototypes -ansi -pedantic -lm 
-OPTIM := -O2 
-GSLFLAGS := $(shell gsl-config --cflags)
-SDLFLAGS := $(shell sdl-config --cflags)
-CFLAGS := $(STDFLAGS) $(OPTIM) $(GSLFLAGS) $(SDLFLAGS)
+# start linking flags #
+  GSLLIB := $(shell gsl-config --libs)  
+  SDLLIB := $(shell sdl-config --libs)
+  LINK := $(GSLLIB) $(SDLLIB)
+# end linking flags #
 
-GSLLIB := $(shell gsl-config --libs)  
-SDLLIB := $(shell sdl-config --libs)
-LINK := $(GSLLIB) $(SDLLIB)  
-
-COMMONSRC := libraries.h constants.h
-TARGET := ../bin/ahora_si_perros
-OBJS := parsing.o SDL_ppm_graphics.o\
-	simple_random.o visualization.o
-DEPS := $(patsubst %.o,%.d,$(OBJS))
--include = $(DEPS)
-DEPFLAGS = -MMD -MF $(@:.o=.d)
+# start dependency tracking #
+  CS := $(shell ls *.c)
+  OBJS := $(patsubst %.c,%.o,$(CS))
+  DEPS := $(patsubst %.o,%.d,$(OBJS))
+  -include = $(DEPS)
+  DEPFLAGS = -MMD -MF $(@:.o=.d)
+# end dependency tracking #
 
 ### END VARIABLE DECLARATION ###
+
+# start build rules #
 
 all: $(TARGET)
 
@@ -39,3 +39,12 @@ $(TARGET): $(OBJS)
 
 clean:
 	rm -f $(TARGET) $(OBJS) $(DEPS)
+	
+# end build rules #
+
+# := eval once 
+#  = eval each time 
+# $@ name of target
+# $< name of first prerequisite
+# $^ name of all prerequisites
+

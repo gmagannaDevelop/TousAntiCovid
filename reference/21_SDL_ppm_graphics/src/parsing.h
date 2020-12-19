@@ -2,7 +2,7 @@
 #define __34gd67_PARSING_H
 
 
-int parse_commandline(int argc, char **argv);
+void parse_commandline(int argc, char **argv, int *N, int *save_output);
 
 void explain_useage_exit(char *myname);
 

@@ -2,26 +2,33 @@
 
 
 
-int parse_commandline(int argc, char **argv)
+void parse_commandline(int argc, char **argv, int *N, int *save_output)
 {
-int N = 0;
 
-if(argc!=2)
+if(argc!=3)
   {
   explain_useage_exit(argv[0]);
   }
 
-if(1 != sscanf(argv[1], "%d", &N) )
+if(1 != sscanf(argv[1], "%d", N) )
   {
   explain_useage_exit(argv[0]);
   }
 
-if(N<=1)
+if(1 != sscanf(argv[2], "%d", save_output) )
   {
   explain_useage_exit(argv[0]);
   }
 
-return(N);
+if( /* Check valid number of persons */
+    (*N<=1) || 
+    /* Check valid save_output */
+    ((*save_output > 1) || (*save_output < 0))
+  )
+  {
+  explain_useage_exit(argv[0]);
+  }
+
 }
 
 
@@ -30,7 +37,8 @@ return(N);
 
 void explain_useage_exit(char *myname)
 {
-printf("\n\nUseage:\n\n%s  N\n\n"\
+printf("\n\nUseage:\n\n%s  N graphics\n\n"\
+       "graphics := either 1 or 0\n"\
        "will run a social dynamics simulation\n"\
        "of N persons in an 'unrequited love' situation:\n\n"\
        "Person 1 is in love with person 2 and walks towards him/her,\n"\
