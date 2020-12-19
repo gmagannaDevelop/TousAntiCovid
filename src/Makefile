@@ -1,7 +1,7 @@
 ### START VARIABLE DECLARATION ###
 
  CC := gcc
- TARGET := ../bin/miranamas
+ TARGET := ../bin/viral-simulation
 
 # start compilation flags #
   STDFLAGS := -Wall -Wstrict-prototypes -ansi -pedantic -lm 
