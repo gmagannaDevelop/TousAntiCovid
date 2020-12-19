@@ -17,23 +17,6 @@ int main(int argc, char* argv[]) {
     lower = 4.4;
     upper = 7.6;
 
-    /*
-    x = 2.0/3.0;
-    y = 2.0 * (0.5/3.0 + 0.5/3.0) + TINY/4.0;
-    if (are_close(x, y)){
-      printf("%.20f and %.20f are close ", x, y);
-      if ( x == y ){
-        printf("and equal !\n");
-      }
-      else {
-        printf("but different !\n");
-      }
-    }
-    else {
-      printf("%.20f and %.20f aren't close\n", x, y);
-    }
-    */
-
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
     	printf("Error SDL2 Initialization : %s \n",SDL_GetError());
     	return 1;
