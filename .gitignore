@@ -1,6 +1,9 @@
 # Files that are secondary, not longer needed, etc :
 stray
 
+# vim swap files :
+*.swp
+
 # binaries :
 **/bin/*
 
