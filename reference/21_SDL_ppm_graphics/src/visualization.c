@@ -89,22 +89,19 @@ float x, y, r, phi, dphi;
 x = persons[2*n  ];
 y = persons[2*n+1];
 
-for(r = 0.0; r < radius; r += 0.5)
-  {
+for(r = 0.0; r < radius; r += 0.5){
   dphi = 1.0 / (2.0 * PI * r);
-  for(phi = 0.0; phi < 2.0*PI; phi += dphi)
-    {
+  for(phi = 0.0; phi < 2.0*PI; phi += dphi){
     col = (int)(x + r*cos(phi)); 
     row = (int)(y + r*sin(phi)); 
- 
-    if((row >= 0) && (row < graph->height) && (col >= 0) && (col < graph->width))
-      {
+
+    if((row >= 0) && (row < graph->height) && (col >= 0) && (col < graph->width)){
       graph->pixel[3*row*graph->width + 3*col    ] = ( (11*n) % 255);
       graph->pixel[3*row*graph->width + 3*col + 1] = ((101*n) % 255);
       graph->pixel[3*row*graph->width + 3*col + 2] = ( (23*n) % 255);
-      }
     }
   }
+}
 
 return(1);
 }
