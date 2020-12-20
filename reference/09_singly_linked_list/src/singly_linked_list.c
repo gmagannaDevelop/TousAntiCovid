@@ -1,13 +1,13 @@
 /*
  * The singly linked list which is implemented here
  * will always end with a node called 'end cap'.
- * The end cap has 'content' = 0 and 'next' = NULL.
- * The 0 'content' of the end cap is not counted as
- * a content of the list.
+ * The end cap has 'id' = 0 and 'next' = NULL.
+ * The 0 'id' of the end cap is not counted as
+ * a id of the list.
  *
  * NOTE: The singly linked list must be allocated
  * by the function 'allocate_and_initialize_sll()'.
- * Otherwise, the 'remove_content_from_sll()'
+ * Otherwise, the 'remove_id_from_sll()'
  * function may cause a runtime error by calling
  * free() on a non previously allocated sll. 
  *
@@ -27,7 +27,7 @@ if(NULL == *sll)
   exit(0);
   }
 
-(*sll)->content = 0;  /* This is equivalent to (*(*sll)).content */
+(*sll)->id = 0;  /* This is equivalent to (*(*sll)).id */
 (*sll)->next =NULL;
 return(*sll);
 }
@@ -53,7 +53,7 @@ if(NULL == sll->next)
   }
 else
   {
-  printf("%d\n", sll->content);
+  printf("%d\n", sll->id);
   print_sll(sll->next);
   }
 
@@ -62,17 +62,17 @@ return(1);
 
 
 
-int extend_sll(struct singly_linked_list *sll, int content)
+int extend_sll(struct singly_linked_list *sll, int id)
 {
 /*
- * Example behaviors for 'content' = 17:
+ * Example behaviors for 'id' = 17:
  * [0]->NULL  is changed to  [17]->[0]->NULL 
  * [3]->[0]->[1]->[0]->NULL is changed to [3]->[0]->[1]->[17]->[0]->NULL
  *
  */
 if(NULL != sll->next)
   {
-  extend_sll(sll->next, content);
+  extend_sll(sll->next, id);
   }
 else
   {
@@ -82,8 +82,8 @@ else
     printf("\n\nAllocation error in function 'extend_sll()'\n\n");
     exit(0);
     }
-  sll->content = content;
-  sll->next->content = 0;
+  sll->id = id;
+  sll->next->id = 0;
   sll->next->next =NULL;
   }
 
@@ -93,7 +93,7 @@ return(1);
 
 
 struct singly_linked_list *extend_sll_return_lastnode\
-         (struct singly_linked_list *sll, int content)
+         (struct singly_linked_list *sll, int id)
 {
 /*
  * Same as 'extend_sll', but also returns a pointer
@@ -102,7 +102,7 @@ struct singly_linked_list *extend_sll_return_lastnode\
  */
 if(NULL != sll->next)
   {
-  return(extend_sll_return_lastnode(sll->next, content));
+  return(extend_sll_return_lastnode(sll->next, id));
   }
 else
   {
@@ -112,8 +112,8 @@ else
     printf("\n\nAllocation error in function 'extend_sll()'\n\n");
     exit(0);
     }
-  sll->content = content;
-  sll->next->content = 0;
+  sll->id = id;
+  sll->next->id = 0;
   sll->next->next =NULL;
   return(sll);
   }
@@ -121,47 +121,47 @@ else
   
 
 
-int extend_sll_at_head(struct singly_linked_list **sll, int content)
+int extend_sll_at_head(struct singly_linked_list **sll, int id)
 {
 /*
- * Example behaviors for 'content' = 17:
+ * Example behaviors for 'id' = 17:
  * [0]->NULL  is changed to  [17]->[0]->NULL 
  * [3]->[0]->[1]->[0]->NULL is changed to [17]->[3]->[0]->[1]->[0]->NULL
- * The return value is 'content'.
+ * The return value is 'id'.
  *
  */
 struct singly_linked_list *tmp_listptr;
-int tmp_content = 0;
+int tmp_id = 0;
 
-tmp_content = (*sll)->content;
+tmp_id = (*sll)->id;
 tmp_listptr = (*sll)->next;
 
 free(*sll);
 allocate_and_initialize_sll(sll);
   
-extend_sll(*sll, content);
-extend_sll(*sll, tmp_content);
+extend_sll(*sll, id);
+extend_sll(*sll, tmp_id);
 
 free((*sll)->next->next->next);
 free((*sll)->next->next);
 (*sll)->next->next = tmp_listptr;
 
-return(content);
+return(id);
 }
 
 
 
-int is_in_sll(struct singly_linked_list *sll, int content)
+int is_in_sll(struct singly_linked_list *sll, int id)
 {
 if(NULL != sll->next)
   {
-  if(content == sll->content)
+  if(id == sll->id)
     {
     return(1);
     }
   else
     {
-    return(is_in_sll(sll->next, content));
+    return(is_in_sll(sll->next, id));
     }
   }
 
@@ -170,25 +170,25 @@ return(0);
 
 
 
-int remove_content_from_sll(struct singly_linked_list *sll, int content)
+int remove_id_from_sll(struct singly_linked_list *sll, int id)
 {
-int buffercontent;
+int bufferid;
 struct singly_linked_list *bufferptr;
 
 if(NULL != sll->next) /* Test that sll is not the end cap node of the list */ 
   {
-  if(content == sll->content)
+  if(id == sll->id)
     {
-    buffercontent = sll->next->content;
+    bufferid = sll->next->id;
     bufferptr = sll->next->next;
     free(sll->next);
-    sll->content = buffercontent;
+    sll->id = bufferid;
     sll->next = bufferptr;
     return(1);
     }
   else
     {
-    return( remove_content_from_sll(sll->next, content) );
+    return( remove_id_from_sll(sll->next, id) );
     }
   }
 
@@ -211,26 +211,26 @@ return(1);
 int remove_last_node_from_sll(struct singly_linked_list *sll)
 {
 /*
- * Removes the last node with actual content (not the cap node)
- * and returns the content that was stored in that node before
+ * Removes the last node with actual id (not the cap node)
+ * and returns the id that was stored in that node before
  * it got removed.
  *
  */
-int content = 0;
+int id = 0;
 
 if(NULL == sll->next)
   {
-  return(sll->content);
+  return(sll->id);
   }
 
 if(NULL == sll->next->next)
   {
-  content = sll->content;
+  id = sll->id;
   free(sll->next->next);
   free(sll->next);
-  sll->content = 0;
+  sll->id = 0;
   sll->next = NULL;
-  return(content);
+  return(id);
   }
 
 if(NULL != sll->next->next)

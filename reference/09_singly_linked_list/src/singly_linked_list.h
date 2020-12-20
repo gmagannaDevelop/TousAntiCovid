@@ -4,7 +4,7 @@
 
 struct singly_linked_list
 {
-int content;
+int id;
 struct singly_linked_list *next;
 };
 
@@ -16,16 +16,16 @@ int sll_list_length(struct singly_linked_list *sll);
 
 int print_sll(struct singly_linked_list *sll);
 
-int extend_sll(struct singly_linked_list *sll, int content);
+int extend_sll(struct singly_linked_list *sll, int id);
 
-int extend_sll_at_head(struct singly_linked_list **sll, int content);
+int extend_sll_at_head(struct singly_linked_list **sll, int id);
 
 struct singly_linked_list *extend_sll_return_lastnode\
-         (struct singly_linked_list *sll, int content);
+         (struct singly_linked_list *sll, int id);
 
-int is_in_sll(struct singly_linked_list *sll, int content);
+int is_in_sll(struct singly_linked_list *sll, int id);
 
-int remove_content_from_sll(struct singly_linked_list *sll, int content);
+int remove_id_from_sll(struct singly_linked_list *sll, int id);
 
 int empty_sll(struct singly_linked_list *sll);
 
