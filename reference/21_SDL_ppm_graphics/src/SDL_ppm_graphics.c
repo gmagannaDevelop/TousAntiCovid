@@ -88,41 +88,43 @@ if(-1 == system("chmod +x ppm_to_gif_script.sh"))
   }
 
 
-for(step = 0; step < MAX_SIMULATION_STEPS; step++)
-  {
+for(step = 0; step < MAX_SIMULATION_STEPS; step++){
+  
   update_positions(persons, N);
 
   /* SDL visualization: */
-  for(n = 0; n < N; n++)
-    {
+  for(n = 0; n < N; n++){
     visualize_person(SDL_graphics, persons, n, BLOBSIZE);
-    }
-  drawbox(SDL_graphics, GRAPHICS_MARGIN, GRAPHICS_WIDTH-GRAPHICS_MARGIN,
-          GRAPHICS_MARGIN, GRAPHICS_HEIGHT-GRAPHICS_MARGIN, GRAPHICS_MARGIN/2, 0);
+  }
+
+  drawbox(SDL_graphics, 
+      GRAPHICS_MARGIN, GRAPHICS_WIDTH-GRAPHICS_MARGIN,
+      GRAPHICS_MARGIN, GRAPHICS_HEIGHT-GRAPHICS_MARGIN, 
+      GRAPHICS_MARGIN/2, 0
+  );
   sdl_update(SDL_graphics);
   fade_pixel_array(SDL_graphics, FADER);
 
-  if((0 == step%GIF_STEP) && (save_graphics == TRUE))
-    {
-    /* ppm picture file output and gif conversion script entry: */
+  /* ppm picture file output and gif conversion script entry: */
+  if((0 == step%GIF_STEP) && (save_graphics == TRUE)) {
     sprintf(filename, "Snapshot_%08d.ppm", step+1);
     write_ppm(SDL_graphics, filename);
     fprintf(outputscript, "(convert %s Snapshot_%08d.gif; rm %s)\n", filename, step+1, filename);
-    }
+  }
 
   /* Kill SDL if Strg+c was pressed in the stdin console: */
   signal(SIGINT, exit);
-  while( SDL_PollEvent(&event) )
-    {
-    if(event.type == SDL_KEYDOWN &&
-      (event.key.keysym.sym == SDLK_c && event.key.keysym.mod & KMOD_CTRL))
+  while( SDL_PollEvent(&event) ){
+    if( event.type == SDL_KEYDOWN &&\
+       (event.key.keysym.sym == SDLK_c &&\
+        event.key.keysym.mod & KMOD_CTRL))
       {
-      printf("\n\nGOT KILLED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
-      fclose(outputscript);
-      exit(0);
-      }
-    }
+        printf("\n\nGOT KILLED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
+        fclose(outputscript);
+        exit(0);
+      }    
   }
+}
 
 printf("\n\nFINISHED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
 fclose(outputscript);
