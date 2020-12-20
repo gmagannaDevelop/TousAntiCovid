@@ -13,6 +13,8 @@
 
 #include "constants.h"
 #include "parsing.h"
+#include "singly_linked_list.h"
+#include "datastructures.h"
 #include "SDL_datastructure.h"
 #include "visualization.h"
 #include "simple_random.h"
