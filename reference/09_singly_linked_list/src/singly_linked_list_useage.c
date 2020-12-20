@@ -19,15 +19,16 @@
 
 int main(void)
 {
-int i = 0, element = 0, list_content = 0;
+int i = 0, element = 0, list_id = 0;
 struct singly_linked_list *sll;
+struct singly_linked_list *iter;
 
 
 /* Singly linked list initialization: */
 printf("\n\nInitializing a singly linked list...");
 allocate_and_initialize_sll(&sll);
 printf(" Done.\n\n");
-printf("\nContent of the singly linked list:\n");
+printf("\nid of the singly linked list:\n");
 print_sll(sll);
 printf("The singly linked list has %d entries\n", sll_list_length(sll));
 
@@ -36,22 +37,30 @@ printf("The singly linked list has %d entries\n", sll_list_length(sll));
 printf("\n\nFilling the singly linked list...");
 for(element = 1; element <= LIST_LENGTH; element++)
   {
-  list_content = element * element;
-  extend_sll(sll, list_content);
+  list_id = element * element;
+  extend_sll(sll, list_id);
   } 
 printf(" Done.\n\n");
-printf("\nContent of singly linked list:\n");
+/*
+printf("\nid of singly linked list:\n");
 print_sll(sll);
 printf("The singly linked list has %d entries\n", sll_list_length(sll));
+*/
 
+printf("\n\n my iterarions \n\n");
+iter = sll;
+while(iter->next != NULL){
+  printf("Cont : %d \n", iter->id);
+  iter = iter->next;
+}
 
-/* Querying the list for content: */
+/* Querying the list for id: */
 printf("\n\nTabloid of numbers that are contained in the singly linked list:\n\n");
-for(list_content = 1; list_content <= LIST_LENGTH * LIST_LENGTH; list_content++)
+for(list_id = 1; list_id <= LIST_LENGTH * LIST_LENGTH; list_id++)
   {
-  if(is_in_sll(sll, list_content))
+  if(is_in_sll(sll, list_id))
     {
-    printf("%"DIGITS_STRING"d ", list_content);
+    printf("%"DIGITS_STRING"d ", list_id);
     }
   else
     {
@@ -61,7 +70,7 @@ for(list_content = 1; list_content <= LIST_LENGTH * LIST_LENGTH; list_content++)
       }
     printf(" ");
     }
-  if(0 == (list_content % LIST_LENGTH))
+  if(0 == (list_id % LIST_LENGTH))
     {
     printf("\n");
     }
@@ -69,10 +78,10 @@ for(list_content = 1; list_content <= LIST_LENGTH * LIST_LENGTH; list_content++)
 printf("\n\n");
 
 
-/* Removing content from the singly linked list: */
+/* Removing id from the singly linked list: */
 printf("\nTrying to remove entry %"DIGITS_STRING"d from the linked list...",\
        (LIST_LENGTH/2) * (LIST_LENGTH/2));
-if( remove_content_from_sll(sll, (LIST_LENGTH/2) * (LIST_LENGTH/2)) )
+if( remove_id_from_sll(sll, (LIST_LENGTH/2) * (LIST_LENGTH/2)) )
   {
   printf(" Success.\n");
   }
@@ -80,15 +89,15 @@ else
   {
   printf(" List has no such entry.\n");
   }
-printf("\nContent of singly linked list:\n");
+printf("\nid of singly linked list:\n");
 print_sll(sll);
 printf("The singly linked list has %d entries\n\n\n", sll_list_length(sll));
 
 
-/* Trying to remove content from the singly linked list which is not present: */
+/* Trying to remove id from the singly linked list which is not present: */
 printf("\nTrying to remove entry %"DIGITS_STRING"d from the linked list...",\
        (LIST_LENGTH+1) * (LIST_LENGTH+1));
-if( remove_content_from_sll(sll, (LIST_LENGTH+1) * (LIST_LENGTH+1)) )
+if( remove_id_from_sll(sll, (LIST_LENGTH+1) * (LIST_LENGTH+1)) )
   {
   printf(" Success.\n");
   }
@@ -96,7 +105,7 @@ else
   {
   printf(" List has no such entry.\n");
   }
-printf("\nContent of singly linked list:\n");
+printf("\nid of singly linked list:\n");
 print_sll(sll);
 printf("The singly linked list has %d entries\n\n\n", sll_list_length(sll));
 
@@ -111,7 +120,7 @@ else
   {
   printf(" ERROR.\n");
   }
-printf("\nContent of singly linked list:\n");
+printf("\nid of singly linked list:\n");
 print_sll(sll);
 printf("The singly linked list has %d entries\n\n\n", sll_list_length(sll));
 
@@ -126,15 +135,15 @@ else
   {
   printf(" ERROR.\n");
   }
-printf("\nContent of singly linked list:\n");
+printf("\nid of singly linked list:\n");
 print_sll(sll);
 printf("The singly linked list has %d entries\n\n\n", sll_list_length(sll));
 
 
-/* Add content to the head of the singly linked list: */
-printf("\nAdding content '12345' to the head of the linked list...");
+/* Add id to the head of the singly linked list: */
+printf("\nAdding id '12345' to the head of the linked list...");
 extend_sll_at_head(&sll, 12345);
-printf("\nContent of singly linked list:\n");
+printf("\nid of singly linked list:\n");
 print_sll(sll);
 printf("The singly linked list has %d entries\n\n\n", sll_list_length(sll));
 
@@ -143,7 +152,7 @@ printf("The singly linked list has %d entries\n\n\n", sll_list_length(sll));
 printf("\nEmptying the linked list...");
 empty_sll(sll);
 printf(" Done.\n");
-printf("\nContent of singly linked list:\n");
+printf("\nid of singly linked list:\n");
 print_sll(sll);
 printf("The singly linked list has %d entries\n\n\n", sll_list_length(sll));
 
