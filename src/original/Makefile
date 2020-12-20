@@ -7,14 +7,14 @@
   STDFLAGS := -Wall -Wstrict-prototypes -ansi -pedantic -lm 
   OPTIM := -O2 
   GSLFLAGS := $(shell gsl-config --cflags)
-  SDLFLAGS := $(shell sdl-config --cflags)
+  SDLFLAGS := $(shell sdl2-config --cflags)
   CFLAGS := $(STDFLAGS) $(OPTIM) $(GSLFLAGS) 
 # end compilation flags #
 
 # start linking flags #
   GSLLIB := $(shell gsl-config --libs)  
-  SDLLIB := $(shell sdl-config --libs)
-  LINK := $(GSLLIB) $(SDLLIB)  
+  SDLLIB := $(shell sdl2-config --libs)
+  LINK := $(GSLLIB) $(SDLLIB) -lSDL2_image 
 # end linking flags #
 
 # start dependency tracking #

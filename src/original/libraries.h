@@ -4,8 +4,6 @@
   /* Standard libraries : */
   #include <stdio.h>
   #include <stdlib.h>
-  #include <signal.h>
-  #include <time.h>
   #include <math.h>
     /* wtf ? */
     #include <fcntl.h>
@@ -15,21 +13,15 @@
   /* GNU Scientific library */
   #include <gsl/gsl_rng.h>
 
-  /* Simple Direct Media layer (SDL) graphics: */
-  #include <SDL/SDL.h>
+  /* Graphics : */
+  #include <SDL2/SDL.h>
+  #include <SDL2/SDL_image.h>
 
   /* Locally defined */
     /* Headers : */
-    #include "parsing.h"
     #include "aux_math.h"
     #include "dev_random.h"
     #include "mersenne_twister.h"
-    #include "singly_linked_list.h"
-    #include "datastructures.h"
-    #include "SDL_datastructure.h"
-    #include "visualization.h"
-    #include "simple_random.h"
-    #include "SDL_ppm_graphics.h"
     /*#include "random_numbers.h"*/
 
     /* Constants and macros : */
