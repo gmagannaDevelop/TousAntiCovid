@@ -9,7 +9,7 @@
 #define PI (4.0*atan(1.0))
 #define BLOBSIZE 10
 
-#define GRAPHICS_WIDTH  800 
+#define GRAPHICS_WIDTH  1600 
 #define GRAPHICS_HEIGHT 600 
 #define GRAPHICS_MARGIN 10
 
