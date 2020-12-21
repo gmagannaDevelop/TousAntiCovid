@@ -2,7 +2,7 @@
   #define __asd9j2348s_PROBABILITIES_H
   
 /*# Definition of simulation probabilities  */
-    #define P_INIT_LAMBDA 0.10
+    #define P_INIT_LAMBDA 0.01
     #define P_INIT_DOCTOR 0.05
     #define P_INIT_VIRUS 0.05
     

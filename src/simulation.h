@@ -5,8 +5,8 @@
     #include "singly_linked_list.h"
 
     int person_death(
-        Person *p, struct singly_linked_list *persons,  
-        Case *table,
+        Person *p, struct singly_linked_list **persons,  
+        Case **table,
         int n, int m
     );
 

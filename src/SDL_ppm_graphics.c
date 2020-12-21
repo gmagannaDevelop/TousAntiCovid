@@ -43,7 +43,7 @@ SDL_Event event;
 FILE *outputscript;
 Case *table, *itable;
 Person *p, *d;
-struct singly_linked_list *people, *doctors;
+struct singly_linked_list *people, *doctors, *p_iter;
 double plambda, pdoctor, pvirus;
 gsl_rng *randgen;
 
@@ -102,7 +102,7 @@ for (row=0; row<N_LINES; row++){
   }
 }
 
-if (TRUE == PRINT_INITIAL_GRID){
+if (FALSE){
   /* // print counts
   printf("%d,%d,%d\n", sll_list_length(people), sll_list_length(doctors), i);
   */
@@ -112,31 +112,27 @@ if (TRUE == PRINT_INITIAL_GRID){
   printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
 
   show_grid(table, N_LINES, M_COLUMNS);
-  /*
-  for (row=0; row<N_LINES; row++){
-    printf("\n");
-    for (column=0; column<M_COLUMNS; column++){
-      itable = &table[row*N_LINES + column];
-      if((NULL == itable->p) && (itable->viral_charge == 0)){
-        printf("0");
-      }
-      else if(NULL != itable->p){
-        if (TRUE == itable->p->healing){
-          printf("D");
-        }
-        else {
-          printf("λ");
-        }
-      }
-      else if (itable->viral_charge > 0){
-        printf("v");
-      }
-    }
-  } */
 }
 
-/* exit(EXIT_SUCCESS);
-*/
+p_iter = people;
+printf("pre while list length : %d \n", sll_list_length(people));
+while(p_iter->next != NULL){
+
+  printf("HEAD at %p \n", (void*)p_iter->p);
+  printf("removing person %p \n", (void*)p_iter->p);
+  if (FALSE == remove_person_from_sll(people, p_iter->p)){
+    printf("Person %p was not found in list !\n", (void*)p_iter->p);
+    break;
+  }
+  printf("AFTER removal, HEAD at %p \n", (void*)p_iter->p);
+  printf("in while list length: %d\n\n", sll_list_length(people));
+  /* person_death(p_iter->p, &people, &table, N_LINES, M_COLUMNS);
+  p_iter = p_iter->next;
+  */
+}
+printf("Success ! \n");
+exit(EXIT_SUCCESS);
+
 
 /* Allocate and initialize N persons at random (x,y) positions: ................... */
 persons = (float *)malloc(2 * N * sizeof(float));
@@ -169,6 +165,7 @@ initialize_pixel_array(SDL_graphics);
 /* End of SDL graphics allocation and initialization .................. */
 
 
+
 outputscript = fopen("ppm_to_gif_script.sh", "w");
 if(NULL == outputscript)
   {
@@ -191,14 +188,33 @@ for(step = 0; step < MAX_SIMULATION_STEPS; step++){
   init_person_at(p, column, row, 2);
   */
   update_positions(persons, N);
-  printf("Sim. step : %d length(people) = %d\n", step, sll_list_length(people));
+  if (step == 15){
+    printf("Sim. step : %d length(people) = %d\n", step, sll_list_length(people));
+  }
+  if (FALSE){
+    empty_sll(people);
+    /* show_grid(table, N_LINES, M_COLUMNS);
+    */
+    printf("Sim. step : %d length(people) = %d\n", step, sll_list_length(people));
+    /* This proves the problem of simply removing
+       a person from the persons list.
+       We'll prove the utility of the 
+       person_death() function.
+    */
+  }
+  if (step == 30){
+    /* show_grid(table, N_LINES, M_COLUMNS);
+    */
+    printf("Sim. step : %d length(people) = %d\n", step, sll_list_length(people));
+  } 
+  /*
   p = pop_last_node_from_sll(people);
   if (NULL != p){
     printf("person[%d,%d] will die :) \n", p->pos.x, p->pos.y);
   }
   free(p);
   p = NULL;
-  
+  */  
 
   /* SDL visualization: */
   for(n = 0; n < N; n++){
