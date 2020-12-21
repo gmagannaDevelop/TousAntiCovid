@@ -34,5 +34,4 @@
     
     void move_SW(Coordinate *pos, int N, int M);
 
-
-#endif // !defined
+#endif

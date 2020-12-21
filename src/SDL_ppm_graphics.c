@@ -91,6 +91,7 @@ for (row=0; row<N_LINES; row++){
 }
 
 
+/* Count cases that contain virus */
 i = 0;
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
@@ -110,6 +111,8 @@ if (TRUE == PRINT_INITIAL_GRID){
   pvirus = (double)i/((double)N_LINES*M_COLUMNS) ;
   printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
 
+  show_grid(table, N_LINES, M_COLUMNS);
+  /*
   for (row=0; row<N_LINES; row++){
     printf("\n");
     for (column=0; column<M_COLUMNS; column++){
@@ -129,7 +132,7 @@ if (TRUE == PRINT_INITIAL_GRID){
         printf("v");
       }
     }
-  }
+  } */
 }
 
 /* exit(EXIT_SUCCESS);
@@ -189,7 +192,7 @@ for(step = 0; step < MAX_SIMULATION_STEPS; step++){
   */
   update_positions(persons, N);
   printf("Sim. step : %d length(people) = %d\n", step, sll_list_length(people));
-  p = remove_last_node_from_sll(people);
+  p = pop_last_node_from_sll(people);
   if (NULL != p){
     printf("person[%d,%d] will die :) \n", p->pos.x, p->pos.y);
   }

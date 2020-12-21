@@ -178,6 +178,9 @@ int remove_person_from_sll(struct singly_linked_list *sll, Person *p)
       bufferper = sll->next->p;
       bufferptr = sll->next->next;
       free(sll->next);
+      /* Avoid memory leaks : */
+      free(p);
+      p = NULL;
       sll->p = bufferper;
       sll->next = bufferptr;
       return(TRUE);
@@ -194,15 +197,17 @@ int remove_person_from_sll(struct singly_linked_list *sll, Person *p)
 
 int empty_sll(struct singly_linked_list *sll)
 {
+  Person *p;
   while(NULL != sll->next){
-    remove_last_node_from_sll(sll);
+    p = pop_last_node_from_sll(sll);
+    free(p);
   }
-  return(1);
+  return(TRUE);
 }
 
 
 
-Person *remove_last_node_from_sll(struct singly_linked_list *sll)
+Person *pop_last_node_from_sll(struct singly_linked_list *sll)
 {
 /*
  * Removes the last node with actual id (not the cap node)
@@ -230,7 +235,7 @@ Person *remove_last_node_from_sll(struct singly_linked_list *sll)
   }
 
   if(NULL != sll->next->next){
-    return(remove_last_node_from_sll(sll->next));
+    return(pop_last_node_from_sll(sll->next));
   }
 
   return(NULL); /* This return() should never be reached. */

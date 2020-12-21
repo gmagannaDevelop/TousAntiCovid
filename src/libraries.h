@@ -20,6 +20,9 @@
 
   /* Locally defined */
     /* Headers : */
+    #include "dynamics.h"
+    #include "simulation.h"
+    #include "display.h"
     #include "parsing.h"
     #include "aux_math.h"
     #include "dev_random.h"

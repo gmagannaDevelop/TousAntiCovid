@@ -29,7 +29,7 @@
 
 #define RND_VERBOSITY 0
 
-#define PRINT_INITIAL_GRID FALSE
+#define PRINT_INITIAL_GRID TRUE
 
 #define GIF_STEP 2
 
