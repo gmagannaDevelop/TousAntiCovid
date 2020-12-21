@@ -190,6 +190,9 @@ for(step = 0; step < MAX_SIMULATION_STEPS; step++){
   update_positions(persons, N);
   printf("Sim. step : %d length(people) = %d\n", step, sll_list_length(people));
   p = remove_last_node_from_sll(people);
+  if (NULL != p){
+    printf("person[%d,%d] will die :) \n", p->pos.x, p->pos.y);
+  }
   free(p);
   p = NULL;
   

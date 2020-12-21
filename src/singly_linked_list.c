@@ -180,14 +180,14 @@ int remove_person_from_sll(struct singly_linked_list *sll, Person *p)
       free(sll->next);
       sll->p = bufferper;
       sll->next = bufferptr;
-      return(1);
+      return(TRUE);
     }
     else{
       return( remove_person_from_sll(sll->next, p) );
     }
   }
 
-  return(0);
+  return(FALSE);
 }
 
 
