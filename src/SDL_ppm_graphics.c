@@ -136,9 +136,11 @@ while(p_iter->next != NULL){
   p = p_iter->p;
   if (p == table[ p->pos.y*N_LINES + p->pos.x ].p){
     printf("MATCH \n");
+    printf("list (%p), grid (%p)\n",(void*)p, (void *)table[ p->pos.y*N_LINES + p->pos.x ].p);
   } 
   else {
     printf("MISMATCH !!! \n");
+    printf("list (%p), grid (%p)\n\n",(void*)p, (void *)table[ p->pos.y*N_LINES + p->pos.x ].p);
   }
   p_iter = p_iter->next;
 }
