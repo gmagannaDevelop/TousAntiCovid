@@ -67,12 +67,14 @@ for (row=0; row<N_LINES; row++){
     if (TRUE == bernoulli_trial(&randgen, P_INIT_LAMBDA)){
       itable->p = p = (Person *)malloc(sizeof(Person));
       extend_sll(people, p);
+      /* TODO : UNIFY INTERFACE (Y,X) */
       init_person_at(p, column, row, 2);
     }
     /* P INIT DOCOR */
     else if (TRUE == bernoulli_trial(&randgen, P_INIT_DOCTOR)){
       itable->p = d = (Person *)malloc(sizeof(Person));
       extend_sll(doctors, d);
+      /* TODO : UNIFY INTERFACE (Y,X) */
       init_doctor_at(d, column, row, 2);
     }
     /* P INIT VIRUS */
@@ -129,9 +131,16 @@ while(p_iter->next != NULL){
   }
   printf("AFTER removal, HEAD at %p \n", (void*)p_iter->p);
   printf("in while list length: %d\n\n", sll_list_length(people));
+  // person_death(p_iter->p, &people, &table, N_LINES, M_COLUMNS);
   */
-  person_death(p_iter->p, &people, &table, N_LINES, M_COLUMNS);
-
+  p = p_iter->p;
+  if (p == table[ p->pos.y*N_LINES + p->pos.x ].p){
+    printf("MATCH \n");
+  } 
+  else {
+    printf("MISMATCH !!! \n");
+  }
+  p_iter = p_iter->next;
 }
 printf("Success ! \n");
 
