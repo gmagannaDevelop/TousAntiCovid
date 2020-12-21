@@ -102,14 +102,16 @@ for (row=0; row<N_LINES; row++){
   }
 }
 
-if (FALSE){
+if (TRUE){
   /* // print counts
   printf("%d,%d,%d\n", sll_list_length(people), sll_list_length(doctors), i);
   */
   plambda = (double)sll_list_length(people)/((double)N_LINES*M_COLUMNS) ;
   pdoctor = (double)sll_list_length(doctors)/((double)N_LINES*M_COLUMNS) ;
   pvirus = (double)i/((double)N_LINES*M_COLUMNS) ;
-  printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
+  /*printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
+  */
+  printf("Person count : %d \n", sll_list_length(people));
 
   show_grid(table, N_LINES, M_COLUMNS);
 }
@@ -118,6 +120,7 @@ p_iter = people;
 printf("pre while list length : %d \n", sll_list_length(people));
 while(p_iter->next != NULL){
 
+  /*
   printf("HEAD at %p \n", (void*)p_iter->p);
   printf("removing person %p \n", (void*)p_iter->p);
   if (FALSE == remove_person_from_sll(people, p_iter->p)){
@@ -126,11 +129,14 @@ while(p_iter->next != NULL){
   }
   printf("AFTER removal, HEAD at %p \n", (void*)p_iter->p);
   printf("in while list length: %d\n\n", sll_list_length(people));
-  /* person_death(p_iter->p, &people, &table, N_LINES, M_COLUMNS);
-  p_iter = p_iter->next;
   */
+  person_death(p_iter->p, &people, &table, N_LINES, M_COLUMNS);
+
 }
 printf("Success ! \n");
+
+show_grid(table, N_LINES, M_COLUMNS);
+
 exit(EXIT_SUCCESS);
 
 
