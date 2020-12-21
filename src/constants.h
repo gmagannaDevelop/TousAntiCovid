@@ -27,7 +27,7 @@
 #define MAX_SIMULATION_STEPS 1000
 #define SMALLDISTANCE 0.1
 
-#define RND_VERBOSITY 1
+#define RND_VERBOSITY 0
 
 #define GIF_STEP 2
 

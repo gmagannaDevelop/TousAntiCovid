@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 {
 int N, n, step, save_graphics;
 float *persons; /* (x,y) coordiantes of all N persons */
-int row, column, i, j, k; /* Counters */
+int row, column, i; /* Counters */
 char filename[MAX_LINELENGTH];
 struct SDL_graphics *SDL_graphics; 
 SDL_Event event;
@@ -44,20 +44,22 @@ FILE *outputscript;
 Case *table, *itable;
 Person *p, *d;
 struct singly_linked_list *people, *doctors;
-
+double plambda, pdoctor, pvirus;
 gsl_rng *randgen;
 
 parse_commandline(argc, argv, &N, &save_graphics);
 
 initialize_randgen(&randgen, RND_VERBOSITY);
 
-printf(" N = %d; M = %d; \n", N_LINES, M_COLUMNS);
+/* printf(" N = %d; M = %d; \n", N_LINES, M_COLUMNS);
+*/
 table = (Case *)malloc( N_LINES * M_COLUMNS * sizeof(Case) );
 
 allocate_and_initialize_sll(&people);
 allocate_and_initialize_sll(&doctors);
 
-printf("Initialise Cases [%d,%d]\n", N_LINES, M_COLUMNS);
+/* printf("Initialise Cases [%d,%d]\n", N_LINES, M_COLUMNS);
+*/
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
     /* P INIT LAMBDA */
@@ -98,9 +100,13 @@ for (row=0; row<N_LINES; row++){
     }
   }
 }
-printf("People percentage : %f\n", (double)sll_list_length(people)/((double)N_LINES*M_COLUMNS));
-printf("Doctors percentage : %f\n", (double)sll_list_length(doctors)/((double)N_LINES*M_COLUMNS));
-printf("Virus percentage : %f\n", (double)i/((double)N_LINES*M_COLUMNS));
+/*
+plambda = (double)sll_list_length(people)/((double)N_LINES*M_COLUMNS) ;
+pdoctor = (double)sll_list_length(doctors)/((double)N_LINES*M_COLUMNS) ;
+pvirus = (double)i/((double)N_LINES*M_COLUMNS) ;
+printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
+*/
+printf("%d,%d,%d\n", sll_list_length(people), sll_list_length(doctors), i);
 exit(EXIT_SUCCESS);
 /* Allocate and initialize N persons at random (x,y) positions: ................... */
 persons = (float *)malloc(2 * N * sizeof(float));
