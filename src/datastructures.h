@@ -15,21 +15,25 @@
         int alive;
         int viral_charge;
         Coordinate pos;
-        int direction; /* This should be between [0,7] */
+        /* This should be between [0,7] */
+        int direction;
+        /* THIS FLAG DISCRIMINATES 
+           PEOPLE VS DOCTORS*/
+        int healing;
     } Person;
 
-    typedef struct Doctors
-    {
-      Person p;
-
-    } Doctor;
 
     typedef struct Cases
     {
         int viral_charge;
+        int danger;
         Person *p;
     } Case;
 
     
+    /* Function protoypes : */
+    void init_person_at(Person *p, int x, int y, int d);
+    
+    void init_doctor_at(Person *p, int x, int y, int d);
 
 #endif

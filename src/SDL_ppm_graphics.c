@@ -41,7 +41,9 @@ char filename[MAX_LINELENGTH];
 struct SDL_graphics *SDL_graphics; 
 SDL_Event event;
 FILE *outputscript;
-Case *table;
+Case *table, *itable;
+Person *p, *d;
+struct singly_linked_list *people, *doctors;
 
 gsl_rng *randgen;
 
@@ -52,28 +54,53 @@ initialize_randgen(&randgen, RND_VERBOSITY);
 printf(" N = %d; M = %d; \n", N_LINES, M_COLUMNS);
 table = (Case *)malloc( N_LINES * M_COLUMNS * sizeof(Case) );
 
+allocate_and_initialize_sll(&people);
+allocate_and_initialize_sll(&doctors);
+
 printf("Initialise Cases [%d,%d]\n", N_LINES, M_COLUMNS);
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
-    table[ row*N_LINES + column ].p = NULL;
-    if (TRUE == bernoulli_trial(&randgen, P_INIT_VIRUS)) {
-      table[ row*N_LINES + column ].viral_charge = 4;
+    /* P INIT LAMBDA */
+    itable = &table[row*N_LINES + column];
+    if (TRUE == bernoulli_trial(&randgen, P_INIT_LAMBDA)){
+      itable->p = p = (Person *)malloc(sizeof(Person));
+      extend_sll(people, p);
+      init_person_at(p, column, row, 2);
+    }
+    /* P INIT DOCOR */
+    else if (TRUE == bernoulli_trial(&randgen, P_INIT_DOCTOR)){
+      itable->p = d = (Person *)malloc(sizeof(Person));
+      extend_sll(doctors, d);
+      init_person_at(d, column, row, 2);
+    }
+    /* P INIT VIRUS */
+    else if (TRUE == bernoulli_trial(&randgen, P_INIT_VIRUS)) {
+      itable->viral_charge = 4;
+      itable->p = NULL;
+      itable->danger = 0;
     } 
+    /* Rest of the time */
     else {
-      table[ row*N_LINES + column ].viral_charge = 0;
+      itable->viral_charge = 0;
+      itable->p = NULL;
+      itable->danger = 0;
     }
   }
 }
 
+
 i = 0;
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
-    if (4 == table[ row*N_LINES + column ].viral_charge){
+    itable = &table[row*N_LINES + column];
+    if (4 == itable->viral_charge){
       i++;
     }
   }
 }
-printf("Virus percentage : %f", (double)i/((double)N_LINES*M_COLUMNS));
+printf("People percentage : %f\n", (double)sll_list_length(people)/((double)N_LINES*M_COLUMNS));
+printf("Doctors percentage : %f\n", (double)sll_list_length(doctors)/((double)N_LINES*M_COLUMNS));
+printf("Virus percentage : %f\n", (double)i/((double)N_LINES*M_COLUMNS));
 exit(EXIT_SUCCESS);
 /* Allocate and initialize N persons at random (x,y) positions: ................... */
 persons = (float *)malloc(2 * N * sizeof(float));

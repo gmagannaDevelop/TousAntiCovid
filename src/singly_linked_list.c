@@ -16,113 +16,113 @@
 #include "libraries.h"
 
 
-struct singly_linked_list *allocate_and_initialize_sll\
-                      (struct singly_linked_list **sll)
-{
-*sll = (struct singly_linked_list *)malloc(sizeof(struct singly_linked_list));
-if(NULL == *sll)
+struct singly_linked_list *allocate_and_initialize_sll(
+  struct singly_linked_list **sll
+){
+  *sll = (struct singly_linked_list *)malloc(sizeof(struct singly_linked_list));
+  if(NULL == *sll)
   {
-  printf("\n\nAllocation error in function"\
-         " 'allocate_and_initialize_sll()'\n\n");
-  exit(0);
+    printf("\n\nAllocation error in function"\
+           " 'allocate_and_initialize_sll()'\n\n");
+    exit(0);
   }
 
-(*sll)->id = 0;  /* This is equivalent to (*(*sll)).id */
-(*sll)->next =NULL;
-return(*sll);
+  (*sll)->p = NULL;  /* This is equivalent to (*(*sll)).id */
+  (*sll)->next =NULL;
+  return(*sll);
 }
 
 
 
 int sll_list_length(struct singly_linked_list *sll)
 {
-if(NULL != sll->next)
-  {
-  return(1 + sll_list_length(sll->next));
+  if(NULL != sll->next){
+    return(1 + sll_list_length(sll->next));
   }
-return(0);
+  else {
+    return(0);
+  }
 }
 
 
 
 int print_sll(struct singly_linked_list *sll)
 {
-if(NULL == sll->next)
-  {
-  printf("End of list.\n");
+  if(NULL == sll->next){
+    printf("End of list.\n");
   }
-else
-  {
-  printf("%d\n", sll->id);
-  print_sll(sll->next);
+  else{
+    printf("%p \n", (void *)(sll->p));
+    print_sll(sll->next);
   }
 
-return(1);
+  return(1);
 }
 
 
 
-int extend_sll(struct singly_linked_list *sll, int id)
+int extend_sll(struct singly_linked_list *sll, Person *p)
 {
 /*
- * Example behaviors for 'id' = 17:
- * [0]->NULL  is changed to  [17]->[0]->NULL 
- * [3]->[0]->[1]->[0]->NULL is changed to [3]->[0]->[1]->[17]->[0]->NULL
+ * Example behaviors for p = 0x00ff:
+ *   [NULL]->NULL
+ *     becomes 
+ *      [0x00f]->[NULL]->NULL
+ *  
+ *   [0x0001]->[0x0002]->[0x0003]->[NULL]->NULL 
+ *      becomes
+ *      [0x0001]->[0x0002]->[0x0003]->[0x00ff]->[NULL]->NULL 
  *
  */
-if(NULL != sll->next)
-  {
-  extend_sll(sll->next, id);
+  if(NULL != sll->next){
+    extend_sll(sll->next, p);
   }
-else
-  {
-  sll->next = (struct singly_linked_list *)malloc(sizeof(struct singly_linked_list));
-  if(NULL == sll->next)
-    {
-    printf("\n\nAllocation error in function 'extend_sll()'\n\n");
-    exit(0);
+  else {
+    sll->next = (struct singly_linked_list *)malloc(sizeof(struct singly_linked_list));
+    if(NULL == sll->next){
+      printf("\n\nAllocation error in function 'extend_sll()'\n\n");
+      exit(EXIT_FAILURE);
     }
-  sll->id = id;
-  sll->next->id = 0;
-  sll->next->next =NULL;
+    sll->p = p;
+    sll->next->p = NULL;
+    sll->next->next =NULL;
   }
-
-return(1);
+  return(1);
 }
 
 
 
-struct singly_linked_list *extend_sll_return_lastnode\
-         (struct singly_linked_list *sll, int id)
-{
+struct singly_linked_list *extend_sll_return_lastnode(
+  struct singly_linked_list *sll, 
+  Person *p
+){
 /*
  * Same as 'extend_sll', but also returns a pointer
  * to the last node of the sll before the end cap node.
  *
  */
-if(NULL != sll->next)
-  {
-  return(extend_sll_return_lastnode(sll->next, id));
+  if(NULL != sll->next){
+    return(extend_sll_return_lastnode(sll->next, p));
   }
-else
-  {
-  sll->next = (struct singly_linked_list *)malloc(sizeof(struct singly_linked_list));
-  if(NULL == sll->next)
-    {
-    printf("\n\nAllocation error in function 'extend_sll()'\n\n");
-    exit(0);
+  else{
+    sll->next = (struct singly_linked_list *)malloc(sizeof(struct singly_linked_list));
+    if(NULL == sll->next){
+      printf("\n\nAllocation error in function 'extend_sll()'\n\n");
+      exit(EXIT_FAILURE);
     }
-  sll->id = id;
-  sll->next->id = 0;
-  sll->next->next =NULL;
+    sll->p = p;
+    sll->next->p = NULL;
+    sll->next->next =NULL;
   return(sll);
   }
 }
   
 
 
-int extend_sll_at_head(struct singly_linked_list **sll, int id)
-{
+Person *extend_sll_at_head(
+  struct singly_linked_list **sll, 
+  Person *p
+){
 /*
  * Example behaviors for 'id' = 17:
  * [0]->NULL  is changed to  [17]->[0]->NULL 
@@ -130,85 +130,79 @@ int extend_sll_at_head(struct singly_linked_list **sll, int id)
  * The return value is 'id'.
  *
  */
-struct singly_linked_list *tmp_listptr;
-int tmp_id = 0;
-
-tmp_id = (*sll)->id;
-tmp_listptr = (*sll)->next;
-
-free(*sll);
-allocate_and_initialize_sll(sll);
+  struct singly_linked_list *tmp_listptr;
+  Person *tmp_p;
   
-extend_sll(*sll, id);
-extend_sll(*sll, tmp_id);
+  tmp_p = (*sll)->p;
+  tmp_listptr = (*sll)->next;
 
-free((*sll)->next->next->next);
-free((*sll)->next->next);
-(*sll)->next->next = tmp_listptr;
+  free(*sll);
+  allocate_and_initialize_sll(sll);
+  
+  extend_sll(*sll, p);
+  extend_sll(*sll, tmp_p);
 
-return(id);
+  free((*sll)->next->next->next);
+  free((*sll)->next->next);
+  (*sll)->next->next = tmp_listptr;
+
+  return(p);
 }
 
 
 
-int is_in_sll(struct singly_linked_list *sll, int id)
-{
-if(NULL != sll->next)
-  {
-  if(id == sll->id)
-    {
-    return(1);
+int is_in_sll(struct singly_linked_list *sll, Person *p)
+{/* O(n) search */
+  if(NULL != sll->next){
+    if(p == sll->p){
+      return(TRUE);
     }
-  else
-    {
-    return(is_in_sll(sll->next, id));
+    else{
+      return(is_in_sll(sll->next, p));
     }
   }
 
-return(0);
+  return(FALSE);
 }
 
 
 
-int remove_id_from_sll(struct singly_linked_list *sll, int id)
+int remove_person_from_sll(struct singly_linked_list *sll, Person *p)
 {
-int bufferid;
-struct singly_linked_list *bufferptr;
+  Person *bufferper;
+  struct singly_linked_list *bufferptr;
 
-if(NULL != sll->next) /* Test that sll is not the end cap node of the list */ 
-  {
-  if(id == sll->id)
-    {
-    bufferid = sll->next->id;
-    bufferptr = sll->next->next;
-    free(sll->next);
-    sll->id = bufferid;
-    sll->next = bufferptr;
-    return(1);
+  /* Test that sll is not the end cap node of the list */ 
+  if(NULL != sll->next) {
+    if(p == sll->p){
+      bufferper = sll->next->p;
+      bufferptr = sll->next->next;
+      free(sll->next);
+      sll->p = bufferper;
+      sll->next = bufferptr;
+      return(1);
     }
-  else
-    {
-    return( remove_id_from_sll(sll->next, id) );
+    else{
+      return( remove_person_from_sll(sll->next, p) );
     }
   }
 
-return(0);
+  return(0);
 }
 
 
 
 int empty_sll(struct singly_linked_list *sll)
 {
-while(NULL != sll->next)
-  {
-  remove_last_node_from_sll(sll);
+  while(NULL != sll->next){
+    remove_last_node_from_sll(sll);
   }
-return(1);
+  return(1);
 }
 
 
 
-int remove_last_node_from_sll(struct singly_linked_list *sll)
+void remove_last_node_from_sll(struct singly_linked_list *sll)
 {
 /*
  * Removes the last node with actual id (not the cap node)
@@ -216,27 +210,51 @@ int remove_last_node_from_sll(struct singly_linked_list *sll)
  * it got removed.
  *
  */
-int id = 0;
+  Person *id = NULL;
 
-if(NULL == sll->next)
-  {
-  return(sll->id);
+  if(NULL == sll->next){
+    if (NULL != sll->p){
+      printf(" WARNING : \n"\
+             "   sll->next == NULL \n"\
+             "   Expected :\n"\
+             "      sll->p == NULL \n"\
+             "   Calling free on a non-NULL pointer to a person ! \n"\
+             "   Expect the worse to happen ! \n\n"
+      );
+    }
+    else {
+      printf("Freeing a NULL pointer, this should be ok...\n");
+    }
+    free(sll->p);
   }
 
-if(NULL == sll->next->next)
-  {
-  id = sll->id;
-  free(sll->next->next);
-  free(sll->next);
-  sll->id = 0;
-  sll->next = NULL;
-  return(id);
+  if(NULL == sll->next->next){
+    /* get the person's memloc */
+    id = sll->p;
+
+    /* This might be redundant if we have 
+       already tested sll->next->next's nullity
+    */
+    free(sll->next->next);
+    sll->next->next = NULL;
+    
+    if (NULL != sll->next->p){
+      printf(" WARNING : corrupted node ! \n");
+      printf(" sll->next->next == NULL \n");
+      printf(" sll->next->p    != NULL \n");
+      printf(" sll->next->p    == %p \n", (void *)sll->next->p);
+      free(sll->next->p);
+      sll->next->p = NULL;
+    }
+    
+    free(id);
+    sll->p = NULL;
+    
+    free(sll->next);
+    sll->next = NULL;
   }
 
-if(NULL != sll->next->next)
-  {
-  return(remove_last_node_from_sll(sll->next));
+  if(NULL != sll->next->next){
+    remove_last_node_from_sll(sll->next);
   }
-
-return(0); /* This return() should never be reached. */
 }

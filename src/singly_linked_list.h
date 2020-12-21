@@ -4,7 +4,6 @@
     #include "datastructures.h"
 
     struct singly_linked_list{
-        int id;
         Person *p;
         struct singly_linked_list *next;
     };
@@ -17,20 +16,28 @@
     
     int print_sll(struct singly_linked_list *sll);
     
-    int extend_sll(struct singly_linked_list *sll, int id);
+    int extend_sll(
+        struct singly_linked_list *sll, 
+        Person *p
+    );
     
-    int extend_sll_at_head(struct singly_linked_list **sll, int id);
+    Person *extend_sll_at_head(
+        struct singly_linked_list **sll,
+        Person *p
+    );
     
-    struct singly_linked_list *extend_sll_return_lastnode\
-             (struct singly_linked_list *sll, int id);
+    struct singly_linked_list *extend_sll_return_lastnode(
+        struct singly_linked_list *sll, 
+        Person *p
+    );
     
-    int is_in_sll(struct singly_linked_list *sll, int id);
+    int is_in_sll(struct singly_linked_list *sll, Person *p);
     
-    int remove_id_from_sll(struct singly_linked_list *sll, int id);
+    int remove_person_from_sll(struct singly_linked_list *sll, Person *p);
     
     int empty_sll(struct singly_linked_list *sll);
     
-    int remove_last_node_from_sll(struct singly_linked_list *sll);
+    void remove_last_node_from_sll(struct singly_linked_list *sll);
 
 
 #endif
