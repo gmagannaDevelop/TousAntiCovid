@@ -73,7 +73,7 @@ for (row=0; row<N_LINES; row++){
     else if (TRUE == bernoulli_trial(&randgen, P_INIT_DOCTOR)){
       itable->p = d = (Person *)malloc(sizeof(Person));
       extend_sll(doctors, d);
-      init_person_at(d, column, row, 2);
+      init_doctor_at(d, column, row, 2);
     }
     /* P INIT VIRUS */
     else if (TRUE == bernoulli_trial(&randgen, P_INIT_VIRUS)) {
@@ -100,14 +100,41 @@ for (row=0; row<N_LINES; row++){
     }
   }
 }
-/*
-plambda = (double)sll_list_length(people)/((double)N_LINES*M_COLUMNS) ;
-pdoctor = (double)sll_list_length(doctors)/((double)N_LINES*M_COLUMNS) ;
-pvirus = (double)i/((double)N_LINES*M_COLUMNS) ;
-printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
+
+if (TRUE == PRINT_INITIAL_GRID){
+  /* // print counts
+  printf("%d,%d,%d\n", sll_list_length(people), sll_list_length(doctors), i);
+  */
+  plambda = (double)sll_list_length(people)/((double)N_LINES*M_COLUMNS) ;
+  pdoctor = (double)sll_list_length(doctors)/((double)N_LINES*M_COLUMNS) ;
+  pvirus = (double)i/((double)N_LINES*M_COLUMNS) ;
+  printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
+
+  for (row=0; row<N_LINES; row++){
+    printf("\n");
+    for (column=0; column<M_COLUMNS; column++){
+      itable = &table[row*N_LINES + column];
+      if((NULL == itable->p) && (itable->viral_charge == 0)){
+        printf("0");
+      }
+      else if(NULL != itable->p){
+        if (TRUE == itable->p->healing){
+          printf("D");
+        }
+        else {
+          printf("λ");
+        }
+      }
+      else if (itable->viral_charge > 0){
+        printf("v");
+      }
+    }
+  }
+}
+
+/* exit(EXIT_SUCCESS);
 */
-printf("%d,%d,%d\n", sll_list_length(people), sll_list_length(doctors), i);
-exit(EXIT_SUCCESS);
+
 /* Allocate and initialize N persons at random (x,y) positions: ................... */
 persons = (float *)malloc(2 * N * sizeof(float));
 if(NULL == persons)
@@ -155,8 +182,17 @@ if(-1 == system("chmod +x ppm_to_gif_script.sh"))
 
 
 for(step = 0; step < MAX_SIMULATION_STEPS; step++){
-  
+  /*
+  p = (Person *)malloc(sizeof(Person));
+  extend_sll(people, p);
+  init_person_at(p, column, row, 2);
+  */
   update_positions(persons, N);
+  printf("Sim. step : %d length(people) = %d\n", step, sll_list_length(people));
+  p = remove_last_node_from_sll(people);
+  free(p);
+  p = NULL;
+  
 
   /* SDL visualization: */
   for(n = 0; n < N; n++){

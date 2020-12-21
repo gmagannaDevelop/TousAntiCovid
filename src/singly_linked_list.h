@@ -37,7 +37,7 @@
     
     int empty_sll(struct singly_linked_list *sll);
     
-    void remove_last_node_from_sll(struct singly_linked_list *sll);
+    Person *remove_last_node_from_sll(struct singly_linked_list *sll);
 
 
 #endif

@@ -202,7 +202,7 @@ int empty_sll(struct singly_linked_list *sll)
 
 
 
-void remove_last_node_from_sll(struct singly_linked_list *sll)
+Person *remove_last_node_from_sll(struct singly_linked_list *sll)
 {
 /*
  * Removes the last node with actual id (not the cap node)
@@ -213,48 +213,25 @@ void remove_last_node_from_sll(struct singly_linked_list *sll)
   Person *id = NULL;
 
   if(NULL == sll->next){
-    if (NULL != sll->p){
-      printf(" WARNING : \n"\
-             "   sll->next == NULL \n"\
-             "   Expected :\n"\
-             "      sll->p == NULL \n"\
-             "   Calling free on a non-NULL pointer to a person ! \n"\
-             "   Expect the worse to happen ! \n\n"
-      );
-    }
-    else {
-      printf("Freeing a NULL pointer, this should be ok...\n");
-    }
-    free(sll->p);
+    return(sll->p);
   }
 
   if(NULL == sll->next->next){
-    /* get the person's memloc */
+    /* save id : */
     id = sll->p;
-
-    /* This might be redundant if we have 
-       already tested sll->next->next's nullity
-    */
+    /* call free(NULL) */
     free(sll->next->next);
-    sll->next->next = NULL;
-    
-    if (NULL != sll->next->p){
-      printf(" WARNING : corrupted node ! \n");
-      printf(" sll->next->next == NULL \n");
-      printf(" sll->next->p    != NULL \n");
-      printf(" sll->next->p    == %p \n", (void *)sll->next->p);
-      free(sll->next->p);
-      sll->next->p = NULL;
-    }
-    
-    free(id);
-    sll->p = NULL;
-    
+    /* call free on next node */
+    /* SHOULD CALL FREE ON `next_node->p` FIRST ! */
     free(sll->next);
+    sll->p = NULL;
     sll->next = NULL;
+    return(id);
   }
 
   if(NULL != sll->next->next){
-    remove_last_node_from_sll(sll->next);
+    return(remove_last_node_from_sll(sll->next));
   }
+
+  return(NULL); /* This return() should never be reached. */
 }
