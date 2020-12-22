@@ -41,7 +41,7 @@ char filename[MAX_LINELENGTH];
 struct SDL_graphics *SDL_graphics; 
 SDL_Event event;
 FILE *outputscript;
-Case *table, *itable;
+Case *table, *itable, ttable;
 Person *p, *d;
 struct singly_linked_list *people, *doctors, *p_iter;
 double plambda, pdoctor, pvirus;
@@ -60,18 +60,26 @@ allocate_and_initialize_sll(&doctors);
 
 /* printf("Initialise Cases [%d,%d]\n", N_LINES, M_COLUMNS);
 */
+printf("sizeof(Person) = %ld \n", sizeof(Person)*CHAR_BIT);
+printf("M[row, column], itable, itable->p, p\n");
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
     /* P INIT LAMBDA */
     itable = &table[row*N_LINES + column];
     if (TRUE == bernoulli_trial(&randgen, P_INIT_LAMBDA)){
       itable->p = p = (Person *)malloc(sizeof(Person));
+      printf("M[%d,%d], %p, %p, %p\n",\
+               row, column,(void *)itable, (void *)itable->p, (void *)p
+      );
       extend_sll(people, p);
       /* TODO : UNIFY INTERFACE (Y,X) */
       init_person_at(p, column, row, 2);
     }
-    /* P INIT DOCOR */
+    /* P INIT DOCOR 
     else if (TRUE == bernoulli_trial(&randgen, P_INIT_DOCTOR)){
+    */
+    else if (FALSE) { 
+      printf("CECI EST IMPOSSIBLE \n");
       itable->p = d = (Person *)malloc(sizeof(Person));
       extend_sll(doctors, d);
       /* TODO : UNIFY INTERFACE (Y,X) */
@@ -93,15 +101,15 @@ for (row=0; row<N_LINES; row++){
 }
 
 
-/* Count cases that contain virus */
+/* Print all the references */
+printf("\n");
 i = 0;
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
     itable = &table[row*N_LINES + column];
-    if (4 == itable->viral_charge){
-      i++;
-    }
+    printf("%p,",(void *)itable->p);
   }
+  printf("\n");
 }
 
 if (TRUE){
@@ -115,38 +123,31 @@ if (TRUE){
   */
   printf("Person count : %d \n", sll_list_length(people));
 
-  show_grid(table, N_LINES, M_COLUMNS);
+  show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
 }
 
 p_iter = people;
 printf("pre while list length : %d \n", sll_list_length(people));
+printf("M[row, column], itable, itable->p, p\n");
 while(p_iter->next != NULL){
-
-  /*
-  printf("HEAD at %p \n", (void*)p_iter->p);
-  printf("removing person %p \n", (void*)p_iter->p);
-  if (FALSE == remove_person_from_sll(people, p_iter->p)){
-    printf("Person %p was not found in list !\n", (void*)p_iter->p);
-    break;
-  }
-  printf("AFTER removal, HEAD at %p \n", (void*)p_iter->p);
-  printf("in while list length: %d\n\n", sll_list_length(people));
-  // person_death(p_iter->p, &people, &table, N_LINES, M_COLUMNS);
-  */
   p = p_iter->p;
-  if (p == table[ p->pos.y*N_LINES + p->pos.x ].p){
-    printf("MATCH \n");
-    printf("list (%p), grid (%p)\n",(void*)p, (void *)table[ p->pos.y*N_LINES + p->pos.x ].p);
+  itable = &table[ p->pos.y*N_LINES + p->pos.x ];
+  printf("M[%d,%d], %p, %p, %p ",\
+    p->pos.y, p->pos.x, (void *)itable, (void *)itable->p, (void *)p_iter->p 
+  );
+  if (p == itable->p){
+     printf(" MATCH \n");
+  /*ttable = table[ p->pos.y*N_LINES + p->pos.x ];
+    */
   } 
   else {
-    printf("MISMATCH !!! \n");
-    printf("list (%p), grid (%p)\n\n",(void*)p, (void *)table[ p->pos.y*N_LINES + p->pos.x ].p);
+    printf(" MISMATCH !!!\n");
   }
   p_iter = p_iter->next;
 }
 printf("Success ! \n");
 
-show_grid(table, N_LINES, M_COLUMNS);
+show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
 
 exit(EXIT_SUCCESS);
 
