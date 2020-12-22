@@ -37,6 +37,7 @@ int main(int argc, char **argv)
 int N, n, step, save_graphics;
 float *persons; /* (x,y) coordiantes of all N persons */
 int row, column, i; /* Counters */
+int cpersons, cdoctors;
 char filename[MAX_LINELENGTH];
 struct SDL_graphics *SDL_graphics; 
 SDL_Event event;
@@ -62,6 +63,8 @@ allocate_and_initialize_sll(&doctors);
 */
 printf("sizeof(Person) = %ld \n", sizeof(Person)*CHAR_BIT);
 printf("M[row, column], itable, itable->p, p\n");
+cpersons = 0;
+cdoctors = 0;
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
     /* P INIT LAMBDA */
