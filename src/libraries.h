@@ -11,6 +11,8 @@
     #include <fcntl.h>
     #include <unistd.h>
     #include <limits.h>
+  /* DEBUG */
+  #include <mcheck.h>
 
   /* GNU Scientific library */
   #include <gsl/gsl_rng.h>

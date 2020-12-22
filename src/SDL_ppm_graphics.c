@@ -34,10 +34,13 @@
 
 int main(int argc, char **argv)
 {
+  #ifdef DEBUGGING
+    mtrace();
+  #endif
 int N, n, step, save_graphics;
 float *persons; /* (x,y) coordiantes of all N persons */
 int row, column, i, j, tloc, ploc, dloc; /* Counters */
-int cpersons, cdoctors;
+int cpersons, cdoctors, cvirus;
 char filename[MAX_LINELENGTH];
 struct SDL_graphics *SDL_graphics; 
 SDL_Event event;
@@ -49,7 +52,11 @@ Person *people, *doctors;
 double plambda, pdoctor, pvirus;
 gsl_rng *randgen;
 
-parse_commandline(argc, argv, &N, &save_graphics);
+/* parse_commandline(argc, argv, &N, &save_graphics);
+*/
+
+N = 10;
+save_graphics = 0;
 
 initialize_randgen(&randgen, RND_VERBOSITY);
 
@@ -69,6 +76,7 @@ if (NULL == table){
 printf("Initialise table ...\n");
 cpersons = 0;
 cdoctors = 0;
+cvirus = 0;
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
     /* P INIT LAMBDA */
@@ -101,6 +109,7 @@ for (row=0; row<N_LINES; row++){
     }
     /* P INIT VIRUS */
     else if (TRUE == bernoulli_trial(&randgen, P_INIT_VIRUS)) {
+      cvirus++;
       itable->viral_charge += 4;
     } 
   }
@@ -139,6 +148,12 @@ for (row=0; row<N_LINES; row++){
     }
   }
 }
+
+printf("%f, %f, %f \n", 
+  (double)cpersons/(double)(N_LINES * M_COLUMNS),
+  (double)cdoctors/(double)(N_LINES * M_COLUMNS),
+  (double)cvirus/(double)(N_LINES * M_COLUMNS)
+);
 
 show_grid(table, N_LINES, M_COLUMNS);
 

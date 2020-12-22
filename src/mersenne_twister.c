@@ -28,7 +28,9 @@ int initialize_randgen(gsl_rng **randgen, int verbosity)
       printf("Fetching seed from /dev/random.\n");
     }
     
-    seed = dev_random_ulongint(verbosity);
+    seed = FIXED_RNG_SEED;
+    /* dev_random_ulongint(verbosity);
+    */
     gsl_rng_set(*randgen, seed);
     
     if(verbosity){
