@@ -36,15 +36,16 @@ int main(int argc, char **argv)
 {
 int N, n, step, save_graphics;
 float *persons; /* (x,y) coordiantes of all N persons */
-int row, column, i; /* Counters */
+int row, column, i, j, tloc, ploc, dloc; /* Counters */
 int cpersons, cdoctors;
 char filename[MAX_LINELENGTH];
 struct SDL_graphics *SDL_graphics; 
 SDL_Event event;
 FILE *outputscript;
 Case *table, *itable, ttable;
-Person *p, *d;
-struct singly_linked_list *people, *doctors, *p_iter;
+Person *people, *doctors;
+/* struct singly_linked_list *people, *doctors, *p_iter;
+*/
 double plambda, pdoctor, pvirus;
 gsl_rng *randgen;
 
@@ -55,102 +56,107 @@ initialize_randgen(&randgen, RND_VERBOSITY);
 /* printf(" N = %d; M = %d; \n", N_LINES, M_COLUMNS);
 */
 table = (Case *)malloc( N_LINES * M_COLUMNS * sizeof(Case) );
-
-allocate_and_initialize_sll(&people);
-allocate_and_initialize_sll(&doctors);
+if (NULL == table){
+  printf("Could not allocate [%d,%d]-table of Cases \n",N_LINES, M_COLUMNS);
+  exit(EXIT_FAILURE);
+}
 
 /* printf("Initialise Cases [%d,%d]\n", N_LINES, M_COLUMNS);
+   printf("sizeof(Person) = %ld \n", sizeof(Person)*CHAR_BIT);
+   printf("M[row, column], itable, itable->p, p\n");
 */
-printf("sizeof(Person) = %ld \n", sizeof(Person)*CHAR_BIT);
-printf("M[row, column], itable, itable->p, p\n");
+
+printf("Initialise table ...\n");
 cpersons = 0;
 cdoctors = 0;
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
     /* P INIT LAMBDA */
     itable = &table[row*N_LINES + column];
+    itable->danger = 0;
+    itable->viral_charge = 0;
+    itable->p = 0;
+    itable->d = 0;
     if (TRUE == bernoulli_trial(&randgen, P_INIT_LAMBDA)){
-      itable->p = p = (Person *)malloc(sizeof(Person));
-      printf("M[%d,%d], %p, %p, %p\n",\
-               row, column,(void *)itable, (void *)itable->p, (void *)p
-      );
-      extend_sll(people, p);
-      /* TODO : UNIFY INTERFACE (Y,X) */
-      init_person_at(p, column, row, 2);
+      cpersons++;
+      if (!itable->p){
+        itable->p = cpersons;
+        printf("Marking person [%d] at [%d,%d]\n", cpersons, row, column);
+      } else {
+        printf("Trying to overwrite a person at [%d,%d] !!!\n\n", row, column);
+        exit(EXIT_FAILURE);
+      }
     }
-    /* P INIT DOCOR 
+    /* P INIT DOCOR */
     else if (TRUE == bernoulli_trial(&randgen, P_INIT_DOCTOR)){
-    */
-    else if (FALSE) { 
-      printf("CECI EST IMPOSSIBLE \n");
-      itable->p = d = (Person *)malloc(sizeof(Person));
-      extend_sll(doctors, d);
-      /* TODO : UNIFY INTERFACE (Y,X) */
-      init_doctor_at(d, column, row, 2);
+      cdoctors++;
+      if (!itable->d){
+        itable->d = cdoctors;
+        /* printf("Marking doctor at [%d,%d]\n", row, column);
+        */
+      } else {
+        printf("Trying to overwrite a doctor at [%d,%d] !!!\n\n", row, column);
+        exit(EXIT_FAILURE);
+      }
     }
     /* P INIT VIRUS */
     else if (TRUE == bernoulli_trial(&randgen, P_INIT_VIRUS)) {
-      itable->viral_charge = 4;
-      itable->p = NULL;
-      itable->danger = 0;
+      itable->viral_charge += 4;
     } 
-    /* Rest of the time */
-    else {
-      itable->viral_charge = 0;
-      itable->p = NULL;
-      itable->danger = 0;
+  }
+}
+
+people = (Person *)malloc( cpersons * sizeof(Person) );
+if (NULL == people){
+  printf("Could not allocate [%d]-array of Persons \n\n",cpersons);
+  exit(EXIT_FAILURE);
+}
+doctors = (Person *)malloc( cdoctors * sizeof(Person) );
+if (NULL == doctors){
+  printf("Could not allocate [%d]-array of Doctors \n\n",cdoctors);
+  exit(EXIT_FAILURE);
+}
+
+/* Initialise all persons and doctors */
+for (row=0; row<N_LINES; row++){
+  for (column=0; column<M_COLUMNS; column++){
+    itable = &table[row*N_LINES + column];
+    if (0 != itable->p){
+      people[itable->p - 1].alive = TRUE;
+      people[itable->p - 1].direction = 3;
+      people[itable->p - 1].pos.x = column;
+      people[itable->p - 1].pos.y = row;
+      people[itable->p - 1].viral_charge = 0;
+      people[itable->p - 1].healing = FALSE;
+    }
+    if (0 != itable->d){
+      doctors[itable->p - 1].alive = TRUE;
+      doctors[itable->p - 1].direction = 3;
+      doctors[itable->p - 1].pos.x = column;
+      doctors[itable->p - 1].pos.y = row;
+      doctors[itable->p - 1].viral_charge = 0;
+      doctors[itable->p - 1].healing = TRUE;
     }
   }
 }
 
+show_grid(table, N_LINES, M_COLUMNS);
 
-/* Print all the references */
-printf("\n");
-i = 0;
-for (row=0; row<N_LINES; row++){
-  for (column=0; column<M_COLUMNS; column++){
-    itable = &table[row*N_LINES + column];
-    printf("%p,",(void *)itable->p);
+for (i=0; i<cpersons; i++){
+  row = people[i].pos.y;
+  column = people[i].pos.x;
+  tloc = row*N_LINES + column;
+  ploc = table[tloc].p - 1;
+  printf("person[%d] is located at [%d,%d] ", i+1, row, column);
+  if (ploc == i){
+    printf("MATCH \n");
   }
-  printf("\n");
-}
-
-if (TRUE){
-  /* // print counts
-  printf("%d,%d,%d\n", sll_list_length(people), sll_list_length(doctors), i);
-  */
-  plambda = (double)sll_list_length(people)/((double)N_LINES*M_COLUMNS) ;
-  pdoctor = (double)sll_list_length(doctors)/((double)N_LINES*M_COLUMNS) ;
-  pvirus = (double)i/((double)N_LINES*M_COLUMNS) ;
-  /*printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
-  */
-  printf("Person count : %d \n", sll_list_length(people));
-
-  show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
-}
-
-p_iter = people;
-printf("pre while list length : %d \n", sll_list_length(people));
-printf("M[row, column], itable, itable->p, p\n");
-while(p_iter->next != NULL){
-  p = p_iter->p;
-  itable = &table[ p->pos.y*N_LINES + p->pos.x ];
-  printf("M[%d,%d], %p, %p, %p ",\
-    p->pos.y, p->pos.x, (void *)itable, (void *)itable->p, (void *)p_iter->p 
-  );
-  if (p == itable->p){
-     printf(" MATCH \n");
-  /*ttable = table[ p->pos.y*N_LINES + p->pos.x ];
-    */
-  } 
   else {
-    printf(" MISMATCH !!!\n");
+    printf("MISMATCH \n");
   }
-  p_iter = p_iter->next;
 }
-printf("Success ! \n");
 
-show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
+show_grid(table, N_LINES, M_COLUMNS);
 
 exit(EXIT_SUCCESS);
 
@@ -203,39 +209,8 @@ if(-1 == system("chmod +x ppm_to_gif_script.sh"))
 
 
 for(step = 0; step < MAX_SIMULATION_STEPS; step++){
-  /*
-  p = (Person *)malloc(sizeof(Person));
-  extend_sll(people, p);
-  init_person_at(p, column, row, 2);
-  */
+
   update_positions(persons, N);
-  if (step == 15){
-    printf("Sim. step : %d length(people) = %d\n", step, sll_list_length(people));
-  }
-  if (FALSE){
-    empty_sll(people);
-    /* show_grid(table, N_LINES, M_COLUMNS);
-    */
-    printf("Sim. step : %d length(people) = %d\n", step, sll_list_length(people));
-    /* This proves the problem of simply removing
-       a person from the persons list.
-       We'll prove the utility of the 
-       person_death() function.
-    */
-  }
-  if (step == 30){
-    /* show_grid(table, N_LINES, M_COLUMNS);
-    */
-    printf("Sim. step : %d length(people) = %d\n", step, sll_list_length(people));
-  } 
-  /*
-  p = pop_last_node_from_sll(people);
-  if (NULL != p){
-    printf("person[%d,%d] will die :) \n", p->pos.x, p->pos.y);
-  }
-  free(p);
-  p = NULL;
-  */  
 
   /* SDL visualization: */
   for(n = 0; n < N; n++){

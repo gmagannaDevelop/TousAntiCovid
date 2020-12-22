@@ -31,6 +31,7 @@
         int viral_charge;
         int danger;
         int p;
+        int d;
         /* Save the person's index instead */
         /* Person *p;
         */

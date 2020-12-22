@@ -10,10 +10,10 @@ int person_death(
     struct singly_linked_list *persons = *p_persons;
     Case *current = &table[ p->pos.y*n + p->pos.x ];
 
-    if (NULL == current->p ){
+    if (0 == current->p ){
         printf("\tWtf bro, the case is already empty !\n");
     } else {
-        current->p = NULL;
+        current->p = 0;
     }
 
     return remove_person_from_sll(persons, p);
