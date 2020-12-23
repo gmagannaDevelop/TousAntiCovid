@@ -74,37 +74,61 @@ if (NULL == table){
    printf("M[row, column], itable, itable->p, p\n");
 */
 
+printf("Zero-Initialise table ...\n");
+for (i=0; i<N_LINES*M_COLUMNS; i++){
+    /* P INIT LAMBDA */
+    itable = &table[i];
+    itable->danger = 0;
+    itable->viral_charge = 77;
+    itable->p = 0;
+    itable->d = 0;
+}
+
+printf("\nVerifying table integrity... \n");
+for (row=0; row<N_LINES; row++){
+  for (column=0; column<M_COLUMNS; column++){
+    itable = &table[row*N_LINES + column];
+    print_case(*table);
+    /* printf("[%d,%d] itable->p = %d, itable->d = %d\n", row, column, itable->p, itable->d);
+    */
+  }
+}
+
 printf("Initialise table ...\n");
 cpersons = 0;
 cdoctors = 0;
 cvirus = 0;
+
 for (row=0; row<N_LINES; row++){
+  // THE FUCKING PROBLEM IS HERE !!!!
   for (column=0; column<M_COLUMNS; column++){
     /* P INIT LAMBDA */
     itable = &table[row*N_LINES + column];
-    itable->danger = 0;
-    itable->viral_charge = 0;
+    itable->danger = 3;
+    //itable->viral_charge = 0;
     itable->p = 0;
     itable->d = 0;
+    // printf(" PRE trial : ");
+    // print_case(*itable);
     if (TRUE == bernoulli_trial(&randgen, P_INIT_LAMBDA)){
-      cpersons++;
       if (!itable->p){
+        cpersons++;
+        //printf("cpersons = %d\n", cpersons);
         itable->p = cpersons;
-        printf("Marking person [%d] at [%d,%d]\n", cpersons, row, column);
+        //printf("Marking person [%d] at [%d,%d]\n", cpersons, row, column);
       } else {
-        printf("Trying to overwrite a person at [%d,%d] !!!\n\n", row, column);
+        // printf("Trying to overwrite a person at [%d,%d] !!!\n\n", row, column);
         exit(EXIT_FAILURE);
       }
     }
     /* P INIT DOCOR */
     else if (TRUE == bernoulli_trial(&randgen, P_INIT_DOCTOR)){
-      cdoctors++;
       if (!itable->d){
+        cdoctors++;
         itable->d = cdoctors;
-        /* printf("Marking doctor at [%d,%d]\n", row, column);
-        */
+        // printf("Marking doctor at [%d,%d]\n", row, column);
       } else {
-        printf("Trying to overwrite a doctor at [%d,%d] !!!\n\n", row, column);
+        // printf("Trying to overwrite a doctor at [%d,%d] !!!\n\n", row, column);
         exit(EXIT_FAILURE);
       }
     }
@@ -113,8 +137,12 @@ for (row=0; row<N_LINES; row++){
       cvirus++;
       itable->viral_charge += 4;
     } 
+    printf(" POST trial : ");
+    print_case(*itable);
   }
 }
+/* DATA SEEMS TO BE ALREADY CORRUPT HERE. */
+
 
 people = (Person *)malloc( cpersons * sizeof(Person) );
 if (NULL == people){
@@ -127,16 +155,18 @@ if (NULL == doctors){
   exit(EXIT_FAILURE);
 }
 
+printf("\nVerifying table integrity... \n");
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
     itable = &table[row*N_LINES + column];
-    if ((itable->p != 0) && (itable->d != 0)){
-      printf("[%d,%d] itable->p = %d, itable->d = %d\n", row, column, itable->p, itable->d);
-    }
+    print_case(*table);
+    /* printf("[%d,%d] itable->p = %d, itable->d = %d\n", row, column, itable->p, itable->d);
+    */
   }
 }
 
 /* Initialise all persons and doctors */
+printf("\n Initialise people and doctors arrays...\n");
 vvirus = 0;
 vpersons = 0;
 vdoctors = 0;

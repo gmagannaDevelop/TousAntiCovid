@@ -1,6 +1,7 @@
 #ifndef __2asjd293cc_DISPLAY_H
 #define __2asjd293cc_DISPLAY_H
 
+void print_case(Case c);
 
 void print_person(Person p);
 

@@ -2,6 +2,13 @@
 
 #include "libraries.h"
 
+void print_case(Case c)
+{
+  printf("p(%d),d(%d),viral_charge(%d),danger(%d)\n",
+    c.p, c.d, c.viral_charge, c.danger
+  );
+}
+
 void print_person(Person p)
 {
   printf("alive : %d\n", p.alive);
