@@ -65,7 +65,7 @@ printf("M[row, column], itable, itable->p, p\n");
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
     /* P INIT LAMBDA */
-    itable = &table[row*N_LINES + column];
+    itable = &table[row*M_COLUMNS + column];
     if (TRUE == bernoulli_trial(&randgen, P_INIT_LAMBDA)){
       itable->p = p = (Person *)malloc(sizeof(Person));
       printf("M[%d,%d], %p, %p, %p\n",\
@@ -106,7 +106,7 @@ printf("\n");
 i = 0;
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
-    itable = &table[row*N_LINES + column];
+    itable = &table[row*M_COLUMNS + column];
     printf("%p,",(void *)itable->p);
   }
   printf("\n");
@@ -131,7 +131,7 @@ printf("pre while list length : %d \n", sll_list_length(people));
 printf("M[row, column], itable, itable->p, p\n");
 while(p_iter->next != NULL){
   p = p_iter->p;
-  itable = &table[ p->pos.y*N_LINES + p->pos.x ];
+  itable = &table[ p->pos.y*M_COLUMNS + p->pos.x ];
   printf("M[%d,%d], %p, %p, %p ",\
     p->pos.y, p->pos.x, (void *)itable, (void *)itable->p, (void *)p_iter->p 
   );

@@ -10,7 +10,7 @@ void show_grid(Case *table, int N, int M)
   for (row=0; row<N; row++){
     printf("\n");
     for (column=0; column<M; column++){
-      itable = &table[row*N + column];
+      itable = &table[row*M + column];
       if((NULL == itable->p) && (itable->viral_charge == 0)){
         printf(".");
       }
@@ -40,7 +40,7 @@ void show_grid_lists(Case *table, int N, int M,
   for (row=0; row<N; row++){
     printf("\n");
     for (column=0; column<M; column++){
-      itable = &table[row*N + column];
+      itable = &table[row*M + column];
       if((NULL == itable->p) && (itable->viral_charge == 0)){
         printf(".");
       }
