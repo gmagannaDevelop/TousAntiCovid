@@ -84,7 +84,7 @@ for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
     i = row*N_LINES + column;
     tpeople[i] = bernoulli_trial(&randgen, P_INIT_LAMBDA);
-    printf("%d,", tpeople[i]);
+    //printf("%d,", tpeople[i]);
   }
 }
 
@@ -95,7 +95,7 @@ for (row=0; row<N_LINES; row++){
     if (tpeople[i] == 0){
       tdoctors[i] = bernoulli_trial(&randgen, P_INIT_DOCTOR);
     }
-    printf("%d,", tdoctors[i]);
+    //printf("%d,", tdoctors[i]);
   }
 }
 
@@ -106,7 +106,7 @@ for (row=0; row<N_LINES; row++){
     if ((tpeople[i] == 0) && (tdoctors[i] == 0)){
       tvirus[i] = bernoulli_trial(&randgen, P_INIT_VIRUS);
     }
-    printf("%d,", tvirus[i]);
+    //printf("%d,", tvirus[i]);
   }
 }
 printf("\n\n");
@@ -121,6 +121,7 @@ for (i=0; i<N_LINES*M_COLUMNS; i++){
   tdoctors[i] *= cdoctors;
   cvirus += tvirus[i];
 }
+/*
 for (i=0; i<N_LINES*M_COLUMNS; i++){
   printf("%d,", tpeople[i]);
 }
@@ -133,6 +134,7 @@ for (i=0; i<N_LINES*M_COLUMNS; i++){
   printf("%d,", tvirus[i]);
 }
 printf("\n");
+*/
 
 /* printf("Initialise Cases [%d,%d]\n", N_LINES, M_COLUMNS);
    printf("sizeof(Person) = %ld \n", sizeof(Person)*CHAR_BIT);
@@ -145,7 +147,7 @@ for (row=0; row<N_LINES; row++){
     i = row*M_COLUMNS + column;
     itable = &table[i];
     itable->danger = 0;
-    itable->viral_charge = 77;
+    itable->viral_charge = VIRAL_LIFESPAN * tvirus[i];
     itable->p = tpeople[i];
     itable->d = tdoctors[i];
     printf("itable[%d,%d][%d] = %d\n",row, column, i, table[i].p);
