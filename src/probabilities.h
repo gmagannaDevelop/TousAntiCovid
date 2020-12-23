@@ -4,9 +4,9 @@
 /*# Definition of simulation probabilities  */
     #define FIXED_RNG_SEED 4
 
-    #define P_INIT_LAMBDA 0.20
-    #define P_INIT_DOCTOR 0.10
-    #define P_INIT_VIRUS 0.05
+    #define P_INIT_LAMBDA 0.40
+    #define P_INIT_DOCTOR 0.20
+    #define P_INIT_VIRUS 0.20
     
     #define P_ASYMPTOMATIC 2.0/3.0                                                  
     #define P_SYMPTOMATIC 1.0 - P_ASYMPTOMATIC

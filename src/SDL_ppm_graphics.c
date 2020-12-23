@@ -39,8 +39,9 @@ int main(int argc, char **argv)
   #endif
 int N, n, step, save_graphics;
 float *persons; /* (x,y) coordiantes of all N persons */
-int row, column, i, j, tloc, ploc, dloc; /* Counters */
-int cpersons, cdoctors, cvirus;
+int idx, row, column, i, j, tloc, ploc, dloc; /* Counters */
+int cpersons, cdoctors, cvirus; /* Counters for ... */
+int ccpersons, ccdoctors, ccvirus; /* Conditional Counters for ... */
 int vpersons, vdoctors, vvirus;
 char filename[MAX_LINELENGTH];
 struct SDL_graphics *SDL_graphics; 
@@ -48,6 +49,7 @@ SDL_Event event;
 FILE *outputscript;
 Case *table, *itable, ttable;
 Person *people, *doctors;
+int *tpeople, *tdoctors, *tvirus;
 /* struct singly_linked_list *people, *doctors, *p_iter;
 */
 double plambda, pdoctor, pvirus;
@@ -69,80 +71,115 @@ if (NULL == table){
   exit(EXIT_FAILURE);
 }
 
+tpeople  = (int *)malloc( N_LINES * M_COLUMNS * sizeof(int));
+tdoctors = (int *)malloc( N_LINES * M_COLUMNS * sizeof(int));
+tvirus   = (int *)malloc( N_LINES * M_COLUMNS * sizeof(int));
+if ((NULL == tpeople) || (NULL == tdoctors) || (NULL == tvirus)){
+  printf("Could not allocate one or more [%d,%d]-table of trials \n",N_LINES, M_COLUMNS);
+  exit(EXIT_FAILURE);
+}
+
+printf("People : \n");
+for (row=0; row<N_LINES; row++){
+  for (column=0; column<M_COLUMNS; column++){
+    i = row*N_LINES + column;
+    tpeople[i] = bernoulli_trial(&randgen, P_INIT_LAMBDA);
+    printf("%d,", tpeople[i]);
+  }
+}
+
+printf("\nDoctors : \n");
+for (row=0; row<N_LINES; row++){
+  for (column=0; column<M_COLUMNS; column++){
+    i = row*N_LINES + column;
+    if (tpeople[i] == 0){
+      tdoctors[i] = bernoulli_trial(&randgen, P_INIT_DOCTOR);
+    }
+    printf("%d,", tdoctors[i]);
+  }
+}
+
+printf("\nVirus : \n");
+for (row=0; row<N_LINES; row++){
+  for (column=0; column<M_COLUMNS; column++){
+    i = row*N_LINES + column;
+    if ((tpeople[i] == 0) && (tdoctors[i] == 0)){
+      tvirus[i] = bernoulli_trial(&randgen, P_INIT_VIRUS);
+    }
+    printf("%d,", tvirus[i]);
+  }
+}
+printf("\n\n");
+
+cpersons = 0;
+cdoctors = 0;
+cvirus = 0;
+for (i=0; i<N_LINES*M_COLUMNS; i++){
+  cpersons += tpeople[i];
+  tpeople[i] *= cpersons;
+  cdoctors += tdoctors[i];
+  tdoctors[i] *= cdoctors;
+  cvirus += tvirus[i];
+}
+for (i=0; i<N_LINES*M_COLUMNS; i++){
+  printf("%d,", tpeople[i]);
+}
+printf("\n");
+for (i=0; i<N_LINES*M_COLUMNS; i++){
+  printf("%d,", tdoctors[i]);
+}
+printf("\n");
+for (i=0; i<N_LINES*M_COLUMNS; i++){
+  printf("%d,", tvirus[i]);
+}
+printf("\n");
+
 /* printf("Initialise Cases [%d,%d]\n", N_LINES, M_COLUMNS);
    printf("sizeof(Person) = %ld \n", sizeof(Person)*CHAR_BIT);
    printf("M[row, column], itable, itable->p, p\n");
 */
 
 printf("Zero-Initialise table ...\n");
-for (i=0; i<N_LINES*M_COLUMNS; i++){
-    /* P INIT LAMBDA */
+for (row=0; row<N_LINES; row++){
+  for (column=0; column<M_COLUMNS; column++){
+    i = row*M_COLUMNS + column;
     itable = &table[i];
     itable->danger = 0;
     itable->viral_charge = 77;
-    itable->p = 0;
-    itable->d = 0;
+    itable->p = tpeople[i];
+    itable->d = tdoctors[i];
+    printf("itable[%d,%d][%d] = %d\n",row, column, i, table[i].p);
+  }
 }
 
+/*
 printf("\nVerifying table integrity... \n");
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
     itable = &table[row*N_LINES + column];
     print_case(*table);
-    /* printf("[%d,%d] itable->p = %d, itable->d = %d\n", row, column, itable->p, itable->d);
-    */
+    // printf("[%d,%d] itable->p = %d, itable->d = %d\n", row, column, itable->p, itable->d);
   }
 }
-
+*/
+/*
 printf("Initialise table ...\n");
-cpersons = 0;
-cdoctors = 0;
-cvirus = 0;
-
+ccpersons = ccdoctors = ccvirus = 0;
 for (row=0; row<N_LINES; row++){
-  // THE FUCKING PROBLEM IS HERE !!!!
   for (column=0; column<M_COLUMNS; column++){
-    /* P INIT LAMBDA */
-    itable = &table[row*N_LINES + column];
-    itable->danger = 3;
-    //itable->viral_charge = 0;
-    itable->p = 0;
-    itable->d = 0;
-    // printf(" PRE trial : ");
-    // print_case(*itable);
-    if (TRUE == bernoulli_trial(&randgen, P_INIT_LAMBDA)){
-      if (!itable->p){
-        cpersons++;
-        //printf("cpersons = %d\n", cpersons);
-        itable->p = cpersons;
-        //printf("Marking person [%d] at [%d,%d]\n", cpersons, row, column);
-      } else {
-        // printf("Trying to overwrite a person at [%d,%d] !!!\n\n", row, column);
-        exit(EXIT_FAILURE);
-      }
-    }
-    /* P INIT DOCOR */
-    else if (TRUE == bernoulli_trial(&randgen, P_INIT_DOCTOR)){
-      if (!itable->d){
-        cdoctors++;
-        itable->d = cdoctors;
-        // printf("Marking doctor at [%d,%d]\n", row, column);
-      } else {
-        // printf("Trying to overwrite a doctor at [%d,%d] !!!\n\n", row, column);
-        exit(EXIT_FAILURE);
-      }
-    }
-    /* P INIT VIRUS */
-    else if (TRUE == bernoulli_trial(&randgen, P_INIT_VIRUS)) {
-      cvirus++;
-      itable->viral_charge += 4;
-    } 
-    printf(" POST trial : ");
-    print_case(*itable);
+    idx = row*N_LINES + column;
+    table[idx].danger = 0;
+    table[idx].p = tpeople[idx] ;// * (cpersons + ccpersons);
+    table[idx].d = tdoctors[idx] ;// * (cdoctors + ccdoctors);
+    table[idx].viral_charge = tvirus[idx] * 4 ; //ccvirus * VIRAL_LIFESPAN;
+    //printf(" POST trial : ");
+    //print_case(table[row*N_LINES + column]);
   }
 }
+*/
 /* DATA SEEMS TO BE ALREADY CORRUPT HERE. */
 
+//exit(EXIT_SUCCESS);
 
 people = (Person *)malloc( cpersons * sizeof(Person) );
 if (NULL == people){
@@ -158,8 +195,7 @@ if (NULL == doctors){
 printf("\nVerifying table integrity... \n");
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
-    itable = &table[row*N_LINES + column];
-    print_case(*table);
+    print_case(table[row*M_COLUMNS + column]);
     /* printf("[%d,%d] itable->p = %d, itable->d = %d\n", row, column, itable->p, itable->d);
     */
   }
@@ -183,8 +219,8 @@ for (row=0; row<N_LINES; row++){
       people[itable->p - 1].pos.y = row;
       people[itable->p - 1].viral_charge = 0;
       people[itable->p - 1].healing = FALSE;
-      printf("Person #%d\n", itable->p);
-      print_person(people[itable->p - 1]);
+      //printf("Person #%d\n", itable->p);
+      //print_person(people[itable->p - 1]);
     }
     if (0 != itable->d){
       vdoctors++;
@@ -194,8 +230,8 @@ for (row=0; row<N_LINES; row++){
       doctors[itable->d - 1].pos.y = row;
       doctors[itable->d - 1].viral_charge = 0;
       doctors[itable->d - 1].healing = TRUE;
-      printf("Doctor #%d\n", itable->d);
-      print_person(doctors[itable->d - 1]);
+      //printf("Doctor #%d\n", itable->d);
+      //print_person(doctors[itable->d - 1]);
     }
   }
 }
@@ -226,6 +262,8 @@ for (i=0; i<cpersons; i++){
 }
 
 show_grid(table, N_LINES, M_COLUMNS);
+
+free(table);
 
 exit(EXIT_SUCCESS);
 
