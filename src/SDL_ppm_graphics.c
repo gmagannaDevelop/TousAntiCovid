@@ -41,6 +41,7 @@ int N, n, step, save_graphics;
 float *persons; /* (x,y) coordiantes of all N persons */
 int row, column, i, j, tloc, ploc, dloc; /* Counters */
 int cpersons, cdoctors, cvirus;
+int vpersons, vdoctors, vvirus;
 char filename[MAX_LINELENGTH];
 struct SDL_graphics *SDL_graphics; 
 SDL_Event event;
@@ -126,28 +127,51 @@ if (NULL == doctors){
   exit(EXIT_FAILURE);
 }
 
-/* Initialise all persons and doctors */
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
     itable = &table[row*N_LINES + column];
+    if ((itable->p != 0) && (itable->d != 0)){
+      printf("[%d,%d] itable->p = %d, itable->d = %d\n", row, column, itable->p, itable->d);
+    }
+  }
+}
+
+/* Initialise all persons and doctors */
+vvirus = 0;
+vpersons = 0;
+vdoctors = 0;
+for (row=0; row<N_LINES; row++){
+  for (column=0; column<M_COLUMNS; column++){
+    itable = &table[row*N_LINES + column];
+    /* printf("y = %d, x = %d\n", row, column);
+    */
     if (0 != itable->p){
+      vpersons++;
       people[itable->p - 1].alive = TRUE;
       people[itable->p - 1].direction = 3;
       people[itable->p - 1].pos.x = column;
       people[itable->p - 1].pos.y = row;
       people[itable->p - 1].viral_charge = 0;
       people[itable->p - 1].healing = FALSE;
+      printf("Person #%d\n", itable->p);
+      print_person(people[itable->p - 1]);
     }
     if (0 != itable->d){
-      doctors[itable->p - 1].alive = TRUE;
-      doctors[itable->p - 1].direction = 3;
-      doctors[itable->p - 1].pos.x = column;
-      doctors[itable->p - 1].pos.y = row;
-      doctors[itable->p - 1].viral_charge = 0;
-      doctors[itable->p - 1].healing = TRUE;
+      vdoctors++;
+      doctors[itable->d - 1].alive = TRUE;
+      doctors[itable->d - 1].direction = 3;
+      doctors[itable->d - 1].pos.x = column;
+      doctors[itable->d - 1].pos.y = row;
+      doctors[itable->d - 1].viral_charge = 0;
+      doctors[itable->d - 1].healing = TRUE;
+      printf("Doctor #%d\n", itable->d);
+      print_person(doctors[itable->d - 1]);
     }
   }
 }
+
+printf("cpersons = %d, vpersons = %d\n",cpersons, vpersons);
+printf("cdoctors = %d, vdoctors = %d\n",cdoctors, vdoctors);
 
 printf("%f, %f, %f \n", 
   (double)cpersons/(double)(N_LINES * M_COLUMNS),

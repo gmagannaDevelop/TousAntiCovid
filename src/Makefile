@@ -9,7 +9,7 @@
   GSLFLAGS := $(shell gsl-config --cflags)
   SDLFLAGS := $(shell sdl-config --cflags)
   NCFLAGS := $(STDFLAGS) $(OPTIM) $(GSLFLAGS) $(SDLFLAGS)  
-  DEBUG_CFLAGS := $(STDFLAGS) $(GSLFLAGS) $(SDLFLAGS) 
+  DEBUG_CFLAGS := $(STDFLAGS) $(GSLFLAGS) $(SDLFLAGS) -O0 
   CFLAGS := $(DEBUG_CFLAGS)
 # end compilation flags #
 

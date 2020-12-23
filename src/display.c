@@ -2,6 +2,16 @@
 
 #include "libraries.h"
 
+void print_person(Person p)
+{
+  printf("alive : %d\n", p.alive);
+  printf("viral_charge : %d\n", p.viral_charge);
+  printf("(y, x) = (%d, %d)\n", p.pos.y, p.pos.x);
+  printf("direction : %d\n", p.direction);
+  printf("healing : %d\n\n", p.healing);
+}
+
+
 void show_grid(Case *table, int N, int M)
 {
   int row, column;
