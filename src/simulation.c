@@ -12,9 +12,9 @@ int person_death(
 
     if (NULL == current->p ){
         printf("\tWtf bro, the case is already empty !\n");
+        return FALSE;
     } else {
         current->p = NULL;
+        return remove_person_from_sll(persons, p);
     }
-
-    return remove_person_from_sll(persons, p);
 }
