@@ -4,11 +4,13 @@
  TARGET := ../bin/viral-simulation
 
 # start compilation flags #
-  STDFLAGS := -Wall -Wstrict-prototypes -pedantic -lm 
+  STDFLAGS := -g -Wall -Wstrict-prototypes -pedantic -lm 
   OPTIM := -O2 
   GSLFLAGS := $(shell gsl-config --cflags)
   SDLFLAGS := $(shell sdl-config --cflags)
-  CFLAGS := $(STDFLAGS) $(OPTIM) $(GSLFLAGS) 
+  NCFLAGS := $(STDFLAGS) $(OPTIM) $(GSLFLAGS) $(SDLFLAGS)  
+  DEBUG_CFLAGS := $(STDFLAGS) $(GSLFLAGS) $(SDLFLAGS) -O0 
+  CFLAGS := $(DEBUG_CFLAGS)
 # end compilation flags #
 
 # start linking flags #
