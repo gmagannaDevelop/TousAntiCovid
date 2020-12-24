@@ -72,7 +72,7 @@ for (row=0; row<N_LINES; row++){
       if (NULL == p){ printf("person allocation error\n"); exit(EXIT_FAILURE); }
       extend_sll(people, p);
       // TODO : UNIFY INTERFACE (Y,X)
-      init_person_at(p, column, row, 2);
+      init_person_at(p, column, row, draw_randint_0n(&randgen, N_DIRECTIONS));
       nlambda++;
     }
     // P INIT DOCOR 
@@ -81,12 +81,12 @@ for (row=0; row<N_LINES; row++){
       if (NULL == d){ printf("person allocation error\n"); exit(EXIT_FAILURE); }
       extend_sll(doctors, d);
       // TODO : UNIFY INTERFACE (Y,X) 
-      init_doctor_at(d, column, row, 2);
+      init_doctor_at(d, column, row, draw_randint_0n(&randgen, N_DIRECTIONS));
       ndoctor++;
     }
     // P INIT VIRUS 
     else if (TRUE == bernoulli_trial(&randgen, P_INIT_VIRUS)) {
-      itable->viral_charge = 4;
+      itable->viral_charge = VIRAL_LIFESPAN;
       itable->p = NULL;
       itable->danger = 0;
       nvirus++;
@@ -101,42 +101,25 @@ for (row=0; row<N_LINES; row++){
 }
 
 
-/* Print all the references */
-/*
-printf("\n");
-i = 0;
-for (row=0; row<N_LINES; row++){
-  for (column=0; column<M_COLUMNS; column++){
-    itable = &table[row*M_COLUMNS + column];
-    printf("%p,",(void *)itable->p);
-  }
-  printf("\n");
-}
-*/
-
-if (TRUE){
-  // print counts
-  // printf("%d,%d,%d\n", sll_list_length(people), sll_list_length(doctors), i);
+if (FALSE){
   plambda = (double)sll_list_length(people)/((double)N_LINES*M_COLUMNS) ;
   pdoctor = (double)sll_list_length(doctors)/((double)N_LINES*M_COLUMNS) ;
   pvirus = (double)nvirus/((double)N_LINES*M_COLUMNS) ;
   printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
   //printf("Person count  prior : %d, posterior %d \n", nlambda, sll_list_length(people));
   //printf("Doctor count  prior : %d, posterior %d \n", ndoctor, sll_list_length(doctors));
-
   //show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
 }
 
+printf("Verify persons integrity\n");
 p_iter = people;
-/*
-printf("pre while list length : %d \n", sll_list_length(people));
-printf("M[row, column], itable, itable->p, p\n");
 while(p_iter->next != NULL){
   p = p_iter->p;
   itable = &table[ p->pos.y*M_COLUMNS + p->pos.x ];
-  printf("M[%d,%d], %p, %p, %p ",\
-    p->pos.y, p->pos.x, (void *)itable, (void *)itable->p, (void *)p_iter->p 
-  );
+  printf("pos [%d,%d], direction %d", p->pos.y, p->pos.x, p->direction);
+  //printf("M[%d,%d], %p, %p, %p ",\
+  //  p->pos.y, p->pos.x, (void *)itable, (void *)itable->p, (void *)p_iter->p 
+  //);
   if (p == itable->p){
     printf(" MATCH \n");
     // ttable = table[ p->pos.y*N_LINES + p->pos.x ];
@@ -146,9 +129,28 @@ while(p_iter->next != NULL){
   }
   p_iter = p_iter->next;
 }
-*/
 
-//show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
+printf("Verify doctors integrity\n");
+p_iter = doctors;
+while(p_iter->next != NULL){
+  p = p_iter->p;
+  itable = &table[ p->pos.y*M_COLUMNS + p->pos.x ];
+  printf("pos [%d,%d], direction %d", p->pos.y, p->pos.x, p->direction);
+  //printf("M[%d,%d], %p, %p, %p ",\
+  //  p->pos.y, p->pos.x, (void *)itable, (void *)itable->p, (void *)p_iter->p 
+  //);
+  if (p == itable->p){
+    printf(" MATCH \n");
+    // ttable = table[ p->pos.y*N_LINES + p->pos.x ];
+  } 
+  else {
+    printf(" MISMATCH !!!\n");
+  }
+  p_iter = p_iter->next;
+}
+
+
+show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
 
 exit(EXIT_SUCCESS);
 

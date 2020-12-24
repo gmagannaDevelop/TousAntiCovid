@@ -74,7 +74,9 @@ void (*directions[])(Coordinate *pos, int, int) = {
 };
 
 int oposite_direction(Person *p)
-{
+{/* Returns the value of the opposite direction 
+    with no side effects.
+*/
     if ((p->direction >= 0) && (p->direction < 4)){
         return p->direction + 4;
     }

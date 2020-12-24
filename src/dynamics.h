@@ -1,5 +1,5 @@
-#ifndef __DYNAMICS_H
-#define __DYNAMICS_H
+#ifndef __ad9823ha_DYNAMICS_H
+#define __ad9823ha_DYNAMICS_H
 
     #include "datastructures.h"
 
@@ -33,5 +33,6 @@
     void move_SE(Coordinate *pos, int N, int M);
     
     void move_SW(Coordinate *pos, int N, int M);
+
 
 #endif

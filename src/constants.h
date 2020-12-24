@@ -4,14 +4,17 @@
 #define TRUE 1
 #define FALSE 0
 
+#define VIRAL_LIFESPAN 4
+#define N_DIRECTIONS 8
+
 #define MAX_LINELENGTH 1024
 
 #define PI (4.0*atan(1.0))
 #define BLOBSIZE 10
 
 #define SIM_TO_GRAPHICS 20
-#define N_LINES 30
-#define M_COLUMNS 80
+#define N_LINES 3
+#define M_COLUMNS 8
 #define GRAPHICS_HEIGHT N_LINES*SIM_TO_GRAPHICS
 #define GRAPHICS_WIDTH  M_COLUMNS*SIM_TO_GRAPHICS 
 /*
