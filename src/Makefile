@@ -4,7 +4,7 @@
  TARGET := ../bin/viral-simulation
 
 # start compilation flags #
-  STDFLAGS := -Wall -Wstrict-prototypes -ansi -pedantic -lm 
+  STDFLAGS := -Wall -Wstrict-prototypes -pedantic -lm 
   OPTIM := -O2 
   GSLFLAGS := $(shell gsl-config --cflags)
   SDLFLAGS := $(shell sdl-config --cflags)

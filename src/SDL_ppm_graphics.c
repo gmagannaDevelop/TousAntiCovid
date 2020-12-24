@@ -45,6 +45,7 @@ Case *table, *itable, ttable;
 Person *p, *d;
 struct singly_linked_list *people, *doctors, *p_iter;
 double plambda, pdoctor, pvirus;
+int nlambda, ndoctor, nvirus;
 gsl_rng *randgen;
 
 parse_commandline(argc, argv, &N, &save_graphics);
@@ -60,6 +61,7 @@ allocate_and_initialize_sll(&doctors);
 
 /* printf("Initialise Cases [%d,%d]\n", N_LINES, M_COLUMNS);
 */
+nlambda = ndoctor = nvirus = 0;
 printf("sizeof(Person) = %ld \n", sizeof(Person)*CHAR_BIT);
 printf("M[row, column], itable, itable->p, p\n");
 for (row=0; row<N_LINES; row++){
@@ -74,22 +76,23 @@ for (row=0; row<N_LINES; row++){
       extend_sll(people, p);
       /* TODO : UNIFY INTERFACE (Y,X) */
       init_person_at(p, column, row, 2);
+      nlambda++;
     }
-    /* P INIT DOCOR 
+    // P INIT DOCOR 
     else if (TRUE == bernoulli_trial(&randgen, P_INIT_DOCTOR)){
-    */
-    else if (FALSE) { 
       printf("CECI EST IMPOSSIBLE \n");
       itable->p = d = (Person *)malloc(sizeof(Person));
       extend_sll(doctors, d);
       /* TODO : UNIFY INTERFACE (Y,X) */
       init_doctor_at(d, column, row, 2);
+      ndoctor++;
     }
     /* P INIT VIRUS */
     else if (TRUE == bernoulli_trial(&randgen, P_INIT_VIRUS)) {
       itable->viral_charge = 4;
       itable->p = NULL;
       itable->danger = 0;
+      nvirus++;
     } 
     /* Rest of the time */
     else {
@@ -102,6 +105,7 @@ for (row=0; row<N_LINES; row++){
 
 
 /* Print all the references */
+/*
 printf("\n");
 i = 0;
 for (row=0; row<N_LINES; row++){
@@ -111,17 +115,17 @@ for (row=0; row<N_LINES; row++){
   }
   printf("\n");
 }
+*/
 
 if (TRUE){
-  /* // print counts
-  printf("%d,%d,%d\n", sll_list_length(people), sll_list_length(doctors), i);
-  */
+  // print counts
+  // printf("%d,%d,%d\n", sll_list_length(people), sll_list_length(doctors), i);
   plambda = (double)sll_list_length(people)/((double)N_LINES*M_COLUMNS) ;
   pdoctor = (double)sll_list_length(doctors)/((double)N_LINES*M_COLUMNS) ;
-  pvirus = (double)i/((double)N_LINES*M_COLUMNS) ;
-  /*printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
-  */
-  printf("Person count : %d \n", sll_list_length(people));
+  pvirus = (double)nvirus/((double)N_LINES*M_COLUMNS) ;
+  // printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
+  printf("Person count  prior : %d, posterior %d \n", nlambda, sll_list_length(people));
+  printf("Doctor count  prior : %d, posterior %d \n", ndoctor, sll_list_length(doctors));
 
   show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
 }
@@ -136,9 +140,8 @@ while(p_iter->next != NULL){
     p->pos.y, p->pos.x, (void *)itable, (void *)itable->p, (void *)p_iter->p 
   );
   if (p == itable->p){
-     printf(" MATCH \n");
-  /*ttable = table[ p->pos.y*N_LINES + p->pos.x ];
-    */
+    printf(" MATCH \n");
+    // ttable = table[ p->pos.y*N_LINES + p->pos.x ];
   } 
   else {
     printf(" MISMATCH !!!\n");
