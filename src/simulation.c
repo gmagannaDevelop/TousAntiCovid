@@ -8,7 +8,7 @@ int person_death(
 ){
     Case *table = *p_table;
     struct singly_linked_list *persons = *p_persons;
-    Case *current = &table[ p->pos.y*n + p->pos.x ];
+    Case *current = &table[ p->pos.y*m + p->pos.x ];
 
     if (NULL == current->p ){
         printf("\tWtf bro, the case is already empty !\n");

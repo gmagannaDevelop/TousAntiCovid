@@ -31,6 +31,23 @@
 
 #include "libraries.h"
 
+void (*directions[])(Coordinate *pos, int, int) = {
+    /* This "directions" array will stablish an
+       order for the directions, and more importantly,
+       it will allow "counter-gradient" movements.
+            {NW,  N, NW,  O, SE, S, SW, E}
+            {-1, -2, -3, -4, 1,  2,  3, 4} 
+            { 0,  1,  2,  3, 4,  5,  6, 7}
+       as one can see here, oposite directions 
+       have the same value but different sign.
+       With this layout we can easily 
+       "inverse the direction", i.e. 
+       "move against the gradient".
+     */
+    move_NW, move_N, move_NE, move_W,
+    move_SE, move_S, move_SW, move_E
+};
+
 
 int main(int argc, char **argv)
 {
@@ -151,6 +168,19 @@ while(p_iter->next != NULL){
 
 
 show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
+
+
+printf("KILL THEM ALL !\n");
+p_iter = people;
+while(p_iter->next != NULL){
+  p = p_iter->p;
+  if (person_death(p, &people, &table, N_LINES, M_COLUMNS)){
+    printf("killed 1 person ...\n");
+  } else {
+    printf("failed to kill 1 person\n");
+  }
+  show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
+}
 
 exit(EXIT_SUCCESS);
 
