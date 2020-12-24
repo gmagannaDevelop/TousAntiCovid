@@ -62,32 +62,29 @@ allocate_and_initialize_sll(&doctors);
 /* printf("Initialise Cases [%d,%d]\n", N_LINES, M_COLUMNS);
 */
 nlambda = ndoctor = nvirus = 0;
-printf("sizeof(Person) = %ld \n", sizeof(Person)*CHAR_BIT);
-printf("M[row, column], itable, itable->p, p\n");
+//printf("sizeof(Person) = %ld \n", sizeof(Person)*CHAR_BIT);
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
-    /* P INIT LAMBDA */
+    // P INIT LAMBDA
     itable = &table[row*M_COLUMNS + column];
     if (TRUE == bernoulli_trial(&randgen, P_INIT_LAMBDA)){
       itable->p = p = (Person *)malloc(sizeof(Person));
-      printf("M[%d,%d], %p, %p, %p\n",\
-               row, column,(void *)itable, (void *)itable->p, (void *)p
-      );
+      if (NULL == p){ printf("person allocation error\n"); exit(EXIT_FAILURE); }
       extend_sll(people, p);
-      /* TODO : UNIFY INTERFACE (Y,X) */
+      // TODO : UNIFY INTERFACE (Y,X)
       init_person_at(p, column, row, 2);
       nlambda++;
     }
     // P INIT DOCOR 
     else if (TRUE == bernoulli_trial(&randgen, P_INIT_DOCTOR)){
-      printf("CECI EST IMPOSSIBLE \n");
       itable->p = d = (Person *)malloc(sizeof(Person));
+      if (NULL == d){ printf("person allocation error\n"); exit(EXIT_FAILURE); }
       extend_sll(doctors, d);
-      /* TODO : UNIFY INTERFACE (Y,X) */
+      // TODO : UNIFY INTERFACE (Y,X) 
       init_doctor_at(d, column, row, 2);
       ndoctor++;
     }
-    /* P INIT VIRUS */
+    // P INIT VIRUS 
     else if (TRUE == bernoulli_trial(&randgen, P_INIT_VIRUS)) {
       itable->viral_charge = 4;
       itable->p = NULL;
@@ -123,14 +120,15 @@ if (TRUE){
   plambda = (double)sll_list_length(people)/((double)N_LINES*M_COLUMNS) ;
   pdoctor = (double)sll_list_length(doctors)/((double)N_LINES*M_COLUMNS) ;
   pvirus = (double)nvirus/((double)N_LINES*M_COLUMNS) ;
-  // printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
-  printf("Person count  prior : %d, posterior %d \n", nlambda, sll_list_length(people));
-  printf("Doctor count  prior : %d, posterior %d \n", ndoctor, sll_list_length(doctors));
+  printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
+  //printf("Person count  prior : %d, posterior %d \n", nlambda, sll_list_length(people));
+  //printf("Doctor count  prior : %d, posterior %d \n", ndoctor, sll_list_length(doctors));
 
-  show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
+  //show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
 }
 
 p_iter = people;
+/*
 printf("pre while list length : %d \n", sll_list_length(people));
 printf("M[row, column], itable, itable->p, p\n");
 while(p_iter->next != NULL){
@@ -148,9 +146,9 @@ while(p_iter->next != NULL){
   }
   p_iter = p_iter->next;
 }
-printf("Success ! \n");
+*/
 
-show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
+//show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
 
 exit(EXIT_SUCCESS);
 
