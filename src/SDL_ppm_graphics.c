@@ -176,21 +176,24 @@ while (TRUE){
   i = 0;
   while(p_iter->next != NULL){
     p = p_iter->p;
-    move_person(&randgen, p, &table, N_LINES, M_COLUMNS);
-    printf(CLEAR);
-    show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
-    msleep(50);
-    p_iter = p_iter->next;
+    // test deadly virus :
+    if (bernoulli_trial(&randgen, 0.01)){
+      person_death(p, &people, &table, N_LINES, M_COLUMNS);
+    }
+    else {
+      move_person(&randgen, p, &table, N_LINES, M_COLUMNS);
+      p_iter = p_iter->next;
+    }
   }
   p_iter = doctors;
   while(p_iter->next != NULL){
     p = p_iter->p;
     move_person(&randgen, p, &table, N_LINES, M_COLUMNS);
-    printf(CLEAR);
-    show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
-    msleep(50);
     p_iter = p_iter->next;
   }
+  printf(CLEAR);
+  show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
+  msleep(100);
 }
 
 exit(EXIT_SUCCESS);
