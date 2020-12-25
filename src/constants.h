@@ -39,4 +39,6 @@
 
 #define GIF_STEP 2
 
+#define CLEAR "\033[H\033[J"
+
 #endif

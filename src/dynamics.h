@@ -34,5 +34,6 @@
     
     void move_SW(Coordinate *pos, int N, int M);
 
+    int oposite_direction(Person *p);
 
 #endif

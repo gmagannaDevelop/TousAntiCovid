@@ -10,4 +10,8 @@
         int n, int m
     );
 
+    int move_person(
+        Person *p, Case **p_table, int n, int m
+    );
+
 #endif
