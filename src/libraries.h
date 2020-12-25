@@ -11,8 +11,6 @@
     #include <fcntl.h>
     #include <unistd.h>
     #include <limits.h>
-  /* DEBUG */
-  #include <mcheck.h>
 
   /* Sleeping-related */
   #include <time.h>

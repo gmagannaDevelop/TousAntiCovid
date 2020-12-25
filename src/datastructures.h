@@ -12,10 +12,7 @@
 
     typedef struct Persons
     {
-        int alive; 
-        /* ^ using this is much simpler than removing
-            playing around with linked lists
-        */
+        int alive;
         int viral_charge;
         Coordinate pos;
         /* This should be between [0,7] */
@@ -30,11 +27,7 @@
     {
         int viral_charge;
         int danger;
-        int p;
-        int d;
-        /* Save the person's index instead */
-        /* Person *p;
-        */
+        Person *p;
     } Case;
 
     
