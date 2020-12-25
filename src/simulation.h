@@ -11,7 +11,7 @@
     );
 
     int move_person(
-        Person *p, Case **p_table, int n, int m
+        gsl_rng **randgen, Person *p, Case **p_table, int n, int m
     );
 
 #endif

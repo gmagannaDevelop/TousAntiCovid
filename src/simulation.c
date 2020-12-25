@@ -36,7 +36,7 @@ int person_death(
 }
 
 int move_person(
-    Person *p, Case **p_table, int n, int m
+    gsl_rng **randgen, Person *p, Case **p_table, int n, int m
 ){
     Coordinate tmp_pos;
     Case *table = *p_table;
@@ -46,6 +46,7 @@ int move_person(
     tmp_pos = p->pos;
     // Shift tmp_pos in the direction 
     // mandated by the person :
+    //printf("person's direction : %d\n", p->direction);
     directions[p->direction](&tmp_pos, n, m);    
     next = &table[ tmp_pos.y*m + tmp_pos.x];
     
@@ -57,8 +58,22 @@ int move_person(
         return TRUE;
     } 
     else {
+        // make it go back 
+        tmp_pos = p->pos;
         p->direction = oposite_direction(p);
-        move_person(p, p_table, n, m);
+        directions[p->direction](&tmp_pos, n, m);    
+        next = &table[ tmp_pos.y*m + tmp_pos.x];
+        if (NULL == next->p){
+            // if the case in the opposite direction
+            // is free, move person in this direction.
+            move_person(randgen, p, p_table, n, m);
+        }
+        else {
+            // try getting a random new direction to 
+            // avoid infinite recursion :
+            p->direction = draw_randint_0n(randgen, N_DIRECTIONS);
+            move_person(randgen, p, p_table, n, m);         
+        } 
     }
     return FALSE;
 }

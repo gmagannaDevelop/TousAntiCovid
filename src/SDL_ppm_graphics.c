@@ -176,18 +176,22 @@ while (TRUE){
   i = 0;
   while(p_iter->next != NULL){
     p = p_iter->p;
-    printf("Tour %d, Moving Person %d / %d\n", j+1, i+1, nlambda);
-    move_person(p, &table, N_LINES, M_COLUMNS);
+    //printf("Tour %d, Moving Person %d / %d\n", j+1, i+1, nlambda);
+    //printf("p_iter = %p, p_iter->next %p, p_iter->p %p\n",
+    //  (void*)p_iter, (void*)p_iter->next, (void*)p_iter->p
+    //);
+    move_person(&randgen, p, &table, N_LINES, M_COLUMNS);
+    printf(CLEAR);
     show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
     //if (!move_person(p, &table, N_LINES, M_COLUMNS)){
     //  printf("Could not move person %p at [%d,%d]\n", (void*)p, p->pos.y, p->pos.x);
     //  exit(EXIT_FAILURE);
     //}
-    msleep(1000);
+    msleep(200);
     p_iter = p_iter->next;
-    i++;
+    //i++;
   }
-  j++;
+  //j++;
   //p_iter = doctors;
   //while(p_iter->next != NULL){
     //p = p_iter->p;
@@ -198,8 +202,6 @@ while (TRUE){
     //}
    // p_iter = p_iter->next;
   //}
-  msleep(500);
-  printf(CLEAR);
 }
 
 exit(EXIT_SUCCESS);
