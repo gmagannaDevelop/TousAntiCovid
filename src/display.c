@@ -12,7 +12,7 @@ void show_grid(Case *table, int N, int M)
     for (column=0; column<M; column++){
       itable = &table[row*M + column];
       if((NULL == itable->p) && (itable->viral_charge == 0)){
-        printf(".");
+        printf(" ");
       }
       else if(NULL != itable->p){
         if (TRUE == itable->p->healing){
@@ -42,7 +42,7 @@ void show_grid_lists(Case *table, int N, int M,
     for (column=0; column<M; column++){
       itable = &table[row*M + column];
       if((NULL == itable->p) && (itable->viral_charge == 0)){
-        printf(".");
+        printf(" ");
       }
       else if(NULL != itable->p){
         if (TRUE == itable->p->healing){
@@ -50,10 +50,10 @@ void show_grid_lists(Case *table, int N, int M,
         }
         else {
           if (is_in_sll(people, itable->p)) {
-            printf("Λ");
+            printf("λ");
           }
           else {
-            printf("λ");
+            printf("WHAAAAT");
           }
         }
       }

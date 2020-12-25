@@ -84,7 +84,7 @@ if (FALSE){
 
 
 j = 0;
-while (TRUE){
+while (j < 100){
   show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
   p_iter = people;
   i = 0;
@@ -107,10 +107,10 @@ while (TRUE){
   }
   printf(CLEAR);
   show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
-  msleep(100);
+  msleep(200);
+  j++;
 }
-
-exit(EXIT_SUCCESS);
+printf("Reached 100 simulation steps, continue...\n");
 
 
 /* Allocate and initialize N persons at random (x,y) positions: ................... */
@@ -124,6 +124,7 @@ for(n = 0; n < N; n++)
   {
   persons[2*n  ] = GRAPHICS_MARGIN + draw_randint_0n(&randgen, GRAPHICS_WIDTH  - 2*GRAPHICS_MARGIN);
   persons[2*n+1] = GRAPHICS_MARGIN + draw_randint_0n(&randgen, GRAPHICS_HEIGHT - 2*GRAPHICS_MARGIN);
+  printf("%d = (%f, %f)\n",n, persons[2*n], persons[2*n + 1]);
   }
 /* End of allocation and initialization of N persons at random (x,y) positions. ... */
 
@@ -169,7 +170,7 @@ for(step = 0; step < MAX_SIMULATION_STEPS; step++){
   if (step == 15){
     printf("Sim. step : %d length(people) = %d\n", step, sll_list_length(people));
   }
-  if (FALSE){
+  if (step == 20){
     empty_sll(people);
     /* show_grid(table, N_LINES, M_COLUMNS);
     */
