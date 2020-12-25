@@ -76,7 +76,6 @@ int move_person(
         current->p = NULL;
         directions[p->direction](&(p->pos), n, m);
         next->p = p;
-        return TRUE;
     } 
     else {
         // make it go back 
@@ -87,16 +86,21 @@ int move_person(
         if (NULL == next->p){
             // if the case in the opposite direction
             // is free, move person in this direction.
+            //printf("go back \n");
             move_person(randgen, p, p_table, n, m);
         }
         else {
+            return FALSE;
             // try getting a random new direction to 
             // avoid infinite recursion :
-            p->direction = draw_randint_0n(randgen, N_DIRECTIONS);
-            move_person(randgen, p, p_table, n, m);         
+            //p->direction = draw_randint_0n(randgen, N_DIRECTIONS);
+            //printf("en mode random \n");
+            //move_person(randgen, p, p_table, n, m);         
+            // turns out that random dirrections 
+            // can also lead to infinite recursion.
         } 
     }
-    return FALSE;
+    return TRUE;
 }
 
 
@@ -111,21 +115,25 @@ int global_update(
   
   p_iter = *people;
   while(p_iter->next != NULL){
+    //printf("update one person\n");
     p = p_iter->p;
     // test deadly virus :
-    if (bernoulli_trial(randgen, 0.05)){
+    if (bernoulli_trial(randgen, 0.01)){
       person_death(p, people, table, N_LINES, M_COLUMNS);
     }
     else {
       move_person(randgen, p, table, N_LINES, M_COLUMNS);
       p_iter = p_iter->next;
     }
+    //printf("DONE\n");
   }
   p_iter = *doctors;
   while(p_iter->next != NULL){
+    //printf("update one doctor\n");  
     p = p_iter->p;
     move_person(randgen, p, table, N_LINES, M_COLUMNS);
     p_iter = p_iter->next;
+    //printf("DONE\n");
   }
   return TRUE;
 }
