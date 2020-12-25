@@ -54,17 +54,13 @@ save_graphics = 0;
 
 initialize_randgen(&randgen, RND_VERBOSITY);
 
-/* printf(" N = %d; M = %d; \n", N_LINES, M_COLUMNS);
-*/
 table = (Case *)malloc( N_LINES * M_COLUMNS * sizeof(Case) );
+if (NULL == table){ printf("matrix allocation error\n"); exit(EXIT_FAILURE); }
 
 allocate_and_initialize_sll(&people);
 allocate_and_initialize_sll(&doctors);
 
-/* printf("Initialise Cases [%d,%d]\n", N_LINES, M_COLUMNS);
-*/
 nlambda = ndoctor = nvirus = 0;
-//printf("sizeof(Person) = %ld \n", sizeof(Person)*CHAR_BIT);
 for (row=0; row<N_LINES; row++){
   for (column=0; column<M_COLUMNS; column++){
     // P INIT LAMBDA
@@ -113,61 +109,6 @@ if (FALSE){
   //show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
 }
 
-/*
-printf("Verify persons integrity\n");
-p_iter = people;
-while(p_iter->next != NULL){
-  p = p_iter->p;
-  itable = &table[ p->pos.y*M_COLUMNS + p->pos.x ];
-  printf("pos [%d,%d], direction %d", p->pos.y, p->pos.x, p->direction);
-  //printf("M[%d,%d], %p, %p, %p ",\
-  //  p->pos.y, p->pos.x, (void *)itable, (void *)itable->p, (void *)p_iter->p 
-  //);
-  if (p == itable->p){
-    printf(" MATCH \n");
-    // ttable = table[ p->pos.y*N_LINES + p->pos.x ];
-  } 
-  else {
-    printf(" MISMATCH !!!\n");
-  }
-  p_iter = p_iter->next;
-}
-
-printf("Verify doctors integrity\n");
-p_iter = doctors;
-while(p_iter->next != NULL){
-  p = p_iter->p;
-  itable = &table[ p->pos.y*M_COLUMNS + p->pos.x ];
-  printf("pos [%d,%d], direction %d", p->pos.y, p->pos.x, p->direction);
-  //printf("M[%d,%d], %p, %p, %p ",\
-  //  p->pos.y, p->pos.x, (void *)itable, (void *)itable->p, (void *)p_iter->p 
-  //);
-  if (p == itable->p){
-    printf(" MATCH \n");
-    // ttable = table[ p->pos.y*N_LINES + p->pos.x ];
-  } 
-  else {
-    printf(" MISMATCH !!!\n");
-  }
-  p_iter = p_iter->next;
-}
-*/
-
-show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
-
-/*
-printf("KILL THEM ALL !\n");
-p_iter = people;
-while(p_iter->next != NULL){
-  p = p_iter->p;
-  if (person_death(p, &people, &table, N_LINES, M_COLUMNS)){
-    printf("killed 1 person ...\n");
-  } else {
-    printf("failed to kill 1 person\n");
-  }
-  show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
-}
-*/
 
 j = 0;
 while (TRUE){
