@@ -73,6 +73,45 @@ return(1);
 }
 	 
 
+int visualise_person(struct SDL_graphics *graph, Person *p, int radius)
+{
+/*
+ * Draws a filled circular disk with 'radius' in units of pixels around
+ * the (x, y) position of person 'n'. The color of the disk is related to
+ * the value of 'n'.
+ *
+ */   
+int row, col;
+float x, y, r, phi, dphi;
+
+x = (float)(p->pos.x*SIM_TO_GRAPHICS + GRAPHICS_MARGIN);
+y = (float)(p->pos.y*SIM_TO_GRAPHICS + GRAPHICS_MARGIN);
+
+for(r = 0.0; r < radius; r += 0.5){
+  dphi = 1.0 / (2.0 * PI * r);
+  for(phi = 0.0; phi < 2.0*PI; phi += dphi){
+    col = (int)(x + r*cos(phi)); 
+    row = (int)(y + r*sin(phi)); 
+    if((row >= 0) && (row < graph->height) && (col >= 0) && (col < graph->width)){
+      // COLOUR REFERENCE  :
+      // https://rgbcolorcode.com/color/amber-sae-ece
+      if (p->healing) {
+        /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 10;
+        /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 255;
+        /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 0;
+      }
+      else {
+        /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 10; 
+        /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 0; 
+        /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 255; 
+      }
+    }
+  }
+}
+
+return(1);
+}
+
 
 
 int visualize_person(struct SDL_graphics *graph, float *persons, int n, int radius)
@@ -94,11 +133,16 @@ for(r = 0.0; r < radius; r += 0.5){
   for(phi = 0.0; phi < 2.0*PI; phi += dphi){
     col = (int)(x + r*cos(phi)); 
     row = (int)(y + r*sin(phi)); 
-
     if((row >= 0) && (row < graph->height) && (col >= 0) && (col < graph->width)){
-      graph->pixel[3*row*graph->width + 3*col    ] = ( (11*n) % 255);
-      graph->pixel[3*row*graph->width + 3*col + 1] = ((101*n) % 255);
-      graph->pixel[3*row*graph->width + 3*col + 2] = ( (23*n) % 255);
+      // COLOUR REFERENCE  :
+      // https://rgbcolorcode.com/color/amber-sae-ece
+
+      // RED :
+      graph->pixel[3*row*graph->width + 3*col + 2] =  255;//( (23*n) % 255);
+      // GREEN :
+      graph->pixel[3*row*graph->width + 3*col + 1] =  126;//((101*n) % 255);
+      // BLUE :
+      graph->pixel[3*row*graph->width + 3*col    ] =   20;//( (11*n) % 255);
     }
   }
 }

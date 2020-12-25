@@ -10,7 +10,7 @@
 #define MAX_LINELENGTH 1024
 
 #define PI (4.0*atan(1.0))
-#define BLOBSIZE 10
+#define BLOBSIZE 5
 
 #define SIM_TO_GRAPHICS 20
 #define N_LINES 30
@@ -28,7 +28,7 @@
 */
 #define GRAPHICS_MARGIN 10
 
-#define FADER 8
+#define FADER 200
 
 #define MAX_SIMULATION_STEPS 1000
 #define SMALLDISTANCE 0.1

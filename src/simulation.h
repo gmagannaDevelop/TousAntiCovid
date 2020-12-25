@@ -14,4 +14,11 @@
         gsl_rng **randgen, Person *p, Case **p_table, int n, int m
     );
 
+    int global_update(
+        gsl_rng **randgen,
+        struct singly_linked_list **people, 
+        struct singly_linked_list **doctors,
+        Case **table
+    );
+
 #endif

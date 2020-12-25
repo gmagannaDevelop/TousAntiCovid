@@ -98,3 +98,36 @@ int move_person(
     }
     return FALSE;
 }
+
+
+int global_update(
+    gsl_rng **randgen,
+    struct singly_linked_list **people, 
+    struct singly_linked_list **doctors,
+    Case **table
+){
+  Person *p;
+  struct singly_linked_list *p_iter;
+  
+  p_iter = *people;
+  while(p_iter->next != NULL){
+    p = p_iter->p;
+    // test deadly virus :
+    if (bernoulli_trial(randgen, 0.05)){
+      person_death(p, people, table, N_LINES, M_COLUMNS);
+    }
+    else {
+      move_person(randgen, p, table, N_LINES, M_COLUMNS);
+      p_iter = p_iter->next;
+    }
+  }
+  p_iter = *doctors;
+  while(p_iter->next != NULL){
+    p = p_iter->p;
+    move_person(randgen, p, table, N_LINES, M_COLUMNS);
+    p_iter = p_iter->next;
+  }
+  return TRUE;
+}
+
+

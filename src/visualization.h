@@ -14,6 +14,8 @@ int fade_pixel_array(struct SDL_graphics *graph, int fader);
 
 int sdl_update(struct SDL_graphics *graph);
 
+int visualise_person(struct SDL_graphics *graph, Person *p, int radius);
+
 int visualize_person(struct SDL_graphics *graph, float *persons, int n, int radius);
 
 int drawbox (struct SDL_graphics *graph, int left, int right, int top, int bottom, int width, int brightness);

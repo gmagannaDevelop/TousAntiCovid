@@ -84,10 +84,11 @@ if (FALSE){
 
 
 j = 0;
-while (j < 100){
+while (j < 15){
   show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
+  global_update(&randgen, &people, &doctors, &table);
+  /*
   p_iter = people;
-  i = 0;
   while(p_iter->next != NULL){
     p = p_iter->p;
     // test deadly virus :
@@ -105,6 +106,7 @@ while (j < 100){
     move_person(&randgen, p, &table, N_LINES, M_COLUMNS);
     p_iter = p_iter->next;
   }
+  */
   printf(CLEAR);
   show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
   msleep(200);
@@ -124,7 +126,7 @@ for(n = 0; n < N; n++)
   {
   persons[2*n  ] = GRAPHICS_MARGIN + draw_randint_0n(&randgen, GRAPHICS_WIDTH  - 2*GRAPHICS_MARGIN);
   persons[2*n+1] = GRAPHICS_MARGIN + draw_randint_0n(&randgen, GRAPHICS_HEIGHT - 2*GRAPHICS_MARGIN);
-  printf("%d = (%f, %f)\n",n, persons[2*n], persons[2*n + 1]);
+  printf("%d = (%f, %f)\n", n, persons[2*n], persons[2*n + 1]);
   }
 /* End of allocation and initialization of N persons at random (x,y) positions. ... */
 
@@ -149,55 +151,40 @@ outputscript = fopen("ppm_to_gif_script.sh", "w");
 if(NULL == outputscript)
   {
   printf("\n\nCould not open file 'ppm_to_gif_script.sh' for writing.\n\n");
+empty_sll(people);
+empty_sll(doctors);
   free(table);
   exit(0);
   }
 if(-1 == system("chmod +x ppm_to_gif_script.sh"))
   {
   printf("\n\nCould not make 'ppm_to_gif_script.sh' executable.\n\n");
+empty_sll(people);
+empty_sll(doctors);
   free(table);
   exit(0);
   }
 
 
 for(step = 0; step < MAX_SIMULATION_STEPS; step++){
-  /*
-  p = (Person *)malloc(sizeof(Person));
-  extend_sll(people, p);
-  init_person_at(p, column, row, 2);
-  */
-  update_positions(persons, N);
-  if (step == 15){
-    printf("Sim. step : %d length(people) = %d\n", step, sll_list_length(people));
-  }
-  if (step == 20){
-    empty_sll(people);
-    /* show_grid(table, N_LINES, M_COLUMNS);
-    */
-    printf("Sim. step : %d length(people) = %d\n", step, sll_list_length(people));
-    /* This proves the problem of simply removing
-       a person from the persons list.
-       We'll prove the utility of the 
-       person_death() function.
-    */
-  }
-  if (step == 30){
-    /* show_grid(table, N_LINES, M_COLUMNS);
-    */
-    printf("Sim. step : %d length(people) = %d\n", step, sll_list_length(people));
-  } 
-  /*
-  p = pop_last_node_from_sll(people);
-  if (NULL != p){
-    printf("person[%d,%d] will die :) \n", p->pos.x, p->pos.y);
-  }
-  free(p);
-  p = NULL;
-  */  
+  msleep(100);
+  //update_positions(persons, N);
+  global_update(&randgen, &people, &doctors, &table);
 
-  /* SDL visualization: */
-  for(n = 0; n < N; n++){
-    visualize_person(SDL_graphics, persons, n, BLOBSIZE);
+  // SDL visualization:
+  p_iter = people;
+  while(p_iter->next != NULL){
+    p = p_iter->p;
+    visualise_person(SDL_graphics, p, BLOBSIZE);
+    p_iter = p_iter->next;
+  }
+  
+  // SDL visualization: 
+  p_iter = doctors;
+  while(p_iter->next != NULL){
+    p = p_iter->p;
+    visualise_person(SDL_graphics, p, BLOBSIZE);
+    p_iter = p_iter->next;
   }
 
   drawbox(SDL_graphics, 
@@ -232,6 +219,8 @@ for(step = 0; step < MAX_SIMULATION_STEPS; step++){
 
 printf("\n\nFINISHED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
 fclose(outputscript);
+empty_sll(people);
+empty_sll(doctors);
 free(table);
 return(1);
 }
