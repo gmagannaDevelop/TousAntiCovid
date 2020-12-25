@@ -2,9 +2,12 @@
   #define __asd9j2348s_PROBABILITIES_H
   
 /*# Definition of simulation probabilities  */
-    #define P_INIT_LAMBDA 0.20
-    #define P_INIT_DOCTOR 0.10
-    #define P_INIT_VIRUS 0.10
+    #define A_INIT_LAMBDA 0.20
+    #define A_INIT_DOCTOR 0.10 
+    #define A_INIT_VIRUS 0.05 
+    #define P_INIT_LAMBDA A_INIT_LAMBDA
+    #define P_INIT_DOCTOR A_INIT_DOCTOR / (1.0 - A_INIT_LAMBDA)
+    #define P_INIT_VIRUS A_INIT_VIRUS / ((1.0 - A_INIT_LAMBDA )*(1.0 - A_INIT_DOCTOR))
     
     #define P_ASYMPTOMATIC 2.0/3.0                                                  
     #define P_SYMPTOMATIC 1.0 - P_ASYMPTOMATIC

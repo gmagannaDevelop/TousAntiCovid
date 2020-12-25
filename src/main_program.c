@@ -8,7 +8,6 @@
 int main(int argc, char **argv)
 {
 int N, n, step, save_graphics;
-float *persons; /* (x,y) coordiantes of all N persons */
 int row, column, i, j; /* Counters */
 char filename[MAX_LINELENGTH];
 struct SDL_graphics *SDL_graphics; 
@@ -21,9 +20,7 @@ double plambda, pdoctor, pvirus;
 int nlambda, ndoctor, nvirus;
 gsl_rng *randgen;
 
-//parse_commandline(argc, argv, &N, &save_graphics);
-N = 10;
-save_graphics = 0;
+parse_commandline(argc, argv, &N, &save_graphics);
 
 initialize_randgen(&randgen, RND_VERBOSITY);
 
@@ -80,55 +77,8 @@ if (FALSE){
   //printf("Person count  prior : %d, posterior %d \n", nlambda, sll_list_length(people));
   //printf("Doctor count  prior : %d, posterior %d \n", ndoctor, sll_list_length(doctors));
   //show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
+  exit(EXIT_SUCCESS);
 }
-
-
-j = 0;
-while (j < 15){
-  show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
-  global_update(&randgen, &people, &doctors, &table);
-  /*
-  p_iter = people;
-  while(p_iter->next != NULL){
-    p = p_iter->p;
-    // test deadly virus :
-    if (bernoulli_trial(&randgen, 0.01)){
-      person_death(p, &people, &table, N_LINES, M_COLUMNS);
-    }
-    else {
-      move_person(&randgen, p, &table, N_LINES, M_COLUMNS);
-      p_iter = p_iter->next;
-    }
-  }
-  p_iter = doctors;
-  while(p_iter->next != NULL){
-    p = p_iter->p;
-    move_person(&randgen, p, &table, N_LINES, M_COLUMNS);
-    p_iter = p_iter->next;
-  }
-  */
-  printf(CLEAR);
-  show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
-  msleep(200);
-  j++;
-}
-printf("Reached 100 simulation steps, continue...\n");
-
-
-/* Allocate and initialize N persons at random (x,y) positions: ................... */
-persons = (float *)malloc(2 * N * sizeof(float));
-if(NULL == persons)
-  {
-  printf("\n\nError in allocating 'persons' array.\n\n");
-  exit(0);
-  }
-for(n = 0; n < N; n++)
-  {
-  persons[2*n  ] = GRAPHICS_MARGIN + draw_randint_0n(&randgen, GRAPHICS_WIDTH  - 2*GRAPHICS_MARGIN);
-  persons[2*n+1] = GRAPHICS_MARGIN + draw_randint_0n(&randgen, GRAPHICS_HEIGHT - 2*GRAPHICS_MARGIN);
-  printf("%d = (%f, %f)\n", n, persons[2*n], persons[2*n + 1]);
-  }
-/* End of allocation and initialization of N persons at random (x,y) positions. ... */
 
 
 /* SDL graphics allocation and initialization: ........................ */
@@ -151,31 +101,30 @@ outputscript = fopen("ppm_to_gif_script.sh", "w");
 if(NULL == outputscript)
   {
   printf("\n\nCould not open file 'ppm_to_gif_script.sh' for writing.\n\n");
-empty_sll(people);
-empty_sll(doctors);
+  empty_sll(people);
+  empty_sll(doctors);
   free(table);
   exit(0);
   }
 if(-1 == system("chmod +x ppm_to_gif_script.sh"))
   {
   printf("\n\nCould not make 'ppm_to_gif_script.sh' executable.\n\n");
-empty_sll(people);
-empty_sll(doctors);
+  empty_sll(people);
+  empty_sll(doctors);
   free(table);
   exit(0);
   }
 
 
 for(step = 0; step < MAX_SIMULATION_STEPS; step++){
-  msleep(100);
-  //update_positions(persons, N);
+  //msleep(100);
   global_update(&randgen, &people, &doctors, &table);
 
   // SDL visualization:
   p_iter = people;
   while(p_iter->next != NULL){
     p = p_iter->p;
-    visualise_person(SDL_graphics, p, BLOBSIZE);
+    visualise_person(SDL_graphics, p, PERSONSIZE);
     p_iter = p_iter->next;
   }
   
@@ -183,7 +132,7 @@ for(step = 0; step < MAX_SIMULATION_STEPS; step++){
   p_iter = doctors;
   while(p_iter->next != NULL){
     p = p_iter->p;
-    visualise_person(SDL_graphics, p, BLOBSIZE);
+    visualise_person(SDL_graphics, p, VIRUSSIZE);
     p_iter = p_iter->next;
   }
 
@@ -209,6 +158,8 @@ for(step = 0; step < MAX_SIMULATION_STEPS; step++){
        (event.key.keysym.sym == SDLK_c &&\
         event.key.keysym.mod & KMOD_CTRL))
       {
+        empty_sll(people);
+        empty_sll(doctors);
         free(table);
         printf("\n\nGOT KILLED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
         fclose(outputscript);

@@ -84,8 +84,8 @@ int visualise_person(struct SDL_graphics *graph, Person *p, int radius)
 int row, col;
 float x, y, r, phi, dphi;
 
-x = (float)(p->pos.x*SIM_TO_GRAPHICS + GRAPHICS_MARGIN);
-y = (float)(p->pos.y*SIM_TO_GRAPHICS + GRAPHICS_MARGIN);
+x = (float)(p->pos.x*SIM_TO_GRAPHICS + 2*GRAPHICS_MARGIN);
+y = (float)(p->pos.y*SIM_TO_GRAPHICS + 2*GRAPHICS_MARGIN);
 
 for(r = 0.0; r < radius; r += 0.5){
   dphi = 1.0 / (2.0 * PI * r);
@@ -96,12 +96,12 @@ for(r = 0.0; r < radius; r += 0.5){
       // COLOUR REFERENCE  :
       // https://rgbcolorcode.com/color/amber-sae-ece
       if (p->healing) {
-        /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 10;
+        /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 100;
         /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 255;
         /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 0;
       }
       else {
-        /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 10; 
+        /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 100; 
         /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 0; 
         /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 255; 
       }
