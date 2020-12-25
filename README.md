@@ -49,16 +49,12 @@ In order to compile and run the C code present in this repository, you must inst
 
 * SDL
 
-  At the moment, we have not yet decided if we want to use sdl-1 (legacy). Or sdl-2 (current stable version). Here we provide the necessary commands which are needed to install both versions. This will be narrowed down in the future.
-
+  We have decided to use libsdl-1, as we already have an implementation using it. 
 
   Under Ubuntu / Pop!\_OS / any other Debian-based distribution :
   * Essential (to compile and run) :
     ```bash
-    sudo apt-get install libsdl2-image-dev
     sudo apt-get install libsdl-image1.2-dev
-    sudo apt install libsdl2-dev
-    sudo apt install libsdl2.0.12-dev
     sudo apt install libsdl1.2-dev
     ```
   Under macOS (via [Homebrew](https://formulae.brew.sh/formula/gsl))
@@ -66,7 +62,6 @@ In order to compile and run the C code present in this repository, you must inst
   * Essential (to compile and run) :
     ```bash
     brew install sdl
-    brew install sdl2
     ```
 
 ### Acknowledgements
@@ -77,3 +72,5 @@ We would also like to thank Marco Heinen for his explanations and example
 codes on the topics of _pseudo-random number generators_ and 
 _data structures_ during his 2017 Numerical Methods Course at Universidad de Guanajuato, Mexico. This repository relies on some of the 
 beforementioned codes to build the simulation.
+
+We would also like to thank [Mathis Delehouzée](https://github.com/mathisdelehouzee) for his help finding the matrix indexation bug.
