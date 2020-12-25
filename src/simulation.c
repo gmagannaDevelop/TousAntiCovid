@@ -18,6 +18,27 @@ void (*directions[])(Coordinate *pos, int, int) = {
     move_SE, move_S, move_SW, move_E
 };
 
+/* TODO : UNIFY INTERFACE (Y,X) */
+void init_person_at(Person *p, int x, int y, int d)
+{
+    p->alive = TRUE;
+    p->viral_charge = 0;
+    p->pos.y = y;
+    p->pos.x = x;
+    p->direction = d;
+    p->healing = FALSE;
+}
+
+void init_doctor_at(Person *p, int x, int y, int d)
+{
+    p->alive = TRUE;
+    p->viral_charge = 0;
+    p->pos.x = x;
+    p->pos.y = y;
+    p->direction = d;
+    p->healing = TRUE;
+}
+
 int person_death(
     Person *p, struct singly_linked_list **p_persons,
     Case **p_table, int n, int m
