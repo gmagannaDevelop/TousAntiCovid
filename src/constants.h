@@ -5,6 +5,7 @@
 #define FALSE 0
 
 #define VIRAL_LIFESPAN 4
+#define N_DIRECTIONS 8
 
 #define MAX_LINELENGTH 1024
 
@@ -37,5 +38,7 @@
 #define PRINT_INITIAL_GRID TRUE
 
 #define GIF_STEP 2
+
+#define CLEAR "\033[H\033[J"
 
 #endif

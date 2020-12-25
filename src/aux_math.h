@@ -6,5 +6,7 @@
 
   /* Prototypes */
   int are_close(double a, double b);
+  
+  int msleep(long msec);
 
 #endif

@@ -6,6 +6,11 @@ double draw_randnum_01(gsl_rng **randgen)
   return gsl_rng_uniform(*randgen);
 }
 
+int draw_randint_0n(gsl_rng **randgen, int n)
+{
+  return (int)gsl_rng_uniform_int(*randgen, (unsigned long int)n);
+}
+
 double draw_randum_interval(
   gsl_rng **randgen, double a, double b
 )

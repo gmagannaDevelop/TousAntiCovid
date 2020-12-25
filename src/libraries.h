@@ -14,6 +14,12 @@
   /* DEBUG */
   #include <mcheck.h>
 
+  /* Sleeping-related */
+  #include <time.h>
+  #include <errno.h>    
+
+
+
   /* GNU Scientific library */
   #include <gsl/gsl_rng.h>
 

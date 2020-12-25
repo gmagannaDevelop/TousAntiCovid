@@ -56,25 +56,12 @@ void move_SW(Coordinate *pos, int N, int M)
     pos->y = p(pos->y, N);
 }
 
-void (*directions[])(Coordinate *pos, int, int) = {
-    /* This "directions" array will stablish an
-       order for the directions, and more importantly,
-       it will allow "counter-gradient" movements.
-            {NW,  N, NW,  O, SE, S, SW, E}
-            {-1, -2, -3, -4, 1,  2,  3, 4} 
-            { 0,  1,  2,  3, 4,  5,  6, 7}
-       as one can see here, oposite directions 
-       have the same value but different sign.
-       With this layout we can easily 
-       "inverse the direction", i.e. 
-       "move against the gradient".
-     */
-    move_NW, move_N, move_NE, move_W,
-    move_SE, move_S, move_SW, move_E
-};
+
 
 int oposite_direction(Person *p)
-{
+{/* Returns the value of the opposite direction 
+    with no side effects.
+*/
     if ((p->direction >= 0) && (p->direction < 4)){
         return p->direction + 4;
     }
