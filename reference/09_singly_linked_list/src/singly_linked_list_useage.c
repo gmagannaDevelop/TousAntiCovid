@@ -22,7 +22,7 @@ int main(void)
 int i = 0, element = 0, list_id = 0;
 struct singly_linked_list *sll;
 struct singly_linked_list *iter;
-
+int intermediate, exceded;
 
 /* Singly linked list initialization: */
 printf("\n\nInitializing a singly linked list...");
@@ -37,7 +37,7 @@ printf("The singly linked list has %d entries\n", sll_list_length(sll));
 printf("\n\nFilling the singly linked list...");
 for(element = 1; element <= LIST_LENGTH; element++)
   {
-  list_id = element * element;
+  list_id = element;
   extend_sll(sll, list_id);
   } 
 printf(" Done.\n\n");
@@ -56,7 +56,7 @@ while(iter->next != NULL){
 
 /* Querying the list for id: */
 printf("\n\nTabloid of numbers that are contained in the singly linked list:\n\n");
-for(list_id = 1; list_id <= LIST_LENGTH * LIST_LENGTH; list_id++)
+for(list_id = 1; list_id <= LIST_LENGTH ; list_id++)
   {
   if(is_in_sll(sll, list_id))
     {
@@ -79,9 +79,9 @@ printf("\n\n");
 
 
 /* Removing id from the singly linked list: */
-printf("\nTrying to remove entry %"DIGITS_STRING"d from the linked list...",\
-       (LIST_LENGTH/2) * (LIST_LENGTH/2));
-if( remove_id_from_sll(sll, (LIST_LENGTH/2) * (LIST_LENGTH/2)) )
+intermediate = LIST_LENGTH/2;
+printf("\nTrying to remove entry %"DIGITS_STRING"d from the linked list...", intermediate);
+if( remove_id_from_sll(sll, intermediate) ) 
   {
   printf(" Success.\n");
   }
@@ -95,9 +95,9 @@ printf("The singly linked list has %d entries\n\n\n", sll_list_length(sll));
 
 
 /* Trying to remove id from the singly linked list which is not present: */
-printf("\nTrying to remove entry %"DIGITS_STRING"d from the linked list...",\
-       (LIST_LENGTH+1) * (LIST_LENGTH+1));
-if( remove_id_from_sll(sll, (LIST_LENGTH+1) * (LIST_LENGTH+1)) )
+exceded = LIST_LENGTH+1;
+printf("\nTrying to remove entry %"DIGITS_STRING"d from the linked list...", exceded);
+if( remove_id_from_sll(sll, exceded) )
   {
   printf(" Success.\n");
   }

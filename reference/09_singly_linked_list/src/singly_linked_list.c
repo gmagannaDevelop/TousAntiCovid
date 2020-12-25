@@ -225,8 +225,12 @@ if(NULL == sll->next)
 
 if(NULL == sll->next->next)
   {
+  /* save id : */
   id = sll->id;
+  /* call free(NULL) */
   free(sll->next->next);
+  /* call free on next node */
+  /* SHOULD CALL FREE ON `next_node->p` FIRST ! */
   free(sll->next);
   sll->id = 0;
   sll->next = NULL;
