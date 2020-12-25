@@ -120,11 +120,10 @@ if(NULL == persons)
   printf("\n\nError in allocating 'persons' array.\n\n");
   exit(0);
   }
-initialize_rand();
 for(n = 0; n < N; n++)
   {
-  persons[2*n  ] = GRAPHICS_MARGIN + rand_zero_n(GRAPHICS_WIDTH  - 2*GRAPHICS_MARGIN);
-  persons[2*n+1] = GRAPHICS_MARGIN + rand_zero_n(GRAPHICS_HEIGHT - 2*GRAPHICS_MARGIN);
+  persons[2*n  ] = GRAPHICS_MARGIN + draw_randint_0n(&randgen, GRAPHICS_WIDTH  - 2*GRAPHICS_MARGIN);
+  persons[2*n+1] = GRAPHICS_MARGIN + draw_randint_0n(&randgen, GRAPHICS_HEIGHT - 2*GRAPHICS_MARGIN);
   }
 /* End of allocation and initialization of N persons at random (x,y) positions. ... */
 

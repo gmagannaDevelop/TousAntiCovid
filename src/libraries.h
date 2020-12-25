@@ -37,9 +37,7 @@
     #include "datastructures.h"
     #include "SDL_datastructure.h"
     #include "visualization.h"
-    #include "simple_random.h"
     #include "SDL_ppm_graphics.h"
-    /*#include "random_numbers.h"*/
 
     /* Constants and macros : */
     #include "constants.h"
