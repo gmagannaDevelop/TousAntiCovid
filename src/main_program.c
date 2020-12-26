@@ -127,6 +127,8 @@ int main(int argc, char **argv)
       msleep(150);
       global_update(&randgen, &people, &doctors, &table, N, M);
 
+      visualise_virus(SDL_graphics, table, N, M, VIRUSSIZE);
+
       // SDL visualization:
       p_iter = people;
       while(p_iter->next != NULL){
@@ -139,7 +141,7 @@ int main(int argc, char **argv)
       p_iter = doctors;
       while(p_iter->next != NULL){
         p = p_iter->p;
-        visualise_person(SDL_graphics, p, VIRUSSIZE);
+        visualise_person(SDL_graphics, p, PERSONSIZE);
         p_iter = p_iter->next;
       }
 

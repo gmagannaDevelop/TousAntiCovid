@@ -16,7 +16,8 @@ int sdl_update(struct SDL_graphics *graph);
 
 int visualise_person(struct SDL_graphics *graph, Person *p, int radius);
 
-int visualize_person(struct SDL_graphics *graph, float *persons, int n, int radius);
+int visualise_virus(struct SDL_graphics *graph, Case *table, 
+  int N, int M, int radius);
 
 int drawbox (struct SDL_graphics *graph, int left, int right, int top, int bottom, int width, int brightness);
 

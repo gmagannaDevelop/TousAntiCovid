@@ -112,47 +112,51 @@ for(r = 0.0; r < radius; r += 0.5){
 return(1);
 }
 
-
-
-int visualize_person(struct SDL_graphics *graph, float *persons, int n, int radius)
-{
+int visualise_virus(
+  struct SDL_graphics *graph, Case *table, 
+  int N, int M, int radius
+){
 /*
  * Draws a filled circular disk with 'radius' in units of pixels around
  * the (x, y) position of person 'n'. The color of the disk is related to
  * the value of 'n'.
  *
  */   
-int row, col;
-float x, y, r, phi, dphi;
+  int row, col, i, j;
+  float x, y, r, phi, dphi;
 
-x = persons[2*n  ];
-y = persons[2*n+1];
 
-for(r = 0.0; r < radius; r += 0.5){
-  dphi = 1.0 / (2.0 * PI * r);
-  for(phi = 0.0; phi < 2.0*PI; phi += dphi){
-    col = (int)(x + r*cos(phi)); 
-    row = (int)(y + r*sin(phi)); 
-    if((row >= 0) && (row < graph->height) && (col >= 0) && (col < graph->width)){
-      // COLOUR REFERENCE  :
-      // https://rgbcolorcode.com/color/amber-sae-ece
+  for (i=0; i<N; i++){
+    for (j=0; j<M; j++){
+      x = (float)(j*SIM_TO_GRAPHICS + 2*GRAPHICS_MARGIN);
+      y = (float)(i*SIM_TO_GRAPHICS + 2*GRAPHICS_MARGIN);
 
-      // RED :
-      graph->pixel[3*row*graph->width + 3*col + 2] =  255;//( (23*n) % 255);
-      // GREEN :
-      graph->pixel[3*row*graph->width + 3*col + 1] =  126;//((101*n) % 255);
-      // BLUE :
-      graph->pixel[3*row*graph->width + 3*col    ] =   20;//( (11*n) % 255);
+      for(r = 0.0; r < radius; r += 0.5){
+        dphi = 1.0 / (2.0 * PI * r);
+        for(phi = 0.0; phi < 2.0*PI; phi += dphi){
+          col = (int)(x + r*cos(phi)); 
+          row = (int)(y + r*sin(phi)); 
+          if((row >= 0) && (row < graph->height) && (col >= 0) && (col < graph->width)){
+            // COLOUR REFERENCE  :
+            // https://rgbcolorcode.com/color/amber-sae-ece
+            if (table[i*M + j].viral_charge > 0) {
+              /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 250;
+              /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 0;
+              /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 0;
+            }
+            else {
+              /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 255; 
+              /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 255; 
+              /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 255; 
+            }
+          }
+        }
+      }
     }
   }
-}
 
 return(1);
 }
-		
-
-
-
 
 
 int drawbox (struct SDL_graphics *graph, int left, int right, int top, int bottom, int width, int brightness)
