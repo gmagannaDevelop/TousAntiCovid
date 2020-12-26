@@ -18,7 +18,8 @@
         gsl_rng **randgen,
         struct singly_linked_list **people, 
         struct singly_linked_list **doctors,
-        Case **table
+        Case **table,
+        int N, int M
     );
 
 #endif

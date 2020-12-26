@@ -7,7 +7,7 @@
 
 int main(int argc, char **argv)
 {
-int N, n, step, save_graphics;
+int N, M, n, step, save_graphics;
 int row, column, i, j; /* Counters */
 char filename[MAX_LINELENGTH];
 struct SDL_graphics *SDL_graphics; 
@@ -20,21 +20,21 @@ double plambda, pdoctor, pvirus;
 int nlambda, ndoctor, nvirus;
 gsl_rng *randgen;
 
-parse_commandline(argc, argv, &N, &save_graphics);
+parse_commandline(argc, argv, &N, &M, &save_graphics);
 
 initialize_randgen(&randgen, RND_VERBOSITY);
 
-table = (Case *)malloc( N_LINES * M_COLUMNS * sizeof(Case) );
+table = (Case *)malloc( N * M * sizeof(Case) );
 if (NULL == table){ printf("matrix allocation error\n"); exit(EXIT_FAILURE); }
 
 allocate_and_initialize_sll(&people);
 allocate_and_initialize_sll(&doctors);
 
 nlambda = ndoctor = nvirus = 0;
-for (row=0; row<N_LINES; row++){
-  for (column=0; column<M_COLUMNS; column++){
+for (row=0; row<N; row++){
+  for (column=0; column<M; column++){
     // P INIT LAMBDA
-    itable = &table[row*M_COLUMNS + column];
+    itable = &table[row*M + column];
     if (TRUE == bernoulli_trial(&randgen, P_INIT_LAMBDA)){
       itable->p = p = (Person *)malloc(sizeof(Person));
       if (NULL == p){ printf("person allocation error\n"); exit(EXIT_FAILURE); }
@@ -70,13 +70,13 @@ for (row=0; row<N_LINES; row++){
 
 
 if (FALSE){
-  plambda = (double)sll_list_length(people)/((double)N_LINES*M_COLUMNS) ;
-  pdoctor = (double)sll_list_length(doctors)/((double)N_LINES*M_COLUMNS) ;
-  pvirus = (double)nvirus/((double)N_LINES*M_COLUMNS) ;
+  plambda = (double)sll_list_length(people)/((double)N*M) ;
+  pdoctor = (double)sll_list_length(doctors)/((double)N*M) ;
+  pvirus = (double)nvirus/((double)N*M) ;
   printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
   //printf("Person count  prior : %d, posterior %d \n", nlambda, sll_list_length(people));
   //printf("Doctor count  prior : %d, posterior %d \n", ndoctor, sll_list_length(doctors));
-  //show_grid_lists(table, N_LINES, M_COLUMNS, people, doctors);
+  //show_grid_lists(table, N, M, people, doctors);
   exit(EXIT_SUCCESS);
 }
 
@@ -88,8 +88,8 @@ if(NULL == SDL_graphics)
   printf("\n\nError in allocating struct SDL_graphics *SDL_graphics\n\n");
   exit(0);
   }
-SDL_graphics->width = GRAPHICS_WIDTH;
-SDL_graphics->height= GRAPHICS_HEIGHT;
+SDL_graphics->width = M*SIM_TO_GRAPHICS + 2*GRAPHICS_MARGIN;
+SDL_graphics->height= N*SIM_TO_GRAPHICS + 2*GRAPHICS_MARGIN;
 allocate_SDL_pixelarray(SDL_graphics);
 initialize_SDL_graphics(SDL_graphics);
 initialize_pixel_array(SDL_graphics);
@@ -117,8 +117,8 @@ if(-1 == system("chmod +x ppm_to_gif_script.sh"))
 
 
 for(step = 0; step < MAX_SIMULATION_STEPS; step++){
-  //msleep(100);
-  global_update(&randgen, &people, &doctors, &table);
+  msleep(150);
+  global_update(&randgen, &people, &doctors, &table, N, M);
 
   // SDL visualization:
   p_iter = people;
@@ -137,8 +137,8 @@ for(step = 0; step < MAX_SIMULATION_STEPS; step++){
   }
 
   drawbox(SDL_graphics, 
-      GRAPHICS_MARGIN, GRAPHICS_WIDTH-GRAPHICS_MARGIN,
-      GRAPHICS_MARGIN, GRAPHICS_HEIGHT-GRAPHICS_MARGIN, 
+      GRAPHICS_MARGIN, M*SIM_TO_GRAPHICS + GRAPHICS_MARGIN,
+      GRAPHICS_MARGIN, N*SIM_TO_GRAPHICS + GRAPHICS_MARGIN, 
       GRAPHICS_MARGIN/2, 0
   );
   sdl_update(SDL_graphics);

@@ -108,7 +108,7 @@ int global_update(
     gsl_rng **randgen,
     struct singly_linked_list **people, 
     struct singly_linked_list **doctors,
-    Case **table
+    Case **table, int N, int M
 ){
   Person *p;
   struct singly_linked_list *p_iter;
@@ -119,10 +119,10 @@ int global_update(
     p = p_iter->p;
     // test deadly virus :
     if (bernoulli_trial(randgen, 0.01)){
-      person_death(p, people, table, N_LINES, M_COLUMNS);
+      person_death(p, people, table, N, M);
     }
     else {
-      move_person(randgen, p, table, N_LINES, M_COLUMNS);
+      move_person(randgen, p, table, N, M);
       p_iter = p_iter->next;
     }
     //printf("DONE\n");
@@ -131,7 +131,7 @@ int global_update(
   while(p_iter->next != NULL){
     //printf("update one doctor\n");  
     p = p_iter->p;
-    move_person(randgen, p, table, N_LINES, M_COLUMNS);
+    move_person(randgen, p, table, N, M);
     p_iter = p_iter->next;
     //printf("DONE\n");
   }
