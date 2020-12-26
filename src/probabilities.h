@@ -23,13 +23,13 @@
 
 /*# Function protoypes : */
   
-    /* 
-      Perform a bernoulli trial (binomial experiment)
+    /*Perform a bernoulli trial (binomial experiment)
       with success probability `p`.
       Returns 
         TRUE (1, with a probability `p`)
-        FALSE (O, with a probability `1-p`)
-    */
+        FALSE (O, with a probability `1-p`)        */
     int bernoulli_trial(gsl_rng **randgen, double p);
+
+    int correct_posterior_probs(double *p_lambda, double *p_doctor, double *p_virus);
 
 #endif
