@@ -6,11 +6,12 @@
 # start compilation flags #
   STDFLAGS := -Wall -Wstrict-prototypes -pedantic -lm 
   OPTIM := -O3 
+  DEBUG := -O0 -g  
   GSLFLAGS := $(shell gsl-config --cflags)
   SDLFLAGS := $(shell sdl-config --cflags)
   NCFLAGS := $(STDFLAGS) $(OPTIM) $(GSLFLAGS) $(SDLFLAGS)  
-  DEBUG_CFLAGS := $(STDFLAGS) $(GSLFLAGS) $(SDLFLAGS) -O0 -g  
-  CFLAGS := $(NCFLAGS)
+  DEBUGCFLAGS := $(STDFLAGS) $(GSLFLAGS) $(SDLFLAGS) $(DEBUG) 
+  CFLAGS := $(DEBUGCFLAGS)
 # end compilation flags #
 
 # start linking flags #
