@@ -64,6 +64,70 @@ In order to compile and run the C code present in this repository, you must inst
     brew install sdl
     ```
 
+### Project Structure 
+
+The main project source is located at `src`. The directory `bin` stores the executable (it is needed as the recipe in the makefile expects it to exist.
+
+```bash
+.
+├── bin
+├── covid-simu
+├── experiments
+├── ideas
+├── images
+├── metrics
+├── reference
+│   ├── 09_singly_linked_list
+│   │   ├── bin
+│   │   └── src
+│   ├── 13_binary_tree
+│   │   ├── bin
+│   │   │   └── removing_nodes_example
+│   │   └── src
+│   ├── 21_SDL_ppm_graphics
+│   │   ├── bin
+│   │   └── src
+│   └── 26_Mersenne_Twister
+│       ├── bin
+│       └── src
+├── src
+└── stray
+    ├── graphics
+    ├── original
+    └── random
+```
+
+```bash
+src
+├── aux_math.c  # Auxiliary math operations (float comparisons)
+├── aux_math.h
+├── constants.h # Miscellaneous simulation constants
+├── datastructures.h # Person, Coordinate, and other custom datatypes
+├── dev_random.c # Functions to initialise gsl's rng.
+├── dev_random.h
+├── display.c # Functions to display on console (legacy)
+├── display.h
+├── dynamics.c # Physical displacement rules and utility functions
+├── dynamics.h 
+├── libraries.h # All of our headers and needed libraries.
+├── main_program.c # MAIN PROGRAM
+├── Makefile 
+├── mersenne_twister.c # High-quality pseudo random number generation
+├── mersenne_twister.h
+├── parsing.c # Get parameters from the command line
+├── parsing.h
+├── probabilities.c  # Utility functions for random experiments
+├── probabilities.h # Probabilities which are internal params
+├── SDL_datastructure.h  # datastructures needed for graphics
+├── simulation.c # instantiation, iteration and epochs
+├── simulation.h 
+├── singly_linked_list.c # Sinlgy linked list implementation
+├── singly_linked_list.h
+├── visualization.c # Functions used to render the simulation
+└── visualization.h # via SDL
+```
+
+
 ### Acknowledgements
 
 We would like to thank Ouriel Grynszpan and Stéphanie Chevalier for their instruction and support during this course.
