@@ -4,7 +4,9 @@
 #define TRUE 1
 #define FALSE 0
 
-#define VIRAL_LIFESPAN 4
+#define VIRAL_LIFESPAN 14
+#define MEAN_INFECTION_LENGTH 14
+#define VIRULENCE 1.0/10.0
 #define N_DIRECTIONS 8
 
 #define MAX_LINELENGTH 1024

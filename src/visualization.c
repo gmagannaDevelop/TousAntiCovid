@@ -45,19 +45,12 @@ return(1);
 
 int fade_pixel_array(struct SDL_graphics *graph, int fader)
 {
-int i;
-for(i = 0; i < 3*graph->width*graph->height; i++)
-  {
-  if(graph->pixel[i] + fader < 256)
-    {
-    graph->pixel[i] += fader;
-    }
-  else
-    {
-    graph->pixel[i] = 255;
-    }
+  int i;
+  for(i = 0; i < 3*graph->width*graph->height; i++){
+    if(graph->pixel[i] + fader < 256){ graph->pixel[i] += fader; }
+    else { graph->pixel[i] = 255; }
   }
-return(1);
+  return(1);
 }
 
 
@@ -95,15 +88,28 @@ for(r = 0.0; r < radius; r += 0.5){
     if((row >= 0) && (row < graph->height) && (col >= 0) && (col < graph->width)){
       // COLOUR REFERENCE  :
       // https://rgbcolorcode.com/color/amber-sae-ece
-      if (p->healing) {
-        /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 100;
-        /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 255;
-        /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 0;
+      if (p->viral_charge > 0){
+        if (p->symptomatic){
+          /*RED */ graph->pixel[3*row*graph->width + 3*col + 2 ] = 255;
+          /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1 ] = 0;
+          /*BLUE*/ graph->pixel[3*row*graph->width + 3*col     ] = 0;
+        } else {
+          /*RED */ graph->pixel[3*row*graph->width + 3*col + 2 ] = 255;
+          /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1 ] = 128;
+          /*BLUE*/ graph->pixel[3*row*graph->width + 3*col     ] = 0;
+        }
       }
-      else {
-        /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 100; 
-        /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 0; 
-        /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 255; 
+      else { 
+        if (p->healing) {
+          /*RED */ graph->pixel[3*row*graph->width + 3*col + 2 ] = 100;
+          /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1 ] = 255;
+          /*BLUE*/ graph->pixel[3*row*graph->width + 3*col     ] = 0;
+        }
+        else {
+          /*RED */ graph->pixel[3*row*graph->width + 3*col + 2 ] = 100; 
+          /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1 ] = 0; 
+          /*BLUE*/ graph->pixel[3*row*graph->width + 3*col     ] = 255; 
+        }
       }
     }
   }
@@ -151,6 +157,9 @@ int visualise_virus(
             }
           }
         }
+      }
+      if (table[ i*M + j].viral_charge > 0){
+        table[ i*M + j ].viral_charge--;
       }
     }
   }

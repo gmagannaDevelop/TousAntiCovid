@@ -21,7 +21,7 @@ void (*directions[])(Coordinate *pos, int, int) = {
 /* TODO : UNIFY INTERFACE (Y,X) */
 void init_person_at(Person *p, int x, int y, int d)
 {
-    p->alive = TRUE;
+    p->symptomatic = FALSE;
     p->viral_charge = 0;
     p->pos.y = y;
     p->pos.x = x;
@@ -31,7 +31,7 @@ void init_person_at(Person *p, int x, int y, int d)
 
 void init_doctor_at(Person *p, int x, int y, int d)
 {
-    p->alive = TRUE;
+    p->symptomatic = FALSE;
     p->viral_charge = 0;
     p->pos.x = x;
     p->pos.y = y;
@@ -47,7 +47,7 @@ int person_death(
     struct singly_linked_list *persons = *p_persons;
     Case *current = &table[ p->pos.y*m + p->pos.x ];
 
-    if (NULL == current->p ){
+    if (NULL == current->p){
         printf("\tWtf bro, the case is already empty !\n");
         return FALSE;
     } else {
@@ -76,15 +76,20 @@ int move_person(
         current->p = NULL;
         directions[p->direction](&(p->pos), n, m);
         next->p = p;
+        if ((next->viral_charge > 0) && (p->viral_charge == 0)){
+            p->viral_charge = MEAN_INFECTION_LENGTH;
+            p->symptomatic = bernoulli_trial(randgen, P_SYMPTOMATIC);
+        }
     } 
     else {
         // make it go back 
         tmp_pos = p->pos;
-        p->direction = oposite_direction(p);
+        //p->direction = oposite_direction(p);
+        p->direction = draw_randint_0n(randgen, N_DIRECTIONS);
         directions[p->direction](&tmp_pos, n, m);    
         next = &table[ tmp_pos.y*m + tmp_pos.x];
         if (NULL == next->p){
-            // if the case in the opposite direction
+            // if the case in the just drawn random direction
             // is free, move person in this direction.
             //printf("go back \n");
             move_person(randgen, p, p_table, n, m);
@@ -112,29 +117,52 @@ int global_update(
 ){
   Person *p;
   struct singly_linked_list *p_iter;
-  
+
   p_iter = *people;
   while(p_iter->next != NULL){
-    //printf("update one person\n");
     p = p_iter->p;
-    // test deadly virus :
-    if (bernoulli_trial(randgen, 0.01)){
-      person_death(p, people, table, N, M);
-    }
+    // "viral tests"
+    if (p->symptomatic){
+      if (bernoulli_trial(randgen, VIRULENCE)){
+        (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN; 
+        person_death(p, people, table, N, M);
+      } else {
+          if (p->viral_charge > 0){ p->viral_charge--; }
+          else { p->symptomatic = FALSE; }
+      }
+    } 
     else {
+      if (p->viral_charge > 0){
+          p->viral_charge--;
+      }
       move_person(randgen, p, table, N, M);
       p_iter = p_iter->next;
     }
-    //printf("DONE\n");
   }
+
   p_iter = *doctors;
   while(p_iter->next != NULL){
-    //printf("update one doctor\n");  
     p = p_iter->p;
-    move_person(randgen, p, table, N, M);
-    p_iter = p_iter->next;
-    //printf("DONE\n");
+    // "viral tests"
+    if (p->symptomatic){
+      if (bernoulli_trial(randgen, VIRULENCE)){
+        (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN; 
+        person_death(p, doctors, table, N, M);
+      } else {
+          if (p->viral_charge > 0){ p->viral_charge--; }
+          else { p->symptomatic = FALSE; }
+      }
+    } 
+    else {
+      if (p->viral_charge > 0){
+          p->viral_charge--;
+      }
+      move_person(randgen, p, table, N, M);
+      p_iter = p_iter->next;
+    }
+
   }
+
   return TRUE;
 }
 

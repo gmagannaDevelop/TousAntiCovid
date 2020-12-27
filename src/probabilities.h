@@ -9,7 +9,7 @@
     #define P_INIT_DOCTOR A_INIT_DOCTOR / (1.0 - A_INIT_LAMBDA)
     #define P_INIT_VIRUS A_INIT_VIRUS / ((1.0 - A_INIT_LAMBDA )*(1.0 - A_INIT_DOCTOR))
     
-    #define P_ASYMPTOMATIC 2.0/3.0                                                  
+    #define P_ASYMPTOMATIC 1.0/3.0                                                  
     #define P_SYMPTOMATIC 1.0 - P_ASYMPTOMATIC
 
     #define VIRULENCE 1.0/10.0

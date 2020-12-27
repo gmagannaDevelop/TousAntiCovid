@@ -12,7 +12,7 @@
 
     typedef struct Persons
     {
-        int alive;
+        int symptomatic;
         int viral_charge;
         Coordinate pos;
         /* This should be between [0,7] */
