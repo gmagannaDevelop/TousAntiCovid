@@ -155,7 +155,7 @@ int main(int argc, char **argv)
       fade_pixel_array(SDL_graphics, FADER);
 
       /* ppm picture file output and gif conversion script entry: */
-      if((0 == step%GIF_STEP) && (save_graphics == TRUE)) {
+      if((0 == step%GIF_STEP) && (FALSE)) {
         sprintf(filename, "Snapshot_%08d.ppm", step+1);
         write_ppm(SDL_graphics, filename);
         fprintf(outputscript, "(convert %s Snapshot_%08d.gif; rm %s)\n", filename, step+1, filename);
