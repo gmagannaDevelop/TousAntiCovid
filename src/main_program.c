@@ -125,8 +125,7 @@ int main(int argc, char **argv)
 
     for(step = 0; step < MAX_SIMULATION_STEPS; step++){
       
-      p = (Person *)malloc( 10 *  sizeof(Person));
-      msleep(300);
+      msleep(100);
       global_update(&randgen, &people, &doctors, &table, N, M);
 
       visualise_virus(SDL_graphics, table, N, M, VIRUSSIZE);
