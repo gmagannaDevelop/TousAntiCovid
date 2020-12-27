@@ -31,9 +31,5 @@
     } Case;
 
     
-    /* Function protoypes : */
-    void init_person_at(Person *p, int x, int y, int d);
-    
-    void init_doctor_at(Person *p, int x, int y, int d);
 
 #endif

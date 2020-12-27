@@ -4,6 +4,11 @@
     #include "datastructures.h"
     #include "singly_linked_list.h"
 
+    /* Function protoypes : */
+    void init_person_at(Person *p, int x, int y, int d);
+    
+    void init_doctor_at(Person *p, int x, int y, int d);
+
     int person_death(
         Person *p, struct singly_linked_list **persons,  
         Case **table,
@@ -11,7 +16,8 @@
     );
 
     int move_person(
-        gsl_rng **randgen, Person *p, Case **p_table, int n, int m
+        gsl_rng **randgen, Person *p, 
+        Case **p_table, int n, int m
     );
 
     int global_update(
