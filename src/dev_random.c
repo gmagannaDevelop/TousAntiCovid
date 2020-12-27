@@ -8,7 +8,7 @@ unsigned int first_random_uint, second_random_uint;
 unsigned long int random_ulong;
 int devrand;
 ssize_t bytes_read;
-double rand_null_one, dummy;
+//double rand_null_one, dummy;
 
 if( sizeof(unsigned long int) != 2*sizeof(unsigned int) )
   {

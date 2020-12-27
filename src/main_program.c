@@ -7,13 +7,13 @@
 
 int main(int argc, char **argv)
 {
-    int N, M, n, step, save_graphics;
-    int row, column, i, j; /* Counters */
+    int N, M, step, save_graphics;
+    int row, column; /* Counters */
     char filename[MAX_LINELENGTH];
     struct SDL_graphics *SDL_graphics; 
     SDL_Event event;
     FILE *outputscript;
-    Case *table, *itable, ttable;
+    Case *table, *itable;
     Person *p, *d;
     struct singly_linked_list *people, *doctors, *p_iter;
     double plambda, pdoctor, pvirus;
