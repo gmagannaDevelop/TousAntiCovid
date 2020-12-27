@@ -97,6 +97,8 @@ The main project source is located at `src`. The directory `bin` stores the exec
     └── random
 ```
 
+Explanation of the files found in `src/` directory.
+
 ```bash
 src
 ├── aux_math.c  # Auxiliary math operations (float comparisons)
