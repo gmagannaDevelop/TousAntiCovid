@@ -115,6 +115,7 @@ int global_update(
     struct singly_linked_list **doctors,
     Case **table, int N, int M
 ){
+  int i, j;
   Person *p;
   struct singly_linked_list *p_iter;
 
@@ -126,7 +127,10 @@ int global_update(
       if (bernoulli_trial(randgen, VIRULENCE)){
         (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN; 
         person_death(p, people, table, N, M);
-      } else {
+      }
+      else {
+          // this condition does not obey the problem statement
+          // might need to delete.
           if (p->viral_charge > 0){ p->viral_charge--; }
           else { p->symptomatic = FALSE; }
       }
@@ -161,6 +165,14 @@ int global_update(
       p_iter = p_iter->next;
     }
 
+  }
+
+  for (i = 0; i<N; i++){
+    for (j = 0; j<M; j++){
+      if ((*table)[ i*M + j].viral_charge > 0){
+        (*table)[ i*M + j ].viral_charge--;
+      }
+    }
   }
 
   return TRUE;

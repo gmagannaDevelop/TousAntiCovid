@@ -158,9 +158,6 @@ int visualise_virus(
           }
         }
       }
-      if (table[ i*M + j].viral_charge > 0){
-        table[ i*M + j ].viral_charge--;
-      }
     }
   }
 
