@@ -6,17 +6,125 @@ void (*directions[])(Coordinate *pos, int, int) = {
        order for the directions, and more importantly,
        it will allow "counter-gradient" movements.
             {NW,  N, NW,  O, SE, S, SW, E}
-            {-1, -2, -3, -4, 1,  2,  3, 4} 
+            {-1, -2, -3, -4, 1,  2,  3, 4}
             { 0,  1,  2,  3, 4,  5,  6, 7}
-       as one can see here, oposite directions 
+       as one can see here, oposite directions
        have the same value but different sign.
-       With this layout we can easily 
-       "inverse the direction", i.e. 
+       With this layout we can easily
+       "inverse the direction", i.e.
        "move against the gradient".
      */
     move_NW, move_N, move_NE, move_W,
     move_SE, move_S, move_SW, move_E
 };
+
+void add_danger(Person *p, Case **p_table, int n, int m){
+  Case *table = *p_table;
+  Coordinate tmp_pos = p->pos;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
+  move_E(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
+  move_S(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
+  move_S(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
+  move_W(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
+  move_W(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_E(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_E(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_E(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_S(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_S(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_S(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_S(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_W(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_W(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_W(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_W(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
+
+}
+
+void rm_danger(Person *p, Case **p_table, int n, int m){
+  Case *table = *p_table;
+  Coordinate tmp_pos = p->pos;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
+  move_E(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
+  move_S(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
+  move_S(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
+  move_W(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
+  move_W(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_E(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_E(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_E(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_S(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_S(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_S(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_S(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_W(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_W(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_W(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_W(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  move_N(&tmp_pos, n, m);
+  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+}
+
 
 /* TODO : UNIFY INTERFACE (Y,X) */
 void init_person_at(Person *p, int x, int y, int d)
@@ -51,6 +159,9 @@ int person_death(
         printf("\tWtf bro, the case is already empty !\n");
         return FALSE;
     } else {
+        if (p->symptomatic){
+          rm_danger(p,&table,n,m);
+        }
         current->p = NULL;
         return remove_person_from_sll(persons, p);
     }
@@ -65,30 +176,33 @@ int move_person(
     Case *next;
 
     tmp_pos = p->pos;
-    // Shift tmp_pos in the direction 
+    // Shift tmp_pos in the direction
     // mandated by the person :
     //printf("person's direction : %d\n", p->direction);
-    directions[p->direction](&tmp_pos, n, m);    
+    directions[p->direction](&tmp_pos, n, m);
     next = &table[ tmp_pos.y*m + tmp_pos.x];
-    
+
     // if case is empty, move the person
-    if (NULL == next->p){
+    if ((NULL == next->p) && (next->danger<=current->danger)){
         current->p = NULL;
         directions[p->direction](&(p->pos), n, m);
         next->p = p;
         if ((next->viral_charge > 0) && (p->viral_charge == 0)){
             p->viral_charge = MEAN_INFECTION_LENGTH;
             p->symptomatic = bernoulli_trial(randgen, P_SYMPTOMATIC);
+            if (p->symptomatic){
+              add_danger(p,&table,n,m);
+            }
         }
-    } 
+    }
     else {
-        // make it go back 
+        // make it go back
         tmp_pos = p->pos;
-        //p->direction = oposite_direction(p);
+        //p->direction = opposite_direction(p);
         p->direction = draw_randint_0n(randgen, N_DIRECTIONS);
-        directions[p->direction](&tmp_pos, n, m);    
+        directions[p->direction](&tmp_pos, n, m);
         next = &table[ tmp_pos.y*m + tmp_pos.x];
-        if (NULL == next->p){
+        if ((NULL == next->p) && (next->danger<=current->danger)){
             // if the case in the just drawn random direction
             // is free, move person in this direction.
             //printf("go back \n");
@@ -96,22 +210,78 @@ int move_person(
         }
         else {
             return FALSE;
-            // try getting a random new direction to 
+            // try getting a random new direction to
             // avoid infinite recursion :
             //p->direction = draw_randint_0n(randgen, N_DIRECTIONS);
             //printf("en mode random \n");
-            //move_person(randgen, p, p_table, n, m);         
-            // turns out that random dirrections 
+            //move_person(randgen, p, p_table, n, m);
+            // turns out that random dirrections
             // can also lead to infinite recursion.
-        } 
+        }
+    }
+    return TRUE;
+}
+
+int move_doctor(
+    gsl_rng **randgen, Person *p, Case **p_table, int n, int m
+){
+    Coordinate tmp_pos;
+    Case *table = *p_table;
+    Case *current = &table[ p->pos.y*m + p->pos.x ];
+    Case *next;
+
+    tmp_pos = p->pos;
+    // Shift tmp_pos in the direction
+    // mandated by the person :
+    //printf("person's direction : %d\n", p->direction);
+    directions[p->direction](&tmp_pos, n, m);
+    next = &table[ tmp_pos.y*m + tmp_pos.x];
+
+    // if case is empty, move the person
+    if ((NULL == next->p) && (next->danger>=current->danger)){
+        current->p = NULL;
+        directions[p->direction](&(p->pos), n, m);
+        next->p = p;
+        if ((next->viral_charge > 0) && (p->viral_charge == 0)){
+            p->viral_charge = MEAN_INFECTION_LENGTH;
+            p->symptomatic = bernoulli_trial(randgen, P_SYMPTOMATIC);
+            if (p->symptomatic){
+              add_danger(p,&table,n,m);
+            }
+        }
+    }
+    else {
+        // make it go back
+        tmp_pos = p->pos;
+        //p->direction = opposite_direction(p);
+        p->direction = draw_randint_0n(randgen, N_DIRECTIONS);
+        directions[p->direction](&tmp_pos, n, m);
+        next = &table[ tmp_pos.y*m + tmp_pos.x];
+        if ((NULL == next->p) && (next->danger>= current->danger)){
+            // if the case in the just drawn random direction
+            // is free, move person in this direction.
+            //printf("go back \n");
+            move_person(randgen, p, p_table, n, m);
+        }
+        else {
+            return FALSE;
+            // try getting a random new direction to
+            // avoid infinite recursion :
+            //p->direction = draw_randint_0n(randgen, N_DIRECTIONS);
+            //printf("en mode random \n");
+            //move_person(randgen, p, p_table, n, m);
+            // turns out that random dirrections
+            // can also lead to infinite recursion.
+        }
     }
     return TRUE;
 }
 
 
+
 int global_update(
     gsl_rng **randgen,
-    struct singly_linked_list **people, 
+    struct singly_linked_list **people,
     struct singly_linked_list **doctors,
     Case **table, int N, int M
 ){
@@ -125,16 +295,19 @@ int global_update(
     // "viral tests"
     if (p->symptomatic){
       if (bernoulli_trial(randgen, VIRULENCE)){
-        (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN; 
+        (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN;
         person_death(p, people, table, N, M);
       }
       else {
           // this condition does not obey the problem statement
           // might need to delete.
           if (p->viral_charge > 0){ p->viral_charge--; }
-          else { p->symptomatic = FALSE; }
+          else {
+            p->symptomatic = FALSE;
+            rm_danger(p,table,N,M);
+          }
       }
-    } 
+    }
     else {
       if (p->viral_charge > 0){
           p->viral_charge--;
@@ -150,18 +323,21 @@ int global_update(
     // "viral tests"
     if (p->symptomatic){
       if (bernoulli_trial(randgen, VIRULENCE)){
-        (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN; 
+        (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN;
         person_death(p, doctors, table, N, M);
       } else {
           if (p->viral_charge > 0){ p->viral_charge--; }
-          else { p->symptomatic = FALSE; }
+          else {
+            p->symptomatic = FALSE;
+            rm_danger(p,table,N,M);
+          }
       }
-    } 
+    }
     else {
       if (p->viral_charge > 0){
           p->viral_charge--;
       }
-      move_person(randgen, p, table, N, M);
+      move_doctor(randgen, p, table, N, M);
       p_iter = p_iter->next;
     }
 
@@ -177,5 +353,3 @@ int global_update(
 
   return TRUE;
 }
-
-

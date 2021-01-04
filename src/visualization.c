@@ -64,7 +64,7 @@ SDL_BlitSurface (graph->memfield, NULL, graph->screen, NULL);
 SDL_UpdateRect(graph->screen, 0, 0, 0, 0);
 return(1);
 }
-	 
+
 
 int visualise_person(struct SDL_graphics *graph, Person *p, int radius)
 {
@@ -73,7 +73,7 @@ int visualise_person(struct SDL_graphics *graph, Person *p, int radius)
  * the (x, y) position of person 'n'. The color of the disk is related to
  * the value of 'n'.
  *
- */   
+ */
 int row, col;
 float x, y, r, phi, dphi;
 
@@ -83,8 +83,8 @@ y = (float)(p->pos.y*SIM_TO_GRAPHICS + 2*GRAPHICS_MARGIN);
 for(r = 0.0; r < radius; r += 0.5){
   dphi = 1.0 / (2.0 * PI * r);
   for(phi = 0.0; phi < 2.0*PI; phi += dphi){
-    col = (int)(x + r*cos(phi)); 
-    row = (int)(y + r*sin(phi)); 
+    col = (int)(x + r*cos(phi));
+    row = (int)(y + r*sin(phi));
     if((row >= 0) && (row < graph->height) && (col >= 0) && (col < graph->width)){
       // COLOUR REFERENCE  :
       // https://rgbcolorcode.com/color/amber-sae-ece
@@ -99,16 +99,16 @@ for(r = 0.0; r < radius; r += 0.5){
           /*BLUE*/ graph->pixel[3*row*graph->width + 3*col     ] = 0;
         }
       }
-      else { 
+      else {
         if (p->healing) {
           /*RED */ graph->pixel[3*row*graph->width + 3*col + 2 ] = 100;
           /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1 ] = 255;
           /*BLUE*/ graph->pixel[3*row*graph->width + 3*col     ] = 0;
         }
         else {
-          /*RED */ graph->pixel[3*row*graph->width + 3*col + 2 ] = 100; 
-          /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1 ] = 0; 
-          /*BLUE*/ graph->pixel[3*row*graph->width + 3*col     ] = 255; 
+          /*RED */ graph->pixel[3*row*graph->width + 3*col + 2 ] = 100;
+          /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1 ] = 0;
+          /*BLUE*/ graph->pixel[3*row*graph->width + 3*col     ] = 255;
         }
       }
     }
@@ -119,7 +119,7 @@ return(1);
 }
 
 int visualise_virus(
-  struct SDL_graphics *graph, Case *table, 
+  struct SDL_graphics *graph, Case *table,
   int N, int M, int radius
 ){
 /*
@@ -127,7 +127,7 @@ int visualise_virus(
  * the (x, y) position of person 'n'. The color of the disk is related to
  * the value of 'n'.
  *
- */   
+ */
   int row, col, i, j;
   float x, y, r, phi, dphi;
 
@@ -140,8 +140,8 @@ int visualise_virus(
       for(r = 0.0; r < radius; r += 0.5){
         dphi = 1.0 / (2.0 * PI * r);
         for(phi = 0.0; phi < 2.0*PI; phi += dphi){
-          col = (int)(x + r*cos(phi)); 
-          row = (int)(y + r*sin(phi)); 
+          col = (int)(x + r*cos(phi));
+          row = (int)(y + r*sin(phi));
           if((row >= 0) && (row < graph->height) && (col >= 0) && (col < graph->width)){
             // COLOUR REFERENCE  :
             // https://rgbcolorcode.com/color/amber-sae-ece
@@ -151,9 +151,9 @@ int visualise_virus(
               /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 0;
             }
             else {
-              /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 255; 
-              /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 255; 
-              /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 255; 
+              /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 255;
+              /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 255;
+              /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 255;
             }
           }
         }
@@ -164,6 +164,51 @@ int visualise_virus(
 return(1);
 }
 
+int visualise_danger(
+  struct SDL_graphics *graph, Case *table,
+  int N, int M, int radius
+){
+/*
+ * Draws a filled circular disk with 'radius' in units of pixels around
+ * the (x, y) position of person 'n'. The color of the disk is related to
+ * the value of 'n'.
+ *
+ */
+  int row, col, i, j;
+  float x, y, r, phi, dphi;
+
+
+  for (i=0; i<N; i++){
+    for (j=0; j<M; j++){
+      x = (float)(j*SIM_TO_GRAPHICS + 2*GRAPHICS_MARGIN);
+      y = (float)(i*SIM_TO_GRAPHICS + 2*GRAPHICS_MARGIN);
+
+      for(r = 0.0; r < radius; r += 0.5){
+        dphi = 1.0 / (2.0 * PI * r);
+        for(phi = 0.0; phi < 2.0*PI; phi += dphi){
+          col = (int)(x + r*cos(phi));
+          row = (int)(y + r*sin(phi));
+          if((row >= 0) && (row < graph->height) && (col >= 0) && (col < graph->width)){
+            // COLOUR REFERENCE  :
+            // https://rgbcolorcode.com/color/amber-sae-ece
+            if (table[i*M + j].danger > 0) {
+              /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 250;
+              /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 0;
+              /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 250;
+            }
+            else {
+              /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 255;
+              /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 255;
+              /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 255;
+            }
+          }
+        }
+      }
+    }
+  }
+
+return(1);
+}
 
 int drawbox (struct SDL_graphics *graph, int left, int right, int top, int bottom, int width, int brightness)
 {

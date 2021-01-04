@@ -1,6 +1,6 @@
 /*
  *
- */ 
+ */
 
 #include "libraries.h"
 
@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     int N, M, step, save_graphics;
     int row, column; /* Counters */
     char filename[MAX_LINELENGTH];
-    struct SDL_graphics *SDL_graphics; 
+    struct SDL_graphics *SDL_graphics;
     SDL_Event event;
     FILE *outputscript;
     Case *table, *itable;
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     gsl_rng *randgen;
 
     parse_commandline(
-      argc, argv, &N, &M, 
+      argc, argv, &N, &M,
       &p_init_lambda, &p_init_doctor, &p_init_virus,
       &save_graphics
     );
@@ -50,22 +50,22 @@ int main(int argc, char **argv)
           init_person_at(p, column, row, draw_randint_0n(&randgen, N_DIRECTIONS));
           nlambda++;
         }
-        // P INIT DOCOR 
+        // P INIT DOCOR
         else if (TRUE == bernoulli_trial(&randgen, p_init_doctor)){
           itable->p = d = (Person *)malloc(sizeof(Person));
           if (NULL == d){ printf("person allocation error\n"); exit(EXIT_FAILURE); }
           extend_sll(doctors, d);
-          // TODO : UNIFY INTERFACE (Y,X) 
+          // TODO : UNIFY INTERFACE (Y,X)
           init_doctor_at(d, column, row, draw_randint_0n(&randgen, N_DIRECTIONS));
           ndoctor++;
         }
-        // P INIT VIRUS 
+        // P INIT VIRUS
         else if (TRUE == bernoulli_trial(&randgen, p_init_virus)) {
           itable->viral_charge = VIRAL_LIFESPAN;
           itable->p = NULL;
           itable->danger = 0;
           nvirus++;
-        } 
+        }
         /* Rest of the time */
         else {
           itable->viral_charge = 0;
@@ -124,9 +124,11 @@ int main(int argc, char **argv)
 
 
     for(step = 0; step < MAX_SIMULATION_STEPS; step++){
-      
+
       msleep(100);
       global_update(&randgen, &people, &doctors, &table, N, M);
+
+      visualise_danger(SDL_graphics, table, N, M, 5);
 
       visualise_virus(SDL_graphics, table, N, M, VIRUSSIZE);
 
@@ -138,7 +140,7 @@ int main(int argc, char **argv)
         p_iter = p_iter->next;
       }
 
-      // SDL visualization: 
+      // SDL visualization:
       p_iter = doctors;
       while(p_iter->next != NULL){
         p = p_iter->p;
@@ -146,9 +148,9 @@ int main(int argc, char **argv)
         p_iter = p_iter->next;
       }
 
-      drawbox(SDL_graphics, 
+      drawbox(SDL_graphics,
           GRAPHICS_MARGIN, M*SIM_TO_GRAPHICS + GRAPHICS_MARGIN,
-          GRAPHICS_MARGIN, N*SIM_TO_GRAPHICS + GRAPHICS_MARGIN, 
+          GRAPHICS_MARGIN, N*SIM_TO_GRAPHICS + GRAPHICS_MARGIN,
           GRAPHICS_MARGIN/2, 0
       );
       sdl_update(SDL_graphics);
@@ -174,7 +176,7 @@ int main(int argc, char **argv)
             printf("\n\nGOT KILLED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
             fclose(outputscript);
             exit(0);
-          }    
+          }
       }
     }
 
@@ -185,4 +187,3 @@ int main(int argc, char **argv)
     free(table);
     return(1);
 }
-
