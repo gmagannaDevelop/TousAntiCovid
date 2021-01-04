@@ -82,7 +82,7 @@ int person_death(
         return FALSE;
     } else {
         if (p->symptomatic){
-          rm_danger(p,&table,n,m);
+          rm_danger(p,p_table,n,m);
         }
         current->p = NULL;
         return remove_person_from_sll(persons, p);
@@ -113,7 +113,7 @@ int move_person(
             p->viral_charge = MEAN_INFECTION_LENGTH;
             p->symptomatic = bernoulli_trial(randgen, P_SYMPTOMATIC);
             if (p->symptomatic){
-              add_danger(p,&table,n,m);
+              add_danger(p,p_table,n,m);
             }
         }
     }
@@ -168,7 +168,7 @@ int move_doctor(
             p->viral_charge = MEAN_INFECTION_LENGTH;
             p->symptomatic = bernoulli_trial(randgen, P_SYMPTOMATIC);
             if (p->symptomatic){
-              add_danger(p,&table,n,m);
+              add_danger(p,p_table,n,m);
             }
         }
     }
