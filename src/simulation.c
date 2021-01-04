@@ -24,9 +24,9 @@ void add_danger(Person *p, Case **p_table, int n, int m){
   for (i=-2;i<3;i++){
     for (j=-2;j<3;j++){
       if ((i<2) && (i>-2) && (j<2) && (j>-2)){
-        table[(p->pos.y+j+m)%m*m + (p->pos.x+i+n)%n].danger+=1;
+        table[(p->pos.y+j+n)%n*m + (p->pos.x+i+m)%m].danger+=1;
       }else{
-        table[ (p->pos.y+j+m)%m*m + (p->pos.x+i+n)%n ].danger+=2;
+        table[ (p->pos.y+j+n)%n*m + (p->pos.x+i+m)%m ].danger+=2;
       }
     }
   }
@@ -39,9 +39,9 @@ void rm_danger(Person *p, Case **p_table, int n, int m){
   for (i=-2;i<3;i++){
     for (j=-2;j<3;j++){
       if ((i<2) && (i>-2) && (j<2) && (j>-2)){
-        table[(p->pos.y+j+m)%m*m + (p->pos.x+i+n)%n].danger-=1;
+        table[(p->pos.y+j+n)%n*m + (p->pos.x+i+m)%m].danger-=1;
       }else{
-        table[ (p->pos.y+j+m)%m*m  + (p->pos.x+i+n)%n ].danger-=2;
+        table[ (p->pos.y+j+n)%n*m  + (p->pos.x+i+m)%m ].danger-=2;
       }
     }
   }
@@ -153,16 +153,40 @@ int move_doctor(
     Case *next;
 
     tmp_pos = p->pos;
-    // Shift tmp_pos in the direction
-    // mandated by the person :
-    //printf("person's direction : %d\n", p->direction);
-    directions[p->direction](&tmp_pos, n, m);
+    //directions[p->direction](&tmp_pos, n, m);
     next = &table[ tmp_pos.y*m + tmp_pos.x];
+    int i=-2,j=-2;
+    for (i=-2;i<3;i++){
+      for (j=-2;j<3;j++){
+          if ((i<2) && (i>-2) && (j<2) && (j>-2)){
+            if (table[(tmp_pos.y+j+n)%n*m+(tmp_pos.x+i+m)%m].danger>next->danger){
+              next = &table[(tmp_pos.y+j+n)%n*m+(tmp_pos.x+i+m)%m];
+            }
+          }else{
+            if (table[(tmp_pos.y+j+n)%n*m+(tmp_pos.x+i+m)%m].danger>next->danger){
+              if (i>0 && j>0){
+                next = &table[(tmp_pos.y+j-1+n)%n*m+(tmp_pos.x+i-1+m)%m];
+              }else if (i>0 && j<0){
+                next = &table[(tmp_pos.y+j-1+n)%n*m+(tmp_pos.x+i+1+m)%m];
+              }else if (i<0 && j>0){
+                next = &table[(tmp_pos.y+j+1+n)%n*m+(tmp_pos.x+i-1+m)%m];
+              }else if (i<0 && j<0){
+                next = &table[(tmp_pos.y+j+1+n)%n*m+(tmp_pos.x+i+1+m)%m];
+              }
+            }
+          }
+      }
+      if (current == next){
+        directions[p->direction](&tmp_pos, n, m);
+        next = &table[ tmp_pos.y*m + tmp_pos.x];
+      }
+    }
+
 
     // if case is empty, move the person
     if ((NULL == next->p) && (next->danger>=current->danger)){
         current->p = NULL;
-        directions[p->direction](&(p->pos), n, m);
+        //directions[p->direction](&(p->pos), n, m);
         next->p = p;
         if ((next->viral_charge > 0) && (p->viral_charge == 0)){
             p->viral_charge = MEAN_INFECTION_LENGTH;
@@ -176,14 +200,14 @@ int move_doctor(
         // make it go back
         tmp_pos = p->pos;
         //p->direction = opposite_direction(p);
-        p->direction = draw_randint_0n(randgen, N_DIRECTIONS);
-        directions[p->direction](&tmp_pos, n, m);
+        //p->direction = draw_randint_0n(randgen, N_DIRECTIONS);
+        //directions[p->direction](&tmp_pos, n, m);
         next = &table[ tmp_pos.y*m + tmp_pos.x];
-        if ((NULL == next->p) && (next->danger>= current->danger)){
+        if ((NULL == next->p) && (next->danger>=current->danger)){
             // if the case in the just drawn random direction
             // is free, move person in this direction.
             //printf("go back \n");
-            move_person(randgen, p, p_table, n, m);
+            move_doctor(randgen, p, p_table, n, m);
         }
         else {
             return FALSE;
@@ -259,7 +283,7 @@ int global_update(
       if (p->viral_charge > 0){
           p->viral_charge--;
       }
-      move_doctor(randgen, p, table, N, M);
+      move_person(randgen, p, table, N, M);
       p_iter = p_iter->next;
     }
 

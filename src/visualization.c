@@ -195,8 +195,11 @@ int visualise_danger(
               /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 250;
               /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 0;
               /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 250;
-            }
-            else {
+            }else if (table[i*M + j].danger < 0) {
+              /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 0;
+              /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 0;
+              /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 0;
+            }else {
               /*RED */graph->pixel[3*row*graph->width + 3*col + 2 ] = 255;
               /*GREEN*/graph->pixel[3*row*graph->width + 3*col + 1] = 255;
               /*BLUE*/graph->pixel[3*row*graph->width + 3*col     ] = 255;
