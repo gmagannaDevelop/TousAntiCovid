@@ -20,43 +20,32 @@ void (*directions[])(Coordinate *pos, int, int) = {
 
 void add_danger(Person *p, Case **p_table, int n, int m){
   Case *table = *p_table;
-  Coordinate tmp_pos = p->pos;
-  int i,j;
+  int i=-2,j=-2;
   for (i=-2;i<3;i++){
     for (j=-2;j<3;j++){
-      table[ (tmp_pos.y+j+m)%m + (tmp_pos.x+i+n)%n ].danger+=1;
-      printf("Value: X=%d Y=%d\n", (tmp_pos.x+i+n)%n,(tmp_pos.y+j+m)%m);
-      printf("Danger level = %d",table[ (tmp_pos.y+j+m)%m + (tmp_pos.x+i+n)%n ].danger);
-      tmp_pos = p->pos;
+      if ((i<2) && (i>-2) && (j<2) && (j>-2)){
+        table[(p->pos.y+j+m)%m*m + (p->pos.x+i+n)%n].danger+=1;
+      }else{
+        table[ (p->pos.y+j+m)%m*m + (p->pos.x+i+n)%n ].danger+=2;
+      }
     }
   }
-  for (i=-1;i<2;i++){
-    for (j=-1;j<2;j++){
-      table[(tmp_pos.y+j+m)%m+(tmp_pos.x+i+n)%n].danger+=1;
-      tmp_pos=p->pos;
-    }
-  table[(tmp_pos.y)+(tmp_pos.x)].danger-=2;
-  }
+  table[(p->pos.y)*m + (p->pos.x)].danger-=2;
 }
-
 
 void rm_danger(Person *p, Case **p_table, int n, int m){
   Case *table = *p_table;
-  Coordinate tmp_pos = p->pos;
-  int i,j;
-  for (j=-2;j<3;j++){
-    for (i=-2;i<3;i++){
-      table[ (tmp_pos.y+j+m)%m + (tmp_pos.x+i+n)%n ].danger-=1;
-      tmp_pos = p->pos;
+  int i=-2,j=-2;
+  for (i=-2;i<3;i++){
+    for (j=-2;j<3;j++){
+      if ((i<2) && (i>-2) && (j<2) && (j>-2)){
+        table[(p->pos.y+j+m)%m*m + (p->pos.x+i+n)%n].danger-=1;
+      }else{
+        table[ (p->pos.y+j+m)%m*m  + (p->pos.x+i+n)%n ].danger-=2;
+      }
     }
   }
-  for (j=-1;j<2;j++){
-    for (i=-1;i<2;i++){
-      table[(tmp_pos.y+j+m)%m+(tmp_pos.x+i+n)%n].danger-=1;
-      tmp_pos=p->pos;
-    }
-  table[(tmp_pos.y)+(tmp_pos.x)].danger+=2;
-  }
+  table[(p->pos.y)*m + (p->pos.x)].danger+=2;
 }
 
 /* TODO : UNIFY INTERFACE (Y,X) */
