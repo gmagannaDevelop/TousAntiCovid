@@ -21,110 +21,43 @@ void (*directions[])(Coordinate *pos, int, int) = {
 void add_danger(Person *p, Case **p_table, int n, int m){
   Case *table = *p_table;
   Coordinate tmp_pos = p->pos;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
-  move_E(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
-  move_S(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
-  move_S(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
-  move_W(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
-  move_W(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=2;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_E(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_E(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_E(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_S(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_S(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_S(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_S(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_W(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_W(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_W(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_W(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger+=1;
-
+  int i,j;
+  for (i=-2;i<3;i++){
+    for (j=-2;j<3;j++){
+      table[ (tmp_pos.y+j+m)%m + (tmp_pos.x+i+n)%n ].danger+=1;
+      printf("Value: X=%d Y=%d\n", (tmp_pos.x+i+n)%n,(tmp_pos.y+j+m)%m);
+      printf("Danger level = %d",table[ (tmp_pos.y+j+m)%m + (tmp_pos.x+i+n)%n ].danger);
+      tmp_pos = p->pos;
+    }
+  }
+  for (i=-1;i<2;i++){
+    for (j=-1;j<2;j++){
+      table[(tmp_pos.y+j+m)%m+(tmp_pos.x+i+n)%n].danger+=1;
+      tmp_pos=p->pos;
+    }
+  table[(tmp_pos.y)+(tmp_pos.x)].danger-=2;
+  }
 }
+
 
 void rm_danger(Person *p, Case **p_table, int n, int m){
   Case *table = *p_table;
   Coordinate tmp_pos = p->pos;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
-  move_E(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
-  move_S(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
-  move_S(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
-  move_W(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
-  move_W(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=2;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_E(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_E(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_E(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_S(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_S(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_S(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_S(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_W(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_W(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_W(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_W(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
-  move_N(&tmp_pos, n, m);
-  table[tmp_pos.y*m + tmp_pos.x].danger-=1;
+  int i,j;
+  for (j=-2;j<3;j++){
+    for (i=-2;i<3;i++){
+      table[ (tmp_pos.y+j+m)%m + (tmp_pos.x+i+n)%n ].danger-=1;
+      tmp_pos = p->pos;
+    }
+  }
+  for (j=-1;j<2;j++){
+    for (i=-1;i<2;i++){
+      table[(tmp_pos.y+j+m)%m+(tmp_pos.x+i+n)%n].danger-=1;
+      tmp_pos=p->pos;
+    }
+  table[(tmp_pos.y)+(tmp_pos.x)].danger+=2;
+  }
 }
-
 
 /* TODO : UNIFY INTERFACE (Y,X) */
 void init_person_at(Person *p, int x, int y, int d)
