@@ -415,6 +415,7 @@ int global_update(
         p->being_healed--;
         if (p->being_healed == 0){
           p->viral_charge = 0;
+          p->healing = TRUE;
           p->symptomatic = FALSE;
           p->p->p = NULL;
           p->p = NULL;
@@ -422,7 +423,7 @@ int global_update(
         else if (bernoulli_trial(randgen, VIRULENCE)){
           //printf("Oh no, Juanito died !\n");
           (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN;
-          person_death(p, people, table, N, M);
+          person_death(p, doctors, table, N, M);
           died = 1;
         }
       }
