@@ -334,14 +334,14 @@ int global_update(
               tmp_case->p->viral_charge = MEAN_INFECTION_LENGTH;
               if (bernoulli_trial(randgen, P_SYMPTOMATIC)){
                 tmp_case->p->symptomatic = TRUE;
-                add_danger(p, table, N, M);
+                add_danger(tmp_case->p, table, N, M);
               }
             } 
           }
         }
         p->viral_charge--;
       }
-      
+
       if (bernoulli_trial(randgen, P_MOVE)){
         move_person(randgen, p, table, N, M);
       }
