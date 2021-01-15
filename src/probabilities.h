@@ -21,6 +21,9 @@
     #define P_MOVE_MOMENTUM 3.0/4.0
     #define P_MOVE_RANDOM 1.0 - P_MOVE_MOMENTUM
 
+    #define P_STAY_ON_COLLISION 0.5
+    #define P_MOVE_ON_COLLISION 1.0 - P_STAY_ON_COLLISION
+
 /*# Function protoypes : */
   
     /*Perform a bernoulli trial (binomial experiment)

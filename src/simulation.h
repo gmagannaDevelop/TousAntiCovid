@@ -4,6 +4,9 @@
     #include "datastructures.h"
     #include "singly_linked_list.h"
 
+    #define DUMMY_REJECT_MAX -100
+    #define DUMMY_REJECT_MIN 10000
+
     /* Function protoypes : */
     void init_person_at(Person *p, int x, int y, int d);
 
@@ -13,9 +16,9 @@
 
     void rm_danger(Person *p, Case **p_table, int n, int m);
 
-    int max_danger_direction(
-        Person *p, Case **p_table, int n, int m
-    );
+    int max_danger_direction(Person *p, Case **p_table, int n, int m);
+
+    int min_danger_direction(Person *p, Case **p_table, int n, int m);
 
     int person_death(
         Person *p, struct singly_linked_list **persons,

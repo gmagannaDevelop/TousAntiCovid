@@ -128,7 +128,7 @@ int main(int argc, char **argv)
       msleep(100);
       //printf("Entering function global_update, iteration : %d\n", step);
       global_update(&randgen, &people, &doctors, &table, N, M);
-      show_grid(table, N, M);
+      // show_grid(table, N, M);
 
       visualise_danger(SDL_graphics, table, N, M, 5);
 
