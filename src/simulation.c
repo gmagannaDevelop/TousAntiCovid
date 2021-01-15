@@ -242,6 +242,7 @@ int move_doctor(gsl_rng **randgen, Person *p, Case **p_table, int n, int m)
           p->symptomatic = bernoulli_trial(randgen, P_SYMPTOMATIC);
           if (p->symptomatic){
             add_danger(p,p_table,n,m);
+            p->healing = FALSE;
           }
         }
         return TRUE;
@@ -261,6 +262,7 @@ int move_doctor(gsl_rng **randgen, Person *p, Case **p_table, int n, int m)
               p->symptomatic = bernoulli_trial(randgen, P_SYMPTOMATIC);
               if (p->symptomatic){
                 add_danger(p,p_table,n,m);
+                p->healing = FALSE;
               }
             }
             return TRUE;
@@ -364,9 +366,13 @@ int global_update(
         person_death(p, doctors, table, N, M);
         died = 1;
       } else {
-          if (p->viral_charge > 0){ p->viral_charge--; }
+          if (p->viral_charge > 1){ 
+            p->viral_charge--;
+          } 
           else {
+            p->viral_charge--;
             p->symptomatic = FALSE;
+            p->healing = TRUE;
             rm_danger(p,table,N,M);
           }
       }
