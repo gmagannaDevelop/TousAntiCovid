@@ -27,6 +27,13 @@ int main(int argc, char **argv)
       &save_graphics
     );
 
+    //N = 30;
+    //M = 80;
+    //p_init_lambda = 0.20;
+    //p_init_doctor = 0.10;
+    //p_init_virus = 0.05;
+    //save_graphics = 0;
+
     correct_posterior_probs(&p_init_lambda, &p_init_doctor, &p_init_virus);
 
     initialize_randgen(&randgen, RND_VERBOSITY);
@@ -159,7 +166,7 @@ int main(int argc, char **argv)
       fade_pixel_array(SDL_graphics, FADER);
 
       /* ppm picture file output and gif conversion script entry: */
-      if((0 == step%GIF_STEP) && (FALSE)) {
+      if((0 == step%GIF_STEP) && (save_graphics)) {
         sprintf(filename, "Snapshot_%08d.ppm", step+1);
         write_ppm(SDL_graphics, filename);
         fprintf(outputscript, "(convert %s Snapshot_%08d.gif; rm %s)\n", filename, step+1, filename);

@@ -20,6 +20,7 @@
         // THIS FLAG DISCRIMINATES PEOPLE VS DOCTORS
         int healing;
         int being_healed;
+        struct Persons *p;
     } Person;
 
 

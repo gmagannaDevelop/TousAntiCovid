@@ -18,6 +18,32 @@ void (*directions[])(Coordinate *pos, int, int) = {
     move_SE, move_S, move_SW, move_E
 };
 
+int find_and_link_patient(Person *d, Case **p_table, int n, int m)
+{
+  Coordinate tmp_pos;
+  Case *table = *p_table;
+  Case *tmp_case;
+  int i;
+
+  for (i=0; i<N_DIRECTIONS; i++){
+    tmp_pos = d->pos;
+    directions[i](&tmp_pos, n, m);
+    tmp_case = &(table[ tmp_pos.y*m + tmp_pos.x ]);
+    if ((NULL != tmp_case->p) &&\
+        (TRUE == tmp_case->p->symptomatic) &&\
+        (0 == tmp_case->p->being_healed))
+    {
+      d->p = tmp_case->p;
+      tmp_case->p->p = d;
+      tmp_case->p->being_healed = 2;
+      rm_danger(tmp_case->p, p_table, n, m);
+      return TRUE;
+    }
+  }
+  printf("Doctor found no Juanitos !!!\n");
+  exit(EXIT_FAILURE);
+}
+
 int max_danger_direction(Person *p, Case **p_table, int n, int m)
 {
   Coordinate tmp_pos;
@@ -140,7 +166,13 @@ int person_death(
         printf("\tWtf bro, the case is already empty !\n");
         return FALSE;
     } else {
-        if (p->symptomatic){ // todo : verify if person is being healed.
+        // if person is being healed, it has a reference to 
+        // its doctor, that is p->p
+        if ((NULL != p->p) && (p->symptomatic)){
+          // person->doctor->person
+          p->p->p = NULL;
+        }
+        else if (p->symptomatic){ // todo : verify if person is being healed.
           rm_danger(p,p_table,n,m);
         }
         current->p = NULL;
@@ -301,7 +333,22 @@ int global_update(
     p = p_iter->p;
     // "viral tests"
     if (p->symptomatic){
-      if (bernoulli_trial(randgen, VIRULENCE)){
+      if (p->being_healed > 0){
+        p->being_healed--;
+        if (p->being_healed == 0){
+          p->viral_charge = 0;
+          p->symptomatic = FALSE;
+          p->p->p = NULL;
+          p->p = NULL;
+        }
+        else if (bernoulli_trial(randgen, VIRULENCE)){
+          //printf("Oh no, Juanito died !\n");
+          (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN;
+          person_death(p, people, table, N, M);
+          died = 1;
+        }
+      }
+      else if (bernoulli_trial(randgen, VIRULENCE)){
         //printf("Oh no, Juanito died !\n");
         (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN;
         person_death(p, people, table, N, M);
@@ -310,10 +357,13 @@ int global_update(
       else {
           // this condition does not obey the problem statement
           // might need to delete.
-          if (p->viral_charge > 0){ p->viral_charge--; }
+          if (p->viral_charge > 1){ p->viral_charge--; }
           else {
+            p->viral_charge--;           
             p->symptomatic = FALSE;
-            rm_danger(p,table,N,M);
+            if (0 == p->being_healed){
+              rm_danger(p,table,N,M);
+            }
           }
       }
     }
@@ -361,7 +411,22 @@ int global_update(
     p = p_iter->p;
     // "viral tests"
     if (p->symptomatic){
-      if (bernoulli_trial(randgen, VIRULENCE)){
+      if (p->being_healed > 0){
+        p->being_healed--;
+        if (p->being_healed == 0){
+          p->viral_charge = 0;
+          p->symptomatic = FALSE;
+          p->p->p = NULL;
+          p->p = NULL;
+        }
+        else if (bernoulli_trial(randgen, VIRULENCE)){
+          //printf("Oh no, Juanito died !\n");
+          (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN;
+          person_death(p, people, table, N, M);
+          died = 1;
+        }
+      }
+      else if (bernoulli_trial(randgen, VIRULENCE)){
         (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN;
         person_death(p, doctors, table, N, M);
         died = 1;
@@ -373,7 +438,9 @@ int global_update(
             p->viral_charge--;
             p->symptomatic = FALSE;
             p->healing = TRUE;
-            rm_danger(p,table,N,M);
+            if (0 == p->being_healed){
+              rm_danger(p,table,N,M);
+            }
           }
       }
     }
@@ -381,8 +448,14 @@ int global_update(
       if (p->viral_charge > 0){
           p->viral_charge--;
       }
-      if (bernoulli_trial(randgen, P_MOVE)){
-        move_doctor(randgen, p, table, N, M);
+      tmp_case = &((*table)[ p->pos.y * M + p->pos.x ]); 
+      if (NULL == p->p){
+        if (DANGER_CLOSE <= tmp_case->danger){
+          find_and_link_patient(p, table, N, M);
+        }
+        else if (bernoulli_trial(randgen, P_MOVE)){
+          move_doctor(randgen, p, table, N, M);
+        }
       }
     }
     if(0 == died){

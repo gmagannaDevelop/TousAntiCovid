@@ -7,7 +7,10 @@
     #define DUMMY_REJECT_MAX -100
     #define DUMMY_REJECT_MIN 10000
 
-    /* Function protoypes : */
+    // Function protoypes :
+
+    int find_and_link_patient(Person *d, Case **p_table, int n, int m);
+
     void init_person_at(Person *p, int x, int y, int d);
 
     void init_doctor_at(Person *p, int x, int y, int d);
