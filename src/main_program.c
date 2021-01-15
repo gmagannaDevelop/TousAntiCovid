@@ -125,7 +125,7 @@ int main(int argc, char **argv)
 
     for(step = 0; step < MAX_SIMULATION_STEPS; step++){
 
-      msleep(100);
+      msleep(200);
       global_update(&randgen, &people, &doctors, &table, N, M);
 
       visualise_danger(SDL_graphics, table, N, M, 5);

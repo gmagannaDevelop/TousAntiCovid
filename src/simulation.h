@@ -13,6 +13,10 @@
 
     void rm_danger(Person *p, Case **p_table, int n, int m);
 
+    int max_danger_direction(
+        Person *p, Case **p_table, int n, int m
+    );
+
     int person_death(
         Person *p, struct singly_linked_list **persons,
         Case **table,
