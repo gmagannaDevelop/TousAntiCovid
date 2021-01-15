@@ -11,6 +11,7 @@
     
     #define P_ASYMPTOMATIC 1.0/3.0                                                  
     #define P_SYMPTOMATIC 1.0 - P_ASYMPTOMATIC
+    #define P_SNEEZE 0.25
 
     #define VIRULENCE 1.0/10.0
     #define MORTALITY VIRULENCE

@@ -318,25 +318,27 @@ int global_update(
     else {
       if (p->viral_charge > 0){
         // contamination :
-        sneeze_direction = draw_randint_0n(randgen, 9);
-        if (8 == sneeze_direction){
-          (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN;
-        } 
-        else {
-          tmp_pos = p->pos;
-          directions[sneeze_direction](&tmp_pos, N, M);
-          tmp_case = &((*table)[ tmp_pos.y * M + tmp_pos.x ]); 
-          tmp_case->viral_charge = VIRAL_LIFESPAN;
-          if (NULL != tmp_case->p){
-            if ((FALSE == tmp_case->p->healing) &&\
-                (0 == tmp_case->p->viral_charge))
-            {
-              tmp_case->p->viral_charge = MEAN_INFECTION_LENGTH;
-              if (bernoulli_trial(randgen, P_SYMPTOMATIC)){
-                tmp_case->p->symptomatic = TRUE;
-                add_danger(tmp_case->p, table, N, M);
-              }
-            } 
+        if (bernoulli_trial(randgen, P_SNEEZE)){
+          sneeze_direction = draw_randint_0n(randgen, 9);
+          if (8 == sneeze_direction){
+            (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN;
+          } 
+          else {
+            tmp_pos = p->pos;
+            directions[sneeze_direction](&tmp_pos, N, M);
+            tmp_case = &((*table)[ tmp_pos.y * M + tmp_pos.x ]); 
+            tmp_case->viral_charge = VIRAL_LIFESPAN;
+            if (NULL != tmp_case->p){
+              if ((FALSE == tmp_case->p->healing) &&\
+                  (0 == tmp_case->p->viral_charge))
+              {
+                tmp_case->p->viral_charge = MEAN_INFECTION_LENGTH;
+                if (bernoulli_trial(randgen, P_SYMPTOMATIC)){
+                  tmp_case->p->symptomatic = TRUE;
+                  add_danger(tmp_case->p, table, N, M);
+                }
+              } 
+            }
           }
         }
         p->viral_charge--;
