@@ -15,11 +15,11 @@
         int symptomatic;
         int viral_charge;
         Coordinate pos;
-        /* This should be between [0,7] */
+        // This should be between [0,7] 
         int direction;
-        /* THIS FLAG DISCRIMINATES 
-           PEOPLE VS DOCTORS*/
+        // THIS FLAG DISCRIMINATES PEOPLE VS DOCTORS
         int healing;
+        int being_healed;
     } Person;
 
 
