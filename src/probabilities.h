@@ -12,7 +12,7 @@
     #define P_ASYMPTOMATIC 1.0/3.0                                                  
     #define P_SYMPTOMATIC 1.0 - P_ASYMPTOMATIC
 
-    #define VIRULENCE 0.001
+    #define VIRULENCE 1.0/10.0
     #define MORTALITY VIRULENCE
 
     #define P_MOVE 0.70

@@ -283,18 +283,21 @@ int global_update(
     struct singly_linked_list **doctors,
     Case **table, int N, int M
 ){
-  int i, j;
+  int i, j, died;
   Person *p;
   struct singly_linked_list *p_iter;
 
   p_iter = *people;
   while(p_iter->next != NULL){
+    died = 0;
     p = p_iter->p;
     // "viral tests"
     if (p->symptomatic){
       if (bernoulli_trial(randgen, VIRULENCE)){
+        //printf("Oh no, Juanito died !\n");
         (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN;
         person_death(p, people, table, N, M);
+        died = 1;
       }
       else {
           // this condition does not obey the problem statement
@@ -313,18 +316,22 @@ int global_update(
       if (bernoulli_trial(randgen, P_MOVE)){
         move_person(randgen, p, table, N, M);
       }
+    }
+    if (0 == died){
       p_iter = p_iter->next;
     }
   }
 
   p_iter = *doctors;
   while(p_iter->next != NULL){
+    died = 0;
     p = p_iter->p;
     // "viral tests"
     if (p->symptomatic){
       if (bernoulli_trial(randgen, VIRULENCE)){
         (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN;
         person_death(p, doctors, table, N, M);
+        died = 1;
       } else {
           if (p->viral_charge > 0){ p->viral_charge--; }
           else {
@@ -340,9 +347,10 @@ int global_update(
       if (bernoulli_trial(randgen, P_MOVE)){
         move_person(randgen, p, table, N, M);
       }
+    }
+    if(0 == died){
       p_iter = p_iter->next;
     }
-
   }
 
   for (i = 0; i<N; i++){
