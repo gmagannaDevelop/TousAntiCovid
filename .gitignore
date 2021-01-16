@@ -1,3 +1,7 @@
+# knitr and R markdown default cache directories
+**/src/*_cache/
+**/src/*_files/
+
 # Files that are secondary, not longer needed, etc :
 stray
 
