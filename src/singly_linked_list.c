@@ -1,9 +1,9 @@
 /*
  * The singly linked list which is implemented here
  * will always end with a node called 'end cap'.
- * The end cap has 'id' = 0 and 'next' = NULL.
- * The 0 'id' of the end cap is not counted as
- * a id of the list.
+ * The end cap points to nobody ('p' = NULL) and 'next' = NULL.
+ * The NULL 'p' (person) of the end cap is not counted as
+ * a person of the list of the list.
  *
  * NOTE: The singly linked list must be allocated
  * by the function 'allocate_and_initialize_sll()'.
@@ -18,7 +18,11 @@
 
 struct singly_linked_list *allocate_and_initialize_sll(
   struct singly_linked_list **sll
-){
+){/* Initialise a singly linked list, that is create an endcap : 
+
+              NULL
+    begin -> [ ^ ] -> NULL
+*/
   *sll = (struct singly_linked_list *)malloc(sizeof(struct singly_linked_list));
   if(NULL == *sll)
   {
@@ -27,7 +31,7 @@ struct singly_linked_list *allocate_and_initialize_sll(
     exit(0);
   }
 
-  (*sll)->p = NULL;  /* This is equivalent to (*(*sll)).id */
+  (*sll)->p = NULL;  /* This is equivalent to (*(*sll)).p */
   (*sll)->next =NULL;
   return(*sll);
 }
@@ -35,7 +39,10 @@ struct singly_linked_list *allocate_and_initialize_sll(
 
 
 int sll_list_length(struct singly_linked_list *sll)
-{
+{ /* Sum one to the recursive call to the function, 
+     in order to calculate the list's length.
+     O(n)
+  */
   if(NULL != sll->next){
     return(1 + sll_list_length(sll->next));
   }
@@ -47,7 +54,12 @@ int sll_list_length(struct singly_linked_list *sll)
 
 
 int print_sll(struct singly_linked_list *sll)
-{
+{/*
+    Print the set of references to 
+    people stored in the list's nodes.
+    These are memory adresses so it is only
+    intended to be used for debugging.
+  */
   if(NULL == sll->next){
     printf("End of list.\n");
   }
@@ -123,7 +135,7 @@ Person *extend_sll_at_head(
   struct singly_linked_list **sll, 
   Person *p
 ){
-/*
+/* 
  * Example behaviors for 'id' = 17:
  * [0]->NULL  is changed to  [17]->[0]->NULL 
  * [3]->[0]->[1]->[0]->NULL is changed to [17]->[3]->[0]->[1]->[0]->NULL
@@ -152,7 +164,9 @@ Person *extend_sll_at_head(
 
 
 int is_in_sll(struct singly_linked_list *sll, Person *p)
-{/* O(n) search */
+{/* 
+    O(n) recursive search 
+ */
   if(NULL != sll->next){
     if(p == sll->p){
       return(TRUE);
@@ -168,7 +182,39 @@ int is_in_sll(struct singly_linked_list *sll, Person *p)
 
 
 int remove_person_from_sll(struct singly_linked_list *sll, Person *p)
-{
+{ /* Recursively walk the list until the person to be removed is found.
+     If the person is in the list, its node won't be removed.
+     In order to keep the list integrity, we must:
+      1. Fnd the person to be removed
+      2. Take the person to be removed
+      3. Free the pointer to that person (but not the node)
+      4. Re-arrange references :
+         4.1 Current node will point to the next node's person
+         4.2 Current node next will point to the next node's next
+      5. Remove next node.
+
+  Example :
+
+            person1  person2  person3    NULL
+    begin -> [ ^ ] -> [ ^ ] -> [ ^ ] -> [ ^ ] -> NULL
+
+    `remove person 2`
+
+            person1           person3    NULL
+    begin -> [ ^ ] -> [ ^ ] -> [ ^ ] -> [ ^ ] -> NULL
+
+            person1     ~----->person3   NULL
+    begin -> [ ^ ] -> [ ^ ] -v [ ^ ] -> [ ^ ] -> NULL
+                             ~------------^
+
+            person1     ~----->person3   NULL
+    begin -> [ ^ ] -> [ ^ ] -v          [ ^ ] -> NULL
+                             ~------------^
+    
+            person1   person3   NULL
+    begin -> [ ^ ] -> [ ^ ] -> [ ^ ] -> NULL
+
+*/
   Person *bufferper;
   struct singly_linked_list *bufferptr;
 
@@ -196,7 +242,10 @@ int remove_person_from_sll(struct singly_linked_list *sll, Person *p)
 
 
 int empty_sll(struct singly_linked_list *sll)
-{
+{/* Call pop_last_node_from_sll()
+    until the list is empty, freeing the 
+    pointers to avoid memory leaks.
+*/
   Person *p;
   while(NULL != sll->next){
     p = pop_last_node_from_sll(sll);
