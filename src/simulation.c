@@ -18,6 +18,18 @@ void (*directions[])(Coordinate *pos, int, int) = {
     move_SE, move_S, move_SW, move_E
 };
 
+void decrease_viral_charge(Person *p, Case **p_table, int N, int M){
+  Case *table = *p_table;
+  if (p->viral_charge > 1){ p->viral_charge--; }
+  else {
+    p->viral_charge--;
+    p->symptomatic = FALSE;
+    if (0 == p->being_healed){
+      rm_danger(p,&table,N,M);
+    }
+  }
+}
+
 void infection (gsl_rng **randgen, Person *p, Case **p_table, Case *next, int n, int m){
   Case *table = *p_table;
   if ((next->viral_charge > 0) && (p->viral_charge == 0)){
@@ -335,6 +347,9 @@ int global_update(
           person_death(p, people, table, N, M);
           died = 1;
         }
+        else {
+          decrease_viral_charge(p,table, N, M);
+        }
       }
       else if (bernoulli_trial(randgen, VIRULENCE)){
         //printf("Oh no, Juanito died !\n");
@@ -345,14 +360,7 @@ int global_update(
       else {
           // this condition does not obey the problem statement
           // might need to delete.
-          if (p->viral_charge > 1){ p->viral_charge--; }
-          else {
-            p->viral_charge--;
-            p->symptomatic = FALSE;
-            if (0 == p->being_healed){
-              rm_danger(p,table,N,M);
-            }
-          }
+          decrease_viral_charge(p, table, N, M);
       }
     }
     else {
@@ -408,23 +416,16 @@ int global_update(
           person_death(p, doctors, table, N, M);
           died = 1;
         }
+        else{
+          decrease_viral_charge(p, table, N, M);
+        }
       }
       else if (bernoulli_trial(randgen, VIRULENCE)){
         (*table)[ p->pos.y * M + p->pos.x ].viral_charge = VIRAL_LIFESPAN;
         person_death(p, doctors, table, N, M);
         died = 1;
       } else {
-          if (p->viral_charge > 1){
-            p->viral_charge--;
-          }
-          else {
-            p->viral_charge--;
-            p->symptomatic = FALSE;
-            p->healing = TRUE;
-            if (0 == p->being_healed){
-              rm_danger(p,table,N,M);
-            }
-          }
+          decrease_viral_charge(p, table, N, M);
       }
     }
     else {

@@ -8,6 +8,7 @@
     #define DUMMY_REJECT_MIN 10000
 
     // Function protoypes :
+    void decrease_viral_charge(Person *p, Case **p_table, int N, int M);
 
     void infection (gsl_rng **randgen, Person *p, Case **p_table, Case *next, int n, int m);
 

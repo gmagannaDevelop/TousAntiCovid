@@ -137,7 +137,7 @@ int main(int argc, char **argv)
       global_update(&randgen, &people, &doctors, &table, N, M);
       // show_grid(table, N, M);
 
-      visualise_danger(SDL_graphics, table, N, M, 5);
+      //visualise_danger(SDL_graphics, table, N, M, 5);
 
       visualise_virus(SDL_graphics, table, N, M, VIRUSSIZE);
 
