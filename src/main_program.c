@@ -7,16 +7,13 @@
 
 int main(int argc, char **argv)
 {
-    int N, M, step, save_graphics;
+    int N, M, step, max_sim_steps;
     int row, column; /* Counters */
-    char filename[MAX_LINELENGTH];
     struct SDL_graphics *SDL_graphics;
     SDL_Event event;
-    FILE *outputscript;
     Case *table, *itable;
     Person *p, *d;
     struct singly_linked_list *people, *doctors, *p_iter;
-    double plambda, pdoctor, pvirus;
     double p_init_lambda, p_init_doctor, p_init_virus;
     int nlambda, ndoctor, nvirus;
     gsl_rng *randgen;
@@ -24,15 +21,18 @@ int main(int argc, char **argv)
     parse_commandline(
       argc, argv, &N, &M,
       &p_init_lambda, &p_init_doctor, &p_init_virus,
-      &save_graphics
+      &max_sim_steps
     );
 
+    // To enable debugging via gdb https://www.gnu.org/software/gdb/
+    // comment out the previous call to parse_commandline()
+    // and uncomment the following lines :
     //N = 30;
     //M = 80;
     //p_init_lambda = 0.20;
     //p_init_doctor = 0.10;
     //p_init_virus = 0.05;
-    //save_graphics = 0;
+    //max_sim_steps = 10000;
 
     correct_posterior_probs(&p_init_lambda, &p_init_doctor, &p_init_virus);
 
@@ -53,7 +53,6 @@ int main(int argc, char **argv)
           itable->p = p = (Person *)malloc(sizeof(Person));
           if (NULL == p){ printf("person allocation error\n"); exit(EXIT_FAILURE); }
           extend_sll(people, p);
-          // TODO : UNIFY INTERFACE (Y,X)
           init_person_at(p, column, row, draw_randint_0n(&randgen, N_DIRECTIONS));
           nlambda++;
         }
@@ -62,7 +61,6 @@ int main(int argc, char **argv)
           itable->p = d = (Person *)malloc(sizeof(Person));
           if (NULL == d){ printf("person allocation error\n"); exit(EXIT_FAILURE); }
           extend_sll(doctors, d);
-          // TODO : UNIFY INTERFACE (Y,X)
           init_doctor_at(d, column, row, draw_randint_0n(&randgen, N_DIRECTIONS));
           ndoctor++;
         }
@@ -82,19 +80,6 @@ int main(int argc, char **argv)
       }
     }
 
-
-    if (FALSE){
-      plambda = (double)sll_list_length(people)/((double)N*M) ;
-      pdoctor = (double)sll_list_length(doctors)/((double)N*M) ;
-      pvirus = (double)nvirus/((double)N*M) ;
-      printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
-      //printf("Person count  prior : %d, posterior %d \n", nlambda, sll_list_length(people));
-      //printf("Doctor count  prior : %d, posterior %d \n", ndoctor, sll_list_length(doctors));
-      //show_grid_lists(table, N, M, people, doctors);
-      exit(EXIT_SUCCESS);
-    }
-
-
     /* SDL graphics allocation and initialization: ........................ */
     SDL_graphics=(struct SDL_graphics*)malloc(sizeof(struct SDL_graphics));
     if(NULL == SDL_graphics)
@@ -110,34 +95,28 @@ int main(int argc, char **argv)
     /* End of SDL graphics allocation and initialization .................. */
 
 
-
-    outputscript = fopen("ppm_to_gif_script.sh", "w");
-    if(NULL == outputscript)
-      {
-      printf("\n\nCould not open file 'ppm_to_gif_script.sh' for writing.\n\n");
-      empty_sll(people);
-      empty_sll(doctors);
-      free(table);
-      exit(0);
-      }
-    if(-1 == system("chmod +x ppm_to_gif_script.sh"))
-      {
-      printf("\n\nCould not make 'ppm_to_gif_script.sh' executable.\n\n");
-      empty_sll(people);
-      empty_sll(doctors);
-      free(table);
-      exit(0);
+    step = 0;
+    while(  step < max_sim_steps ){
+      if( SDL_PollEvent(&event) ){
+        if ( event.type == SDL_KEYDOWN &&\
+            (event.key.keysym.sym == SDLK_c &&\
+            event.key.keysym.mod & KMOD_CTRL))
+        {
+          printf("EXIT !\n");
+          break; 
+        }
       }
 
-
-    for(step = 0; step < MAX_SIMULATION_STEPS; step++){
-
-      //msleep(100);
-      //printf("Entering function global_update, iteration : %d\n", step);
+      // to make the simulation "slower" uncomment and adjust
+      // the sleep time in miliseconds :
+      // msleep(100);
       global_update(&randgen, &people, &doctors, &table, N, M);
+      
+      // to enable (basic) command-line visualisation
       // show_grid(table, N, M);
 
-      visualise_danger(SDL_graphics, table, N, M, 5);
+      // To visualise the "danger gradient" uncomment the following line :
+      //visualise_danger(SDL_graphics, table, N, M, 5);
 
       visualise_virus(SDL_graphics, table, N, M, VIRUSSIZE);
 
@@ -165,32 +144,13 @@ int main(int argc, char **argv)
       sdl_update(SDL_graphics);
       fade_pixel_array(SDL_graphics, FADER);
 
-      /* ppm picture file output and gif conversion script entry: */
-      if((0 == step%GIF_STEP) && (save_graphics)) {
-        sprintf(filename, "Snapshot_%08d.ppm", step+1);
-        write_ppm(SDL_graphics, filename);
-        fprintf(outputscript, "(convert %s Snapshot_%08d.gif; rm %s)\n", filename, step+1, filename);
-      }
 
       /* Kill SDL if Strg+c was pressed in the stdin console: */
       signal(SIGINT, exit);
-      while( SDL_PollEvent(&event) ){
-        if( event.type == SDL_KEYDOWN &&\
-           (event.key.keysym.sym == SDLK_c &&\
-            event.key.keysym.mod & KMOD_CTRL))
-          {
-            empty_sll(people);
-            empty_sll(doctors);
-            free(table);
-            printf("\n\nGOT KILLED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
-            fclose(outputscript);
-            exit(0);
-          }
-      }
+      step++;
     }
 
-    printf("\n\nFINISHED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
-    fclose(outputscript);
+    printf("\n\nFINISHED.\n\n");
     empty_sll(people);
     empty_sll(doctors);
     free(table);
