@@ -9,6 +9,8 @@
 
     // Function protoypes :
 
+    void infection (gsl_rng **randgen, Person *p, Case **p_table, Case *next, int n, int m);
+
     int find_and_link_patient(Person *d, Case **p_table, int n, int m);
 
     void init_person_at(Person *p, int x, int y, int d);
