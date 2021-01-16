@@ -112,9 +112,9 @@ int main(int argc, char **argv)
 
     step = 0;
     while(  step < max_sim_steps ){
-      if (SDL_PollEvent(&event)){
-        printf("evento ! \n");
-        if( event.type == SDL_WindowEvent){
+      if( SDL_PollEvent(&event) ){
+        printf("%d \n", event.type);
+        if( event.type == SDL_QUIT ){
           printf("muerte !\n");
           break; 
         }
