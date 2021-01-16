@@ -9,14 +9,11 @@ int main(int argc, char **argv)
 {
     int N, M, step, save_graphics;
     int row, column; /* Counters */
-    char filename[MAX_LINELENGTH];
     struct SDL_graphics *SDL_graphics;
     SDL_Event event;
-    FILE *outputscript;
     Case *table, *itable;
     Person *p, *d;
     struct singly_linked_list *people, *doctors, *p_iter;
-    double plambda, pdoctor, pvirus;
     double p_init_lambda, p_init_doctor, p_init_virus;
     int nlambda, ndoctor, nvirus;
     gsl_rng *randgen;
@@ -27,6 +24,7 @@ int main(int argc, char **argv)
       &save_graphics
     );
 
+    // lines used for debugging via gdb : 
     //N = 30;
     //M = 80;
     //p_init_lambda = 0.20;
@@ -82,19 +80,6 @@ int main(int argc, char **argv)
       }
     }
 
-
-    if (FALSE){
-      plambda = (double)sll_list_length(people)/((double)N*M) ;
-      pdoctor = (double)sll_list_length(doctors)/((double)N*M) ;
-      pvirus = (double)nvirus/((double)N*M) ;
-      printf("%f,%f,%f\n", plambda, pdoctor, pvirus);
-      //printf("Person count  prior : %d, posterior %d \n", nlambda, sll_list_length(people));
-      //printf("Doctor count  prior : %d, posterior %d \n", ndoctor, sll_list_length(doctors));
-      //show_grid_lists(table, N, M, people, doctors);
-      exit(EXIT_SUCCESS);
-    }
-
-
     /* SDL graphics allocation and initialization: ........................ */
     SDL_graphics=(struct SDL_graphics*)malloc(sizeof(struct SDL_graphics));
     if(NULL == SDL_graphics)
@@ -108,26 +93,6 @@ int main(int argc, char **argv)
     initialize_SDL_graphics(SDL_graphics);
     initialize_pixel_array(SDL_graphics);
     /* End of SDL graphics allocation and initialization .................. */
-
-
-
-    outputscript = fopen("ppm_to_gif_script.sh", "w");
-    if(NULL == outputscript)
-      {
-      printf("\n\nCould not open file 'ppm_to_gif_script.sh' for writing.\n\n");
-      empty_sll(people);
-      empty_sll(doctors);
-      free(table);
-      exit(0);
-      }
-    if(-1 == system("chmod +x ppm_to_gif_script.sh"))
-      {
-      printf("\n\nCould not make 'ppm_to_gif_script.sh' executable.\n\n");
-      empty_sll(people);
-      empty_sll(doctors);
-      free(table);
-      exit(0);
-      }
 
 
     for(step = 0; step < MAX_SIMULATION_STEPS; step++){
@@ -165,12 +130,6 @@ int main(int argc, char **argv)
       sdl_update(SDL_graphics);
       fade_pixel_array(SDL_graphics, FADER);
 
-      /* ppm picture file output and gif conversion script entry: */
-      if((0 == step%GIF_STEP) && (save_graphics)) {
-        sprintf(filename, "Snapshot_%08d.ppm", step+1);
-        write_ppm(SDL_graphics, filename);
-        fprintf(outputscript, "(convert %s Snapshot_%08d.gif; rm %s)\n", filename, step+1, filename);
-      }
 
       /* Kill SDL if Strg+c was pressed in the stdin console: */
       signal(SIGINT, exit);
@@ -183,14 +142,12 @@ int main(int argc, char **argv)
             empty_sll(doctors);
             free(table);
             printf("\n\nGOT KILLED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
-            fclose(outputscript);
             exit(0);
           }
       }
     }
 
     printf("\n\nFINISHED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
-    fclose(outputscript);
     empty_sll(people);
     empty_sll(doctors);
     free(table);
