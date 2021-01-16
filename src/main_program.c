@@ -113,9 +113,11 @@ int main(int argc, char **argv)
     step = 0;
     while(  step < max_sim_steps ){
       if( SDL_PollEvent(&event) ){
-        printf("%d \n", event.type);
-        if( event.type == SDL_QUIT ){
-          printf("muerte !\n");
+        if ( event.type == SDL_KEYDOWN &&\
+            (event.key.keysym.sym == SDLK_c &&\
+            event.key.keysym.mod & KMOD_CTRL))
+        {
+          printf("EXIT !\n");
           break; 
         }
       }
