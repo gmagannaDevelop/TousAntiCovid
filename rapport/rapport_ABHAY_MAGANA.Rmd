@@ -24,7 +24,20 @@ utilisé pendant le cours. Or, quand on y pensait cette structure était sous-op
 pour les raisons suivantes :
 
 * **Le caractère dynamique de la population** :  Quand la maladie causée par un
-virus peut être mortelle
+virus peut être mortelle, la taille de la population diminuera au fur et à mesure
+de la simulation. Avec une combinaison de paramètres optimale, la population
+pourrait passer d'une centaine d'individus à seulement deux ou trois vers la fin
+de la simulation. 
+Si l'on utilisait un tableau on finirait par faire des itérations inutiles.
+
+* **La nature stochastique de l'initialisation** : Lors de l'initialisation, on
+parcourt la matrice case par case et en fonction du résultat d'une épreuve  
+de Bernoulli celle-ci peut éventuellement contenir un bonhomme lambda, un soignant, 
+un virus ou bien être vide. En étant donné que ni le nombre ni l'emplacement
+des virus, personnes et médecins ne sont connus _a priori_, 
+l'emploi d'une liste chaînée semble plus raisonnable que faire plusieurs appels
+à `realloc()`. Une possible solution au problème s´
+
 
 ## Algorithmique
 
