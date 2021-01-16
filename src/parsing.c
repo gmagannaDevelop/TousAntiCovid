@@ -6,7 +6,7 @@ void parse_commandline(
   int argc, char **argv, 
   int *N, int *M, 
   double *p_lambda, double *p_doctor, double *p_virus,
-  int *save_output
+  int *max_sim_steps
 ){
     double total_p;
 
@@ -22,7 +22,7 @@ void parse_commandline(
     if(1 != sscanf(argv[5], "%lf", p_virus)  ){ explain_useage_exit(argv[0]); }
     total_p = *p_lambda + *p_doctor + *p_virus;
 
-    if(1 != sscanf(argv[6], "%d", save_output) ){ explain_useage_exit(argv[0]); }
+    if(1 != sscanf(argv[6], "%d", max_sim_steps) ){ explain_useage_exit(argv[0]); }
 
     if( // Check valid dimensions 
         (*N < 2) || (*M < 2) ||
@@ -32,10 +32,10 @@ void parse_commandline(
         (*p_virus  > 1.0) || (*p_virus  < 0.0) || are_close(*p_virus,  1.0) ||
         (*p_lambda + *p_doctor > 1.0) || (total_p < 0.0) ||
         // Check valid save_output
-        ((*save_output > 1) || (*save_output < 0))
+        ((*max_sim_steps < 10))
     ){ 
-      printf("N = %d, M = %d, pλ = %.3lf, pd = %.3lf, pv = %.3lf, pλ + pd = %.3lf, save_output = %d\n",
-        *N, *M, *p_lambda, *p_doctor, *p_virus, total_p, *save_output
+      printf("N = %d, M = %d, pλ = %.3lf, pd = %.3lf, pv = %.3lf, pλ + pd = %.3lf, max_sim_steps = %d\n",
+        *N, *M, *p_lambda, *p_doctor, *p_virus, total_p, *max_sim_steps
       );
       explain_useage_exit(argv[0]); 
     }
@@ -48,26 +48,20 @@ void parse_commandline(
 
 void explain_useage_exit(char *myname)
 {
-    printf("\n\nUseage:\n\n%s N M pλ pd pv graphics\n\n"\
+    printf("\nUseage:\n\n%s N M pλ pd pv max_sim_steps\n\n"\
            "N integer >= 2\n"\
            "M integer >= 2\n"\
-           "pλ ε [0, 1.0[ \n"\
-           "pd ε [0, 1.0[ \n"\
-           "pv ε [0, 1.0[ \n"\
-           "graphics := either 1 or 0\n"\
-           "will run a viral epidemic simulation\n"\
-           "in a grid of N lines and M columns\n\n"\
-           "The grid has periodic boundaries, meaning that a person going out\n"\
-           "of the top of the grid will come back in from the bottom\n"\
-           "analogously with left and right, or any diagonal direction.\n"\
-           ".\n"\
-           ".\n"\
-           ".\n", myname);
-    printf("This simulation will produce graphical output\n"\
-           "Graphical output uses two methods:\n"\
-           "First, the SDL library (libsdlorg) for on-the-fly graphics window output, and\n"\
-           "second, ppm picture output (if save_graphics = 1),\n"\
-           "automatically converted to gif by system calls.\n\n");
+           "pλ ε [0, 1.0[ := lambda probability ~ population density in simulation matrix \n"\
+           "pd ε [0, 1.0[ := doctor probability ~ idem. for medical personel density\n"\
+           "pv ε [0, 1.0[ := virus probability  ~ idem. for viral particles.\n"\
+           "max_sim_steps := integer >= 10\n"\
+           "\nWill run a montecarlo simulation of a viral epidemic\n"\
+           "in a grid of N lines and M columns with periodic boundaries,\n"\
+           "meaning that a person going out the top of the grid will\n"\
+           "come back in from the bottom, etc.\n", myname);
+    printf("\nThis simulation leverages the following libraries :\n"\
+           "  SDL, for graphics output (https://www.libsdl.org/) \n"\
+           "  GSL, for pseudo-random number generation (https://www.gnu.org/software/gsl/) \n");
     exit(EXIT_FAILURE);
 }
 

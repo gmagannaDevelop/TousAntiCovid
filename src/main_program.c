@@ -7,7 +7,7 @@
 
 int main(int argc, char **argv)
 {
-    int N, M, step, save_graphics;
+    int N, M, step, max_sim_steps;
     int row, column; /* Counters */
     char filename[MAX_LINELENGTH];
     struct SDL_graphics *SDL_graphics;
@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     parse_commandline(
       argc, argv, &N, &M,
       &p_init_lambda, &p_init_doctor, &p_init_virus,
-      &save_graphics
+      &max_sim_steps
     );
 
     //N = 30;
@@ -110,8 +110,15 @@ int main(int argc, char **argv)
     /* End of SDL graphics allocation and initialization .................. */
 
 
-
-    for(step = 0; step < MAX_SIMULATION_STEPS; step++){
+    step = 0;
+    while(  step < max_sim_steps ){
+      if (SDL_PollEvent(&event)){
+        printf("evento ! \n");
+        if( event.type == SDL_WindowEvent){
+          printf("muerte !\n");
+          break; 
+        }
+      }
 
       msleep(100);
       //printf("Entering function global_update, iteration : %d\n", step);
@@ -149,22 +156,10 @@ int main(int argc, char **argv)
 
       /* Kill SDL if Strg+c was pressed in the stdin console: */
       signal(SIGINT, exit);
-      while( SDL_PollEvent(&event) ){
-        if( event.type == SDL_KEYDOWN &&\
-           (event.key.keysym.sym == SDLK_c &&\
-            event.key.keysym.mod & KMOD_CTRL))
-          {
-            empty_sll(people);
-            empty_sll(doctors);
-            free(table);
-            printf("\n\nGOT KILLED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
-            //fclose(outputscript);
-            exit(0);
-          }
-      }
+      step++;
     }
 
-    printf("\n\nFINISHED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
+    printf("\n\nFINISHED.\n\n");
     //fclose(outputscript);
     empty_sll(people);
     empty_sll(doctors);
