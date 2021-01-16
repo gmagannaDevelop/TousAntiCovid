@@ -8,16 +8,32 @@
 
 **EN** : Final project for *Mise à Niveau en Informatique I* course.
 
-### Étudiants
+### Étudiants (Students)
 
 * Gustavo Magaña López
 * Alexandre Abhay
 
-### Preview
+### Compile and run
 
-This is a preview of the type of graphic output we expect to be able to produce (This is currently a preview of Conway's Game of Life, coded by Marco Heinen)  :
+1. Clone the repo to your machine
 
-![](images/simgif.gif)
+2. Install the dependencies
+
+3. Compile the program
+   
+   ```bash
+   cd src
+   make clean
+   make
+   ```
+
+4. Run the program (see bin/README.md for more in-depth explanation)
+   
+   ```bash
+   cd ../bin # if you're still within src/
+   cd bin    # if you are at the repo's root
+   ./viral-simulation    
+   ```
 
 ### Dependencies
 
@@ -30,41 +46,47 @@ In order to compile and run the C code present in this repository, you must inst
   Under Ubuntu / Pop!\_OS / any other Debian-based distribution :
   
   * Essential (to compile and run) :
+    
     ```bash
     sudo apt install gsl-bin libgsl0-dev
     ```
   
   * Optional (recommended) :
+    
     ```bash
     sudo apt install gsl-doc-info gsl-doc-pdf gsl-ref-html gsl-ref-psdoc
     ```
-
+  
   Under macOS (via [Homebrew](https://formulae.brew.sh/formula/gsl))
-
+  
   * Essential (to compile and run) :
+    
     ```bash
     brew install gsl
     ```
 
-
 * SDL
-
+  
   We have decided to use libsdl-1, as we already have an implementation using it. 
-
+  
   Under Ubuntu / Pop!\_OS / any other Debian-based distribution :
+  
   * Essential (to compile and run) :
+    
     ```bash
     sudo apt-get install libsdl-image1.2-dev
     sudo apt install libsdl1.2-dev
     ```
-  Under macOS (via [Homebrew](https://formulae.brew.sh/formula/gsl))
-
+    
+    Under macOS (via [Homebrew](https://formulae.brew.sh/formula/gsl))
+  
   * Essential (to compile and run) :
+    
     ```bash
     brew install sdl
     ```
 
-### Project Structure 
+### Project Structure
 
 The main project source is located at `src`. The directory `bin` stores the executable (it is needed as the recipe in the makefile expects it to exist.
 
@@ -128,7 +150,6 @@ src
 ├── visualization.c # Functions used to render the simulation
 └── visualization.h # via SDL
 ```
-
 
 ### Acknowledgements
 
