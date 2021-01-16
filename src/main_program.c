@@ -111,25 +111,6 @@ int main(int argc, char **argv)
 
 
 
-    outputscript = fopen("ppm_to_gif_script.sh", "w");
-    if(NULL == outputscript)
-      {
-      printf("\n\nCould not open file 'ppm_to_gif_script.sh' for writing.\n\n");
-      empty_sll(people);
-      empty_sll(doctors);
-      free(table);
-      exit(0);
-      }
-    if(-1 == system("chmod +x ppm_to_gif_script.sh"))
-      {
-      printf("\n\nCould not make 'ppm_to_gif_script.sh' executable.\n\n");
-      empty_sll(people);
-      empty_sll(doctors);
-      free(table);
-      exit(0);
-      }
-
-
     for(step = 0; step < MAX_SIMULATION_STEPS; step++){
 
       msleep(100);
@@ -137,7 +118,7 @@ int main(int argc, char **argv)
       global_update(&randgen, &people, &doctors, &table, N, M);
       // show_grid(table, N, M);
 
-      visualise_danger(SDL_graphics, table, N, M, 5);
+      //visualise_danger(SDL_graphics, table, N, M, 5);
 
       visualise_virus(SDL_graphics, table, N, M, VIRUSSIZE);
 
@@ -165,12 +146,6 @@ int main(int argc, char **argv)
       sdl_update(SDL_graphics);
       fade_pixel_array(SDL_graphics, FADER);
 
-      /* ppm picture file output and gif conversion script entry: */
-      if((0 == step%GIF_STEP) && (save_graphics)) {
-        sprintf(filename, "Snapshot_%08d.ppm", step+1);
-        write_ppm(SDL_graphics, filename);
-        fprintf(outputscript, "(convert %s Snapshot_%08d.gif; rm %s)\n", filename, step+1, filename);
-      }
 
       /* Kill SDL if Strg+c was pressed in the stdin console: */
       signal(SIGINT, exit);
@@ -183,14 +158,14 @@ int main(int argc, char **argv)
             empty_sll(doctors);
             free(table);
             printf("\n\nGOT KILLED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
-            fclose(outputscript);
+            //fclose(outputscript);
             exit(0);
           }
       }
     }
 
     printf("\n\nFINISHED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
-    fclose(outputscript);
+    //fclose(outputscript);
     empty_sll(people);
     empty_sll(doctors);
     free(table);
