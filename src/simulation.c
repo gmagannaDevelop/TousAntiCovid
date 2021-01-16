@@ -369,14 +369,8 @@ int global_update(
             tmp_case = &((*table)[ tmp_pos.y * M + tmp_pos.x ]);
             tmp_case->viral_charge = VIRAL_LIFESPAN;
             if (NULL != tmp_case->p){
-              if ((FALSE == tmp_case->p->healing) &&\
-                  (0 == tmp_case->p->viral_charge))
-              {
-                tmp_case->p->viral_charge = MEAN_INFECTION_LENGTH;
-                if (bernoulli_trial(randgen, P_SYMPTOMATIC)){
-                  tmp_case->p->symptomatic = TRUE;
-                  add_danger(tmp_case->p, table, N, M);
-                }
+              if (FALSE == tmp_case->p->healing){
+                infection (randgen, tmp_case->p, table, tmp_case, N, M);
               }
             }
           }
