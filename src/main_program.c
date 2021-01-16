@@ -113,7 +113,7 @@ int main(int argc, char **argv)
 
     for(step = 0; step < MAX_SIMULATION_STEPS; step++){
 
-      msleep(100);
+      //msleep(100);
       //printf("Entering function global_update, iteration : %d\n", step);
       global_update(&randgen, &people, &doctors, &table, N, M);
       // show_grid(table, N, M);
