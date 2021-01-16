@@ -1,5 +1,5 @@
 ---
-title: "Simulation Virale MonteCarlo"
+title: "Simulation Monte Carlo d'Épidémie"
 author: "Gustavo Magaña López, Alex Abhay"
 date: "15/01/2021"
 output:
@@ -15,6 +15,16 @@ knitr::opts_chunk$set(echo = TRUE)
 # Introduction
 
 Dans le cadre de notre formation M1BIBS nous a été assigné un projet de programmation C dont l'énoncé peut se trouver [_ici_](https://github.com/gmagannaDevelop/TousAntiCovid/blob/main/enonce.pdf).
+
+## Structures de Données
+
+Pour cette partie, nous avons hésité entre utiliser des tableaux comme l'énoncé
+le proposait, surtout car ceci était une structure que nous avions étudié et 
+utilisé pendant le cours. Or, quand on y pensait cette structure était sous-optimale
+pour les raisons suivantes :
+
+* **Le caractère dynamique de la population** :  Quand la maladie causée par un
+virus peut être mortelle
 
 ## Algorithmique
 
