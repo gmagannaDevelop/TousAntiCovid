@@ -141,13 +141,13 @@ int main(int argc, char **argv)
             empty_sll(people);
             empty_sll(doctors);
             free(table);
-            printf("\n\nGOT KILLED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
+            printf("\n\nGOT KILLED.\n\n");
             exit(0);
           }
       }
     }
 
-    printf("\n\nFINISHED.\n\nRun './ppm_to_gif_script.sh' to convert ppm output to gif.\n\n");
+    printf("\n\nFINISHED.\n");
     empty_sll(people);
     empty_sll(doctors);
     free(table);
