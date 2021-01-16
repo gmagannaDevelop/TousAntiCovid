@@ -13,6 +13,14 @@
 * Gustavo Magaña López
 * Alexandre Abhay
 
+
+
+### Preview
+
+![](images/simu.gif)
+
+
+
 ### Compile and run
 
 1. Clone the repo to your machine
