@@ -1,6 +1,6 @@
 ---
 title: "Simulation Monte Carlo d'Épidémie"
-author: "Gustavo Magaña López, Alex Abhay"
+author: "Gustavo Magaña López, Alexandre Abhay"
 date: "15/01/2021"
 output:
   pdf_document: default
@@ -36,8 +36,12 @@ de Bernoulli celle-ci peut éventuellement contenir un bonhomme lambda, un soign
 un virus ou bien être vide. En étant donné que ni le nombre ni l'emplacement
 des virus, personnes et médecins ne sont connus _a priori_, 
 l'emploi d'une liste chaînée semble plus raisonnable que faire plusieurs appels
-à `realloc()`. Une possible solution au problème s´
+à `realloc()`.
 
+Nous avons donc décidé d'utiliser **listes chaînées** au lieu de tableaux.
+Nous avons adapté un code que Gustavo avait pour faire une liste d'entiers.
+Il a fallu changer l'entier de la structure `struct singly_linked_list`
+par un pointeur de type `Person` et toutes les fonctions liées.
 
 ## Algorithmique
 
@@ -72,13 +76,13 @@ Ainsi, elle fonctionne de la manière suivante. Pour toutes les `N_DIRECTIONS` v
 
 On itère à nouveau sur `N_DIRECTIONS` en parcourant le tableau que l'on a créé précédemment et on cherche la valeur la plus élevée (ou la plus faible). L'indice de cette valeur sera renvoyé et nous donnera ainsi la direction de la case libre ayant le gradient de danger le plus élevé (ou le plus faible).
 
+\newpage
 ### Le déplacement d'une personne, la fonction `move_person()`
 
 Cette fonction, avec `move_doctor()` et `global_update()` fait partie des plus complexes et auraient nécessité des simplifications à l'aide de sous-fonctions notamment.
 
-Elle suit la flowchart suivante:
+Elle suit la flowchart de la _Figure 1_.
 
-![Hola](images/move_person.png)
 
 Dans les premières versions de cette fonction, nous utilisions une fonction `opposite_direction()` pour fuir le gradient. Cette fonction utilisait une propriété assignées aux `N_DIRECTIONS`. En effet, un tableau de fonction permettait de trouver simplement la direction opposée.
 
@@ -106,9 +110,8 @@ On peut alors se demander: pourquoi vérifier que le malade n'est pas déjà li�
 
 Pour suivre un tour de simulation, il faut suivre la fonction `global_update()`. Cette fonction est appelée par la fonction `main()` à chaque tour de simulation.
 
-Elle effectue plusieurs étapes, tout d'abord en prenant les personnes de la linked-list des lambdas les uns après les autres:
+Elle effectue plusieurs étapes, tout d'abord en prenant les personnes de la linked-list des lambdas les uns après les autres (voir _Figure 2_). 
 
-![hola2](images/global_update.png)
 
 Dans cette flowchart, on a la présence de la fonction `decrease_viral_charge()` 
 qui n'est plus présente dans notre programme. En effet, elle avait été ajoutée 
@@ -140,3 +143,15 @@ Une fois que l'on a fait jouer les lambdas et les soignants, il ne reste plus qu
 
 Ainsi, on a maintenant une idée générale du fonctionnement global de la simulation.
 
+### Conditions d'arrêt
+
+La simulation s'arrête si l'une de ces conditions est satisfaite :
+
+* Le nombre maximal d'itérations saisi par l'utilisateur est dépassé.
+* Si à la fin d'un tour toute la population est morte.
+* Si la grille de simulation ne contient plus de virus.
+
+\newpage
+![Flowchart de la fonction `move_person()`](images/move_person.png){width=75%}
+
+![Flowchart de la fonction `global_update()`](images/global_update.png){width=65%}
