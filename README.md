@@ -1,5 +1,5 @@
 
-**Note for the evaluation** : Download release 5 (v1.0.0). This is our final version containing the project report.
+**Note for the evaluation** : Download release 6 (v1.0.1). This is our final version containing the project report.
 # TousAntiCovid![](images/c-vid-logo.png)
 
 ### Faculté des Sciences de l'Université Paris-Saclay
