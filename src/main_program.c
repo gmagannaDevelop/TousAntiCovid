@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 
       // to make the simulation "slower" uncomment and adjust
       // the sleep time in miliseconds :
-      //msleep(200);
+      msleep(100);
       global_update(&randgen, &people, &doctors, &table, N, M, &epoch);
       
       // to enable (basic) command-line visualisation
