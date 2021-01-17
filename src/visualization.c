@@ -70,10 +70,15 @@ int visualise_person(struct SDL_graphics *graph, Person *p, int radius)
 {
 /*
  * Draws a filled circular disk with 'radius' in units of pixels around
- * the (x, y) position of person 'n'. The color of the disk is related to
- * the value of 'n'.
- *
- */
+ * the (x, y) position of person 'n'. 
+ * The color of the disk is related to the person's "profession".
+ * 
+ *  blue   for "bonhomme lambda" (civilians)
+ *  green  for "soignants" (medical doctors)
+ *  orange for asymptomatic infections
+ *  red    for symptomatic (severe) cases
+ *  
+ */ 
 int row, col;
 float x, y, r, phi, dphi;
 

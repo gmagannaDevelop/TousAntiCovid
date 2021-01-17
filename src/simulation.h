@@ -9,7 +9,10 @@
 
     // Function protoypes :
 
-    void infection (gsl_rng **randgen, Person *p, Case **p_table, Case *next, int n, int m);
+    void infection (
+        gsl_rng **randgen, Person *p, Case **p_table, 
+        Case *next, int n, int m, int *infection_count
+    );
 
     int find_and_link_patient(Person *d, Case **p_table, int n, int m);
 
@@ -33,12 +36,14 @@
 
     int move_person(
         gsl_rng **randgen, Person *p,
-        Case **p_table, int n, int m
+        Case **p_table, int n, int m,
+        int *infection_count
     );
 
     int move_doctor(
         gsl_rng **randgen, Person *p,
-        Case **p_table, int n, int m
+        Case **p_table, int n, int m,
+        int *infection_count
     );
 
     int global_update(
@@ -46,7 +51,8 @@
         struct singly_linked_list **people,
         struct singly_linked_list **doctors,
         Case **table,
-        int N, int M
+        int N, int M,
+        Epoch *day
     );
 
 #endif

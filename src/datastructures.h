@@ -76,6 +76,15 @@
         Person *p;
     } Case;
 
-    
+    // used for possible epidemiologic analysis
+    typedef struct Epochs
+    {
+        // these seem to be the only necessary attributes
+        // all other can be calculated from these.
+        int daily_population_size;
+        int new_infections;
+        int grid_viral_charge;
+    } Epoch;
+
 
 #endif

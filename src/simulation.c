@@ -18,11 +18,15 @@ void (*directions[])(Coordinate *pos, int, int) = {
     move_SE, move_S, move_SW, move_E
 };
 
-void infection (gsl_rng **randgen, Person *p, Case **p_table, Case *next, int n, int m){
+void infection (
+  gsl_rng **randgen, Person *p, Case **p_table, 
+  Case *next, int n, int m, int *infection_count
+){
   // This function takes a given person and case.
   Case *table = *p_table;
   // If the person isn't already infected and the target case hosts a virus
   if ((next->viral_charge > 0) && (p->viral_charge == 0)){
+    *infection_count += 1;
     // Person is infected
     p->viral_charge = MEAN_INFECTION_LENGTH;
     // Person might be symptomatic with probability P_SYMPTOMATIC
@@ -196,7 +200,6 @@ void rm_danger(Person *p, Case **p_table, int n, int m){
   table[(p->pos.y)*m + (p->pos.x)].danger += DANGER_CLOSE;
 }
 
-/* TODO : UNIFY INTERFACE (Y,X) */
 void init_person_at(Person *p, int x, int y, int d)
 {
     p->symptomatic = FALSE;
@@ -249,7 +252,10 @@ int person_death(
     }
 }
 
-int move_person(gsl_rng **randgen, Person *p, Case **p_table, int n, int m){
+int move_person(
+  gsl_rng **randgen, Person *p, Case **p_table, 
+  int n, int m, int *infection_count
+){
     Coordinate tmp_pos;
     Case *table = *p_table;
     Case *current = &table[ p->pos.y*m + p->pos.x ];
@@ -272,7 +278,7 @@ int move_person(gsl_rng **randgen, Person *p, Case **p_table, int n, int m){
         current->p = NULL;
         next->p = p;
         p->pos = tmp_pos;
-        infection(randgen, p, p_table, next, n, m);
+        infection(randgen, p, p_table, next, n, m, infection_count);
         return TRUE;
       }
       else {
@@ -290,7 +296,7 @@ int move_person(gsl_rng **randgen, Person *p, Case **p_table, int n, int m){
             next->p = p;
             p->pos = tmp_pos;
             // Target case might host a virus, that's why we call infection
-            infection(randgen, p, p_table, next, n, m);
+            infection(randgen, p, p_table, next, n, m, infection_count);
             return TRUE;
         } else {
           // Else, if the case wasn't empty
@@ -306,13 +312,15 @@ int move_person(gsl_rng **randgen, Person *p, Case **p_table, int n, int m){
       }
       else {
         p->direction = draw_randint_0n(randgen, N_DIRECTIONS);
-        return move_person(randgen, p, p_table, n, m);
+        return move_person(randgen, p, p_table, n, m, infection_count);
       }
     }
 }
 
-int move_doctor(gsl_rng **randgen, Person *p, Case **p_table, int n, int m)
-{
+int move_doctor(
+  gsl_rng **randgen, Person *p, Case **p_table, 
+  int n, int m, int *infection_count
+){
     // Almost the same function as above BUT:
     // Moves where gradient is the HIGHEST
     Coordinate tmp_pos;
@@ -337,7 +345,7 @@ int move_doctor(gsl_rng **randgen, Person *p, Case **p_table, int n, int m)
         current->p = NULL;
         next->p = p;
         p->pos = tmp_pos;
-        infection(randgen, p, p_table, next, n, m);
+        infection(randgen, p, p_table, next, n, m, infection_count);
         return TRUE;
       }
       else {
@@ -350,7 +358,7 @@ int move_doctor(gsl_rng **randgen, Person *p, Case **p_table, int n, int m)
             current->p = NULL;
             next->p = p;
             p->pos = tmp_pos;
-            infection(randgen, p, p_table, next, n, m);
+            infection(randgen, p, p_table, next, n, m, infection_count);
             return TRUE;
         } else {
           return FALSE;
@@ -362,7 +370,7 @@ int move_doctor(gsl_rng **randgen, Person *p, Case **p_table, int n, int m)
       }
       else {
         p->direction = draw_randint_0n(randgen, N_DIRECTIONS);
-        return move_doctor(randgen, p, p_table, n, m);
+        return move_doctor(randgen, p, p_table, n, m, infection_count);
       }
     }
 }
@@ -373,7 +381,7 @@ int global_update(
     gsl_rng **randgen,
     struct singly_linked_list **people,
     struct singly_linked_list **doctors,
-    Case **table, int N, int M
+    Case **table, int N, int M, Epoch *day
 ){
   // Takes given people and doctors linked list
   int i, j, died, sneeze_direction;
@@ -381,6 +389,11 @@ int global_update(
   Coordinate tmp_pos;
   Case *tmp_case;
   struct singly_linked_list *p_iter;
+  int daily_population_size;
+  int new_infections;
+  int grid_viral_charge;
+
+  new_infections = grid_viral_charge = 0;
 
   // First, the people's (lambda) turn
   p_iter = *people;
@@ -464,7 +477,7 @@ int global_update(
               // and the person occupying the case isn't a doctor
               if (FALSE == tmp_case->p->healing){
                 // then the person gets infected (100% chances)
-                infection (randgen, tmp_case->p, table, tmp_case, N, M);
+                infection (randgen, tmp_case->p, table, tmp_case, N, M, &new_infections);
               }
             }
           }
@@ -477,7 +490,7 @@ int global_update(
       // Chance of moving!
       if (bernoulli_trial(randgen, P_MOVE)){
         // Might move, that's why move_person is called
-        move_person(randgen, p, table, N, M);
+        move_person(randgen, p, table, N, M, &new_infections);
       }
     }
     // If the person didn't die
@@ -546,7 +559,7 @@ int global_update(
           find_and_link_patient(p, table, N, M);
         }
         else if (bernoulli_trial(randgen, P_MOVE)){
-          move_doctor(randgen, p, table, N, M);
+          move_doctor(randgen, p, table, N, M, &new_infections);
         }
       }
     }
@@ -555,15 +568,22 @@ int global_update(
     }
   }
 
+  daily_population_size = sll_list_length(*people) + sll_list_length(*doctors);
+
   // Checking all the cases of the matrix
   // To decrease the viral charge of the virus
   for (i = 0; i<N; i++){
     for (j = 0; j<M; j++){
       if ((*table)[ i*M + j].viral_charge > 0){
+        grid_viral_charge++;
         (*table)[ i*M + j ].viral_charge--;
       }
     }
   }
+
+  day->daily_population_size = daily_population_size;
+  day->grid_viral_charge = grid_viral_charge;
+  day->new_infections = new_infections;
 
   return TRUE;
 }

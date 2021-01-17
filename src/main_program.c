@@ -9,14 +9,15 @@ int main(int argc, char **argv)
 {
     int N, M, step, max_sim_steps;
     int row, column; /* Counters */
+    int population_size;
     struct SDL_graphics *SDL_graphics;
     SDL_Event event;
     Case *table, *itable;
     Person *p, *d;
     struct singly_linked_list *people, *doctors, *p_iter;
     double p_init_lambda, p_init_doctor, p_init_virus;
-    int nlambda, ndoctor, nvirus;
     gsl_rng *randgen;
+    Epoch epoch;
 
     parse_commandline(
       argc, argv, &N, &M,
@@ -34,6 +35,12 @@ int main(int argc, char **argv)
     //p_init_virus = 0.05;
     //max_sim_steps = 10000;
 
+    // This function is used to force the empirical density of each agent of 
+    // the simulation to be near to the expected one.
+    // Writing different conditional statements would have prevented the
+    // need for this, but this approach is more flexible as it allows
+    // for arbitrary frequencies that are otherwise impossible to obtain.
+    // See this issue : https://github.com/gmagannaDevelop/TousAntiCovid/issues/2
     correct_posterior_probs(&p_init_lambda, &p_init_doctor, &p_init_virus);
 
     initialize_randgen(&randgen, RND_VERBOSITY);
@@ -44,7 +51,6 @@ int main(int argc, char **argv)
     allocate_and_initialize_sll(&people);
     allocate_and_initialize_sll(&doctors);
 
-    nlambda = ndoctor = nvirus = 0;
     for (row=0; row<N; row++){
       for (column=0; column<M; column++){
         // P INIT LAMBDA
@@ -53,23 +59,22 @@ int main(int argc, char **argv)
           itable->p = p = (Person *)malloc(sizeof(Person));
           if (NULL == p){ printf("person allocation error\n"); exit(EXIT_FAILURE); }
           extend_sll(people, p);
+          // people are created with random directions :
           init_person_at(p, column, row, draw_randint_0n(&randgen, N_DIRECTIONS));
-          nlambda++;
         }
         // P INIT DOCOR
         else if (TRUE == bernoulli_trial(&randgen, p_init_doctor)){
           itable->p = d = (Person *)malloc(sizeof(Person));
           if (NULL == d){ printf("person allocation error\n"); exit(EXIT_FAILURE); }
           extend_sll(doctors, d);
+          // idem. for doctors :
           init_doctor_at(d, column, row, draw_randint_0n(&randgen, N_DIRECTIONS));
-          ndoctor++;
         }
         // P INIT VIRUS
         else if (TRUE == bernoulli_trial(&randgen, p_init_virus)) {
           itable->viral_charge = VIRAL_LIFESPAN;
           itable->p = NULL;
           itable->danger = 0;
-          nvirus++;
         }
         /* Rest of the time */
         else {
@@ -95,8 +100,18 @@ int main(int argc, char **argv)
     /* End of SDL graphics allocation and initialization .................. */
 
 
+    population_size = sll_list_length(people) + sll_list_length(doctors);
+    
+    epoch.daily_population_size = population_size;
+    epoch.grid_viral_charge = 1;
+    epoch.new_infections = 0;
+    
     step = 0;
-    while(  step < max_sim_steps ){
+    while( (step < max_sim_steps) &&\
+           (epoch.daily_population_size > 0) &&\
+           (epoch.grid_viral_charge > 0)
+    ){
+      // signal handling (sub-optimal)
       if( SDL_PollEvent(&event) ){
         if ( event.type == SDL_KEYDOWN &&\
             (event.key.keysym.sym == SDLK_c &&\
@@ -109,8 +124,8 @@ int main(int argc, char **argv)
 
       // to make the simulation "slower" uncomment and adjust
       // the sleep time in miliseconds :
-      // msleep(100);
-      global_update(&randgen, &people, &doctors, &table, N, M);
+      //msleep(200);
+      global_update(&randgen, &people, &doctors, &table, N, M, &epoch);
       
       // to enable (basic) command-line visualisation
       // show_grid(table, N, M);
@@ -145,7 +160,8 @@ int main(int argc, char **argv)
       fade_pixel_array(SDL_graphics, FADER);
 
 
-      /* Kill SDL if Strg+c was pressed in the stdin console: */
+      // Kill SDL if Strg+c was pressed in the stdin console: 
+      // our only effective signal handling 
       signal(SIGINT, exit);
       step++;
     }

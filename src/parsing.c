@@ -59,6 +59,12 @@ void explain_useage_exit(char *myname)
            "in a grid of N lines and M columns with periodic boundaries,\n"\
            "meaning that a person going out the top of the grid will\n"\
            "come back in from the bottom, etc.\n", myname);
+    printf("\n Colour codes :\n"
+           " *  blue   for \"bonhomme lambda\" (civilians)\n"\
+           " *  green  for \"soignants\" (medical doctors)\n"\
+           " *  orange for asymptomatic infections      \n"\
+           " *  red    for symptomatic (severe) cases   \n"\
+           " Viral particles are represented with smaller red dots.\n");
     printf("\nThis simulation leverages the following libraries :\n"\
            "  SDL, for graphics output (https://www.libsdl.org/) \n"\
            "  GSL, for pseudo-random number generation (https://www.gnu.org/software/gsl/) \n");
