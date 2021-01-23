@@ -60,7 +60,8 @@ int main(int argc, char **argv)
           if (NULL == p){ printf("person allocation error\n"); exit(EXIT_FAILURE); }
           extend_sll(people, p);
           // people are created with random directions :
-          init_person_at(p, column, row, draw_randint_0n(&randgen, N_DIRECTIONS));
+          //init_person_at(p, column, row, draw_randint_0n(&randgen, N_DIRECTIONS));
+          init_person_at(p, column, row, 3);
         }
         // P INIT DOCOR
         else if (TRUE == bernoulli_trial(&randgen, p_init_doctor)){
@@ -68,7 +69,8 @@ int main(int argc, char **argv)
           if (NULL == d){ printf("person allocation error\n"); exit(EXIT_FAILURE); }
           extend_sll(doctors, d);
           // idem. for doctors :
-          init_doctor_at(d, column, row, draw_randint_0n(&randgen, N_DIRECTIONS));
+          //init_doctor_at(d, column, row, draw_randint_0n(&randgen, N_DIRECTIONS));
+          init_doctor_at(d, column, row, 4);
         }
         // P INIT VIRUS
         else if (TRUE == bernoulli_trial(&randgen, p_init_virus)) {
