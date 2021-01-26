@@ -6,11 +6,12 @@ void parse_commandline(
   int argc, char **argv, 
   int *N, int *M, 
   double *p_lambda, double *p_doctor, double *p_virus,
-  int *max_sim_steps
+  int *max_sim_steps,
+  int *graphics
 ){
     double total_p;
 
-    if(argc!=7){ explain_useage_exit(argv[0]); }
+    if(argc!=8){ explain_useage_exit(argv[0]); }
 
     // Simulation dimensions :
     if(1 != sscanf(argv[1], "%d", N) ){ explain_useage_exit(argv[0]); }
@@ -23,6 +24,7 @@ void parse_commandline(
     total_p = *p_lambda + *p_doctor + *p_virus;
 
     if(1 != sscanf(argv[6], "%d", max_sim_steps) ){ explain_useage_exit(argv[0]); }
+    if(1 != sscanf(argv[7], "%d", graphics) ){ explain_useage_exit(argv[0]); }
 
     if( // Check valid dimensions 
         (*N < 2) || (*M < 2) ||
@@ -40,6 +42,8 @@ void parse_commandline(
       explain_useage_exit(argv[0]); 
     }
 
+    if ((TRUE != *graphics) && (FALSE != *graphics)){ explain_useage_exit(argv[0]); }
+
 }
 
 
@@ -48,13 +52,14 @@ void parse_commandline(
 
 void explain_useage_exit(char *myname)
 {
-    printf("\nUseage:\n\n%s N M pλ pd pv max_sim_steps\n\n"\
+    printf("\nUseage:\n\n%s N M pλ pd pv max_sim_steps graphics\n\n"\
            "N integer >= 2\n"\
            "M integer >= 2\n"\
            "pλ ε [0, 1.0[ := lambda probability ~ population density in simulation matrix \n"\
            "pd ε [0, 1.0[ := doctor probability ~ idem. for medical personel density\n"\
            "pv ε [0, 1.0[ := virus probability  ~ idem. for viral particles.\n"\
            "max_sim_steps := integer >= 10\n"\
+           "graphics := 1 or 0\n"\
            "\nWill run a montecarlo simulation of a viral epidemic\n"\
            "in a grid of N lines and M columns with periodic boundaries,\n"\
            "meaning that a person going out the top of the grid will\n"\

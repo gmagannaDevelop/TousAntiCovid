@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 {
     int N, M, step, max_sim_steps;
     int row, column; /* Counters */
-    int population_size;
+    int population_size, enable_graphics;
     struct SDL_graphics *SDL_graphics;
     SDL_Event event;
     Case *table, *itable;
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     parse_commandline(
       argc, argv, &N, &M,
       &p_init_lambda, &p_init_doctor, &p_init_virus,
-      &max_sim_steps
+      &max_sim_steps, &enable_graphics
     );
 
     // To enable debugging via gdb https://www.gnu.org/software/gdb/
@@ -87,19 +87,21 @@ int main(int argc, char **argv)
       }
     }
 
-    /* SDL graphics allocation and initialization: ........................ */
-    SDL_graphics=(struct SDL_graphics*)malloc(sizeof(struct SDL_graphics));
-    if(NULL == SDL_graphics)
-      {
-      printf("\n\nError in allocating struct SDL_graphics *SDL_graphics\n\n");
-      exit(0);
-      }
-    SDL_graphics->width = M*SIM_TO_GRAPHICS + 2*GRAPHICS_MARGIN;
-    SDL_graphics->height= N*SIM_TO_GRAPHICS + 2*GRAPHICS_MARGIN;
-    allocate_SDL_pixelarray(SDL_graphics);
-    initialize_SDL_graphics(SDL_graphics);
-    initialize_pixel_array(SDL_graphics);
-    /* End of SDL graphics allocation and initialization .................. */
+    if (TRUE == enable_graphics){
+      /* SDL graphics allocation and initialization: ........................ */
+      SDL_graphics=(struct SDL_graphics*)malloc(sizeof(struct SDL_graphics));
+      if(NULL == SDL_graphics)
+        {
+        printf("\n\nError in allocating struct SDL_graphics *SDL_graphics\n\n");
+        exit(0);
+        }
+      SDL_graphics->width = M*SIM_TO_GRAPHICS + 2*GRAPHICS_MARGIN;
+      SDL_graphics->height= N*SIM_TO_GRAPHICS + 2*GRAPHICS_MARGIN;
+      allocate_SDL_pixelarray(SDL_graphics);
+      initialize_SDL_graphics(SDL_graphics);
+      initialize_pixel_array(SDL_graphics);
+      /* End of SDL graphics allocation and initialization .................. */
+    }
 
 
     population_size = sll_list_length(people) + sll_list_length(doctors);
@@ -113,6 +115,8 @@ int main(int argc, char **argv)
            (epoch.daily_population_size > 0) &&\
            (epoch.grid_viral_charge > 0)
     ){
+      
+    if (TRUE == enable_graphics){
       // signal handling (sub-optimal)
       if( SDL_PollEvent(&event) ){
         if ( event.type == SDL_KEYDOWN &&\
@@ -123,6 +127,7 @@ int main(int argc, char **argv)
           break; 
         }
       }
+    }
 
       // to make the simulation "slower" uncomment and adjust
       // the sleep time in miliseconds :
@@ -135,6 +140,7 @@ int main(int argc, char **argv)
       // To visualise the "danger gradient" uncomment the following line :
       //visualise_danger(SDL_graphics, table, N, M, 5);
 
+    if (TRUE == enable_graphics){
       visualise_virus(SDL_graphics, table, N, M, VIRUSSIZE);
 
       // SDL visualization:
@@ -160,6 +166,7 @@ int main(int argc, char **argv)
       );
       sdl_update(SDL_graphics);
       fade_pixel_array(SDL_graphics, FADER);
+    }
 
 
       // Kill SDL if Strg+c was pressed in the stdin console: 

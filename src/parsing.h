@@ -5,7 +5,8 @@
         int argc, char **argv, 
         int *N, int *M, 
         double *p_lambda, double *p_doctor, double *p_virus,
-        int *save_output
+        int *max_sim_steps,
+        int *graphics
     );
 
     void explain_useage_exit(char *myname);
