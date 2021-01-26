@@ -11,7 +11,7 @@
   SDLFLAGS := $(shell sdl-config --cflags)
   NCFLAGS := $(STDFLAGS) $(OPTIM) $(GSLFLAGS) $(SDLFLAGS)  
   DEBUGCFLAGS := $(STDFLAGS) $(GSLFLAGS) $(SDLFLAGS) $(DEBUG) 
-  CFLAGS := $(NCFLAGS)
+  CFLAGS := $(NCFLAGS) -fopenmp
 # end compilation flags #
 
 # start linking flags #

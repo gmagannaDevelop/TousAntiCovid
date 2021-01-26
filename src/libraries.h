@@ -16,7 +16,8 @@
   #include <time.h>
   #include <errno.h>    
 
-
+  // parallel computing
+  #include <omp.h>
 
   /* GNU Scientific library */
   #include <gsl/gsl_rng.h>
