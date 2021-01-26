@@ -7,8 +7,9 @@
 // Function prototype :
 void sig_handler(int signum);
 
-// global variable to handle signals : 
+// global variables to handle signals : 
 int _continue;
+int _loop_started;
 
 int main(int argc, char **argv)
 {
@@ -30,6 +31,7 @@ int main(int argc, char **argv)
     );
 
     _continue = TRUE;
+    _loop_started = FALSE;
     signal(SIGINT, sig_handler);
     signal(SIGTERM, sig_handler);
     signal(SIGKILL, sig_handler);
@@ -110,31 +112,34 @@ int main(int argc, char **argv)
 
     population_size = sll_list_length(people) + sll_list_length(doctors);
     
+    printf("P,I\n");
     epoch.daily_population_size = population_size;
     epoch.grid_viral_charge = 1;
     epoch.new_infections = 0;
+    printf("%d,%d\n", epoch.daily_population_size, epoch.new_infections);
     
     step = 0;
+    _loop_started = TRUE;
     while( _continue &&\
            (step < max_sim_steps) &&\
            (epoch.daily_population_size > 0) &&\
            (epoch.grid_viral_charge > 0)
     ){
       
-
-      // to make the simulation "slower" uncomment and adjust
-      // the sleep time in miliseconds :
-      msleep(100);
       global_update(&randgen, &people, &doctors, &table, N, M, &epoch);
+      printf("%d,%d\n", epoch.daily_population_size, epoch.new_infections);
       
       // to enable (basic) command-line visualisation
       // show_grid(table, N, M);
 
+    if (TRUE == enable_graphics){
+      // to make the simulation "slower" uncomment and adjust
+      // the sleep time in miliseconds :
+      msleep(100);
+      visualise_virus(SDL_graphics, table, N, M, VIRUSSIZE);
+
       // To visualise the "danger gradient" uncomment the following line :
       //visualise_danger(SDL_graphics, table, N, M, 5);
-
-    if (TRUE == enable_graphics){
-      visualise_virus(SDL_graphics, table, N, M, VIRUSSIZE);
 
       // SDL visualization:
       p_iter = people;
@@ -172,8 +177,13 @@ int main(int argc, char **argv)
 }
 
 // Auxiliary signal-handling function definition
-void sig_handler(int signum){
+void sig_handler(int signum){ 
   printf("Recieved signal : %d, exiting\n", signum);
-  _continue = FALSE;
+  if (TRUE == _loop_started){
+    _continue = FALSE;
+  }
+  else {
+    exit(EXIT_FAILURE);
+  }
 }
 
