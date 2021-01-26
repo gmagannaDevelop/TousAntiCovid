@@ -4,6 +4,11 @@
 
 #include "libraries.h"
 
+// Function prototype :
+void sig_handler(int signum);
+
+// global variable to handle signals : 
+int _continue;
 
 int main(int argc, char **argv)
 {
@@ -11,7 +16,6 @@ int main(int argc, char **argv)
     int row, column; /* Counters */
     int population_size, enable_graphics;
     struct SDL_graphics *SDL_graphics;
-    SDL_Event event;
     Case *table, *itable;
     Person *p, *d;
     struct singly_linked_list *people, *doctors, *p_iter;
@@ -25,6 +29,10 @@ int main(int argc, char **argv)
       &max_sim_steps, &enable_graphics
     );
 
+    _continue = TRUE;
+    signal(SIGINT, sig_handler);
+    signal(SIGTERM, sig_handler);
+    signal(SIGKILL, sig_handler);
     // To enable debugging via gdb https://www.gnu.org/software/gdb/
     // comment out the previous call to parse_commandline()
     // and uncomment the following lines :
@@ -35,11 +43,7 @@ int main(int argc, char **argv)
     //p_init_virus = 0.05;
     //max_sim_steps = 10000;
 
-    // This function is used to force the empirical density of each agent of 
-    // the simulation to be near to the expected one.
-    // Writing different conditional statements would have prevented the
-    // need for this, but this approach is more flexible as it allows
-    // for arbitrary frequencies that are otherwise impossible to obtain.
+    // force the empirical density of simulation agents to be near to the expected one.
     // See this issue : https://github.com/gmagannaDevelop/TousAntiCovid/issues/2
     correct_posterior_probs(&p_init_lambda, &p_init_doctor, &p_init_virus);
 
@@ -111,23 +115,12 @@ int main(int argc, char **argv)
     epoch.new_infections = 0;
     
     step = 0;
-    while( (step < max_sim_steps) &&\
+    while( _continue &&\
+           (step < max_sim_steps) &&\
            (epoch.daily_population_size > 0) &&\
            (epoch.grid_viral_charge > 0)
     ){
       
-    if (TRUE == enable_graphics){
-      // signal handling (sub-optimal)
-      if( SDL_PollEvent(&event) ){
-        if ( event.type == SDL_KEYDOWN &&\
-            (event.key.keysym.sym == SDLK_c &&\
-            event.key.keysym.mod & KMOD_CTRL))
-        {
-          printf("EXIT !\n");
-          break; 
-        }
-      }
-    }
 
       // to make the simulation "slower" uncomment and adjust
       // the sleep time in miliseconds :
@@ -168,16 +161,19 @@ int main(int argc, char **argv)
       fade_pixel_array(SDL_graphics, FADER);
     }
 
-
-      // Kill SDL if Strg+c was pressed in the stdin console: 
-      // our only effective signal handling 
-      signal(SIGINT, exit);
       step++;
     }
 
-    printf("\n\nFINISHED.\n\n");
+    if (TRUE == _continue) { printf("\n\nFINISHED.\n\n"); }
     empty_sll(people);
     empty_sll(doctors);
     free(table);
     return(1);
 }
+
+// Auxiliary signal-handling function definition
+void sig_handler(int signum){
+  printf("Recieved signal : %d, exiting\n", signum);
+  _continue = FALSE;
+}
+
